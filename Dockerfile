@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Standardbefehl zum Starten der Anwendung
-CMD ["python", "app.py"]
+CMD ["python", "-m" , "flask", "run", "--host=0.0.0.0"]
