@@ -1,0 +1,159 @@
+<ul class="list-group">
+
+
+    <!--
+    TODO: What are public facilities?
+    -->
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg')}}" class="align-center me-3" alt=""
+             title="Adresse">
+        ${result.mailingAddress.street}<br>
+        ${result.mailingAddress.zipcode}, ${result.mailingAddress.city}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg')}}" class="align-center me-3" alt=""
+             title="Regionalbereich">
+        Regionalbereich:<br>
+        ${result.regionalbereich.name} (${result.regionalbereich.number})
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/bookmark-check.svg')}}"
+             class="align-center me-3" alt="" title="Bahnhofsart">
+        Bahnhofsart: ${result.productLine.segment}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/tag.svg')}}" class="align-center me-3" alt=""
+             title="Bahnhofskategorie">
+        Bahnhofskategorie: ${result.category}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/cash-coin.svg')}}" class="align-center me-3"
+             alt="" title="Preiskategorie">
+        Preiskategorie: ${result.priceCategory}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/bus-front.svg')}}" class="align-center me-3"
+             alt="" title="ÖPNV">
+        ÖPNV:
+        ${result.hasLocalPublicTransport}
+        {% if result.hasLocalPublicTransport == false %}
+        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/check-square.svg') }}"
+             class="align-center ms-1" alt="" title="ÖPNV verfügbar">
+        {% else %}
+        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/x-square.svg') }}"
+             class="align-center ms-1" alt="" title="ÖPNV nicht verfügbar">
+        {% endif %}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/icons-8-custom/stairs.svg')}}" class="align-center me-3" alt=""
+             title="Barrierefreier Zugang">
+        Barrierefreier Zugang:
+        ${result.hasSteplessAccess }
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/p-square.svg')}}" class="align-center me-3"
+             alt="" title="Parkplätze">
+        Parkplätze: ${result.hasParking}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/bicycle.svg')}}" class="align-center me-3"
+             alt="" title="Fahrradstellplätze">
+        Fahrradstellplätze: ${result.hasBicycleParking}
+        {% if result.hasBicycleParking == "true" %}
+        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/check-square.svg') }}"
+             class="align-center ms-1" alt="" title="ÖPNV verfügbar">
+        {% else %}
+        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/x-square.svg') }}"
+             class="align-center ms-1" alt="" title="ÖPNV nicht verfügbar">
+        {% endif %}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/taxi-front.svg')}}" class="align-center me-3"
+             alt="" title="Taxistand">
+        Taxistand: ${result.hasTaxiRank}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/wifi.svg')}}" class="align-center me-3"
+             alt="" title="WLAN">
+        WLAN: ${result.hasWiFi}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/key.svg')}}" class="align-center me-3" alt=""
+             title="Schließfächer">
+        Schließfächer: ${result.hasLockerSystem}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/icons-8-custom/public.svg')}}" class="align-center me-3" alt=""
+             title="Öffentliche Einrichtungen???">
+        Öffentliche Einrichtungen: ${result.hasPublicFacilities}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/info-square.svg')}}"
+             class="align-center me-3" alt="" title="Reisezentrum">
+        Reisezentrum: ${result.hasTravelCenter}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/cup-hot.svg')}}" class="align-center me-3"
+             alt="" title="DB Lounge">
+        DB Lounge: ${result.hasDBLounge}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/icons-8-custom/lost-and-found.svg')}}" class="align-center me-3"
+             alt="" title="Fundbüro">
+        Fundbüro: ${result.hasLostAndFound}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/person-wheelchair.svg')}}"
+             class="align-center me-3" alt="" title="Mobilitätszentrale">
+        Mobilitätszentrale: ${result.hasMobilityService}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/icons-8-custom/management.svg')}}" class="align-center me-3" alt=""
+             title="Bahnhofsmanagement">
+        Bahnhofsmanagement: ${result.stationManagement.name} (${result.stationManagement.number})
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/exclamation-triangle.svg')}}"
+             class="align-center me-3" alt="" title="3-S-Zentrale">
+        3-S-Zentrale: ${result.szentrale.name} (${result.szentrale.number})<br>
+        Telefonnummer: ${result.szentrale.publicPhoneNumber}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/envelope-at.svg')}}"
+             class="align-center me-3" alt="" title="Fahrplanzentrale">
+        Fahrplanzentrale: ${result.timeTableOffice.email}<br>
+        Sitz: ${result.timeTableOffice.name}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/car-front.svg')}}" class="align-center me-3"
+             alt="" title="Autovermietung">
+        Autovermietung: ${result.hasCarRental}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/icons-8-custom/volunteering.svg')}}" class="align-center me-3"
+             alt="" title="Bahnhofsmission">
+        Bahnhofsmission: ${result.hasRailwayMission}
+    </li>
+    <li class="list-group-item d-flex">
+        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/basket.svg')}}" class="align-center me-3"
+             alt="" title="Reisebedarf???">
+        Reisebedarf???: ${result.hasTravelNecessities}
+    </li>
+    <li class="list-group-item">
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Komplette API-Antwort ansehen
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+
+</ul>

@@ -1,0 +1,71 @@
+<script>
+    document.getElementById('loadDataBtn').addEventListener('click', debounce(async function () {
+        const resultContainer = document.getElementById('resultContainer');
+        const infoContainer = document.getElementById('infoContainer');
+        const rilCode = "{{ code }}";
+
+        infoContainer.style.display = "none";
+        resultContainer.innerHTML = `{%include "elements/placeholder.html"%}`;
+
+        try {
+            const response = await fetch(`/api/data?ril=${rilCode}`);
+
+            // Handle HTTP status codes
+            if (!response.ok) {
+                handleHTTPError(response.status);
+                return;
+            }
+
+            const data = await response.json();
+            const result = data?.result?.[0];
+
+
+            // Success: Populate with API result
+            resultContainer.innerHTML = `{%include "elements/api-result.html"%}`;
+        } catch (error) {
+            resultContainer.innerHTML = `<div id="error" class="alert alert-danger">Ein Fehler ist aufgetreten: ${error.message}</div>`;
+            console.error('Error fetching data:', error);
+        }
+    }, 300));
+
+    // Debounce-Funktion
+    function debounce(func, delay) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => func(...args), delay);
+        };
+    }
+
+    // Funktion für spezifische Fehlermeldungen basierend auf Statuscode
+    function handleHTTPError(status) {
+        const resultContainer = document.getElementById('resultContainer');
+        let errorMessage;
+
+        switch (status) {
+            case 400:
+                errorMessage = `${status}: Ungültige Anfrage.`;
+                break;
+            case 401:
+                errorMessage = `${status}: Authentication Error`;
+                break;
+            case 403:
+                errorMessage = `${status}: Zugriff verweigert.`;
+                break;
+            case 404:
+                errorMessage = "Für diese Betriebsstelle gibt es keine weiteren Daten, die geladen werden könnten.";
+                break;
+            case 500:
+                errorMessage = `${status}: Interner Serverfehler. Bitte versuchen Sie es später erneut.`;
+                break;
+            case 503:
+                errorMessage = `${status}: Der Dienst ist derzeit nicht verfügbar. Bitte versuchen Sie es später erneut.`;
+                break;
+            default:
+                errorMessage = `Ein unerwarteter Fehler ist aufgetreten (Statuscode: ${status}).`;
+        }
+
+        resultContainer.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`;
+    }
+
+</script>

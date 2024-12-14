@@ -1,0 +1,33 @@
+{%include "elements/header.html"%}
+<body>
+{%include "elements/navbar.html"%}
+<div class="container mt-5">
+    <h1 class="mb-4 d-inline">Betriebsstellen-Suche</h1><span class="badge rounded-pill text-success bg-success-subtle d-inline align-top">Stand: August 2024</span>
+<hr>
+    <input type="text" id="searchInput" class="form-control" placeholder="Abkürzung oder Langname eingeben...">
+    <ul id="results" class="list-group mt-3"></ul>
+</div>
+
+
+</body>
+{%include "elements/scripts.html"%}
+<script>
+    $(document).ready(function() {
+        $('#searchInput').on('input', function() {
+            var query = $(this).val();
+            if (query.length > 0) {
+                $.get('/search', { q: query }, function(data) {
+                    $('#results').empty();
+                    data.forEach(function(item) {
+                        $('#results').append('<li class="list-group-item"><a class="text-black link-underline-opacity-0 link-underline-opacity-75-hover link-underline-dark" href=' + encodeURIComponent(item.code) + '>' + item.code + ' - ' + item.name + '</a></li>');
+                    });
+                });
+            } else {
+                $('#results').empty();
+            }
+        });
+    });
+</script>
+
+
+</html>
