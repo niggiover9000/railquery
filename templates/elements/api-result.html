@@ -5,6 +5,21 @@
     TODO: What are public facilities?
     -->
     <li class="list-group-item d-flex">
+        <div class="card-body">
+            <a class="btn btn-primary" role="button" id="loadDataBtn-2"
+               href="https://www.bahnhof.de/downloads/station-plans/${result.number}.pdf">Lageplan herunterladen</a>
+        </div>
+        <div class="card-body">
+            <a class="btn btn-primary" role="button" id="loadDataBtn-3"
+               href="https://www.bahnhof.de/downloads/replacement-service-maps/${result.number}.pdf">Umgebungsplan
+                herunterladen</a>
+        </div>
+         <div class="card-body">
+            <a class="btn btn-primary" role="button" id="loadDataBtn-4"
+               href="https://www.openrailwaymap.org/?style=standard&lat=${result.ril100Identifiers[0].geographicCoordinates.coordinates[1]}&lon=${result.ril100Identifiers[0].geographicCoordinates.coordinates[0]}&zoom=16">Auf Karte anzeigen</a>
+        </div>
+    </li>
+    <li class="list-group-item d-flex">
         <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg')}}" class="align-center me-3" alt=""
              title="Adresse">
         ${result.mailingAddress.street}<br>
@@ -34,15 +49,7 @@
     <li class="list-group-item d-flex">
         <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/bus-front.svg')}}" class="align-center me-3"
              alt="" title="ÖPNV">
-        ÖPNV:
-        ${result.hasLocalPublicTransport}
-        {% if result.hasLocalPublicTransport == false %}
-        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/check-square.svg') }}"
-             class="align-center ms-1" alt="" title="ÖPNV verfügbar">
-        {% else %}
-        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/x-square.svg') }}"
-             class="align-center ms-1" alt="" title="ÖPNV nicht verfügbar">
-        {% endif %}
+        ÖPNV: ${result.hasLocalPublicTransport}
     </li>
     <li class="list-group-item d-flex">
         <img src="{{url_for('static', filename='img/icons-8-custom/stairs.svg')}}" class="align-center me-3" alt=""
@@ -59,13 +66,6 @@
         <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/bicycle.svg')}}" class="align-center me-3"
              alt="" title="Fahrradstellplätze">
         Fahrradstellplätze: ${result.hasBicycleParking}
-        {% if result.hasBicycleParking == "true" %}
-        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/check-square.svg') }}"
-             class="align-center ms-1" alt="" title="ÖPNV verfügbar">
-        {% else %}
-        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/x-square.svg') }}"
-             class="align-center ms-1" alt="" title="ÖPNV nicht verfügbar">
-        {% endif %}
     </li>
     <li class="list-group-item d-flex">
         <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/taxi-front.svg')}}" class="align-center me-3"
@@ -143,11 +143,13 @@
         <div class="accordion" id="accordionExample">
             <div class="accordion-item border-0">
                 <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                         Komplette API-Antwort ansehen
                     </button>
                 </h2>
-                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                     data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <pre>${JSON.stringify(result, null, 2)}</pre>
                     </div>
@@ -155,5 +157,4 @@
             </div>
         </div>
     </li>
-
 </ul>

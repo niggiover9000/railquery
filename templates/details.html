@@ -70,11 +70,10 @@
                     <div class="p-1 flex-grow-1">
                         <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg')}}"
                              class="align-center me-3" alt="" title="Typ">
-
                         {%if row[4].startswith("NE") == True%}
                         Typ: {{sonderart["NE-"]}}{{art[row[4]]}} ({{ row[4] }})
                         {%elif row[4].startswith("vp-") == True%}
-                        Typ: {{sonderart["vp-"]}}{{art[row[4]]}} ({{ row[4] }})
+                        Typ: {{sonderart["vp-"]}} {{art[row[4] | replace("vp-", "")]}} ({{ row[4] }})
                         {% elif row[4] in art %}
                         Typ: {{art[row[4]]}} ({{ row[4] }})
                         {% else %}
