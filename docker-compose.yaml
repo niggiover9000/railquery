@@ -1,0 +1,9 @@
+services:
+  bahninfo:
+    image: niggiover9000/bahninfo:latest
+    container_name: bahninfo
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env

@@ -1,0 +1,11 @@
+.env
+.env.example
+venv/
+docker-compose.yaml
+
+.idea
+
+*.log
+
+*.pyc
+__pycache__/
