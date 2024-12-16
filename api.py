@@ -4,11 +4,26 @@ from os import getenv
 
 # Todo: Add license
 
-load_dotenv(dotenv_path='.env')
-CLIENT_ID = getenv('CLIENT_ID')
-CLIENT_SECRET = getenv('CLIENT_SECRET')
-API_URL = getenv('API_URL')
-ACCEPT = getenv('ACCEPT')
+# .env-Datei nur laden, wenn keine Umgebungsvariablen verfügbar sind (für lokale Entwicklung)
+load_dotenv()
+
+# Alle benötigten Umgebungsvariablen
+required_env_vars = ['DATE', 'CLIENT_ID', 'CLIENT_SECRET', 'API_URL', 'ACCEPT']
+
+# Werte abrufen und prüfen
+env_vars = {var: getenv(var) for var in required_env_vars}
+
+# Fehlende Variablen abfangen
+missing_vars = [var for var, value in env_vars.items() if value is None]
+if missing_vars:
+    raise EnvironmentError(f"Die folgenden Umgebungsvariablen fehlen: {', '.join(missing_vars)}")
+
+# Zugriff auf die Variablen
+DATE = env_vars['DATE']
+CLIENT_ID = env_vars['CLIENT_ID']
+CLIENT_SECRET = env_vars['CLIENT_SECRET']
+API_URL = env_vars['API_URL']
+ACCEPT = env_vars['ACCEPT']
 
 # Validate environment variables
 if not all([CLIENT_ID, CLIENT_SECRET, API_URL, ACCEPT]):

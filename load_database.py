@@ -1,26 +1,88 @@
 import pandas as pd
 import sqlite3
+from os import getenv
+import requests
+from dotenv import load_dotenv
+from datetime import datetime
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+from dotenv import set_key
 
-# Load the Excel file, skipping the first two rows
-file_path = 'Download-betriebsstellen-data.xlsx'
-df = pd.read_excel(file_path, skiprows=3)
+# Nur wenn die Umgebungsvariable nicht gesetzt ist, wird die .env-Datei geladen (für lokale Entwicklung)
+if not getenv('BASEDATA_URL'):
+    load_dotenv(dotenv_path='.env')
 
-# Lade die Excel-Datei und überspringe die ersten 2 Zeilen, die keine relevanten Daten enthalten
-df_cleaned = pd.read_excel(file_path, sheet_name='20240830 Betriebsstellencodes', skiprows=3)
+BASEDATA_URL = getenv('BASEDATA_URL')
 
-# Entferne leere Spalten
-df_cleaned = df_cleaned.dropna(how='all', axis=1)
+# URL der Datei
+url = BASEDATA_URL
+local_file = "Download-betriebsstellen-data.xlsx"
 
-# Benenne die Spalten korrekt um, indem du die erste Zeile des neuen DataFrames als Spaltennamen verwendest
-df_cleaned.columns = ['PLC-Gesamt', 'RL100-Code', 'RL100-Langname', 'RL100-Kurzname', 'Typ-Kurz', 'Betriebszustand', 'Datum-Ab']
+# Herunterladen der neuesten Datei
+def download_file(url, local_file):
+    session = requests.Session()
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
+    session.mount('https://', HTTPAdapter(max_retries=retries))
 
-# Verbindungsaufbau zu SQLite-Datenbank (Datei erstellen falls nicht vorhanden)
-conn = sqlite3.connect('betriebsstellen.db')
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
 
-# Die Daten in eine SQL-Tabelle kopieren (Name der Tabelle: 'betriebsstellen')
-df_cleaned.to_sql('betriebsstellen', conn, if_exists='replace', index=False)
+    try:
+        response = session.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        with open(local_file, "wb") as file:
+            file.write(response.content)
+        print(f"Datei erfolgreich heruntergeladen: {local_file}")
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Fehler beim Herunterladen der Datei: {e}")
 
-# Schließen der Verbindung
-conn.close()
+# Tabellenblatt und Datum extrahieren
+def extract_sheet_and_date(file_path):
+    xls = pd.ExcelFile(file_path)
+    first_sheet = xls.sheet_names[0]  # Linkestes Tabellenblatt
+    date_part = first_sheet.split()[0]  # Annahme: Datum steht am Anfang des Namens
+    stand = datetime.strptime(date_part, "%Y%m%d").strftime("%d.%m.%Y")
+    print(f"Verarbeitetes Tabellenblatt: {first_sheet}, Stand: {stand}")
+    return first_sheet, stand
 
-print("Daten wurden erfolgreich in die SQLite-Datenbank importiert.")
+# Daten in SQLite-Datenbank laden
+def load_data_to_db(file_path, sheet_name):
+    df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=3)
+
+    # Entferne leere Spalten und bereinige die Daten
+    df = df.dropna(how='all', axis=1)
+
+    # Dynamische Spaltennamen übernehmen
+    df.columns = [col.strip() for col in df.columns]
+
+    # Datenbankverbindung herstellen
+    conn = sqlite3.connect('betriebsstellen.db')
+    df.to_sql('betriebsstellen', conn, if_exists='replace', index=False)
+    conn.close()
+
+    print("Daten wurden erfolgreich in die SQLite-Datenbank importiert.")
+
+# Stand-Variable in .env-Datei schreiben
+def write_to_env(stand):
+    set_key(dotenv_path='.env', key_to_set="DATE", value_to_set=stand)
+
+    print("Stand-Variable erfolgreich in .env-Datei geschrieben.")
+
+if __name__ == "__main__":
+    try:
+        # Datei herunterladen
+        download_file(url, local_file)
+
+        # Tabellenblatt und Datum extrahieren
+        sheet_name, stand = extract_sheet_and_date(local_file)
+
+        # Daten in die Datenbank laden
+        load_data_to_db(local_file, sheet_name)
+
+        # Stand-Variable in .env-Datei schreiben
+        write_to_env(stand)
+
+        print(f"Script erfolgreich abgeschlossen. Stand der Daten: {stand}")
+    except Exception as e:
+        print(f"Fehler: {e}")

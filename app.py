@@ -3,7 +3,14 @@ import sqlite3
 from urllib.parse import unquote
 from variables import art, sonderart, region
 from api import get_api_data
+from os import getenv
+from dotenv import load_dotenv
 
+# Nur wenn die Umgebungsvariable nicht gesetzt ist, wird die .env-Datei geladen (für lokale Entwicklung)
+if not getenv('DATE'):
+    load_dotenv(dotenv_path='.env')
+
+DATE = getenv('DATE')
 app = Flask(__name__)
 
 
@@ -16,7 +23,7 @@ def get_db_connection():
 @app.route('/')
 def index():
     """Start page"""
-    return render_template('index.html')
+    return render_template('index.html', date=DATE)
 
 
 @app.route('/search', methods=['GET'])
@@ -38,6 +45,7 @@ def search():
     """, (query + '%', query + '%'))
     results = cursor.fetchall()
     conn.close()
+    conn.close()
 
     return jsonify([
         {'plc': row['PLC-Gesamt'],
@@ -53,6 +61,7 @@ def search():
 @app.route('/impressum', methods=['GET'])
 def impressum():
     return render_template('impressum.html')
+
 
 @app.route('/api/data', methods=['GET'])
 def api_data():
@@ -106,8 +115,8 @@ def details(code):
                            date=date,
                            art=art,
                            region=region,
-                           sonderart=sonderart
-                           )
+                           sonderart=sonderart,
+                           date_db=DATE)
 
 
 if __name__ == '__main__':
