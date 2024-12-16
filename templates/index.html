@@ -2,7 +2,7 @@
 <body>
 {%include "elements/navbar.html"%}
 <div class="container mt-5">
-    <h1 class="mb-4 d-inline">Betriebsstellen-Suche</h1><span class="badge rounded-pill text-success bg-success-subtle d-inline align-top">Stand: August 2024</span>
+    <h1 class="mb-4 d-inline">Betriebsstellen-Suche</h1><span class="badge rounded-pill text-success bg-success-subtle d-inline align-top">Stand: {{ date }}</span>
 <hr>
     <input type="text" id="searchInput" class="form-control" placeholder="Abkürzung oder Langname eingeben...">
     <ul id="results" class="list-group mt-3"></ul>
