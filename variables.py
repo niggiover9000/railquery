@@ -4,6 +4,7 @@ art = {
     "Awanst": "Ausweichanschlussstelle",
     "Bf": "Bahnhof",
     "Bft": "Bahnhofsteil",
+    "Bft Abzw": "Bahnhofsteil Abzweigstelle",
     "Bk": "Blockstelle",
     "Bush": "Bushaltestelle",
     "Dkst": "Deckungsstelle",
