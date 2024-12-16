@@ -11,3 +11,10 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 - Die Datei ".env.example" in ".env" umbenennen
 - ID und Secret Key für die API auf https://developers.deutschebahn.com/db-api-marketplace/apis/product/152577 erstellen und in der ".env"-Datei einfügen.
 - `docker compose pull && docker compose up -d`
+
+## To Do
+- [ ] Kartenfunktion hinzufügen
+- [ ] Spendenlink hinzufügen
+- [ ] Link zu Umgebungsplänen hinzufügen
+
+Featurewünsche gerne per GitHub oder per LinkedIn an mich!
