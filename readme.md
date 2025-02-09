@@ -13,8 +13,10 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 - `docker compose pull && docker compose up -d`
 
 ## To Do
-- [ ] Kartenfunktion hinzufügen
+- [x] Kartenfunktion hinzufügen
 - [ ] Spendenlink hinzufügen
-- [ ] Link zu Umgebungsplänen hinzufügen
+- [ ] Link zu FAQ einfügen
+- [ ] Link zu Github einfügen
+- [x] Link zu Umgebungsplänen hinzufügen
 
 Featurewünsche gerne per GitHub oder per LinkedIn an mich!
