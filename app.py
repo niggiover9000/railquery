@@ -42,7 +42,9 @@ def search():
     cursor.execute("""
     SELECT * FROM betriebsstellen 
     WHERE LOWER([RL100-Code]) LIKE ? OR LOWER([RL100-Langname]) LIKE ?
-    """, (query + '%', query + '%'))
+    ORDER BY LENGTH([RL100-Code]) ASC
+    LIMIT 20
+    """, ('%' + query + '%', '%' + query + '%'))
     results = cursor.fetchall()
     conn.close()
     conn.close()
