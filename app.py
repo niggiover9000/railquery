@@ -26,6 +26,9 @@ def index():
     return render_template('index.html', date=DATE)
 
 
+
+
+
 @app.route('/search', methods=['GET'])
 def search():
     """
@@ -38,16 +41,35 @@ def search():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Search query in database for RIL or long name
-    cursor.execute("""
-    SELECT * FROM betriebsstellen 
-    WHERE LOWER([RL100-Code]) LIKE ? OR LOWER([RL100-Langname]) LIKE ?
-    ORDER BY LENGTH([RL100-Code]) ASC
-    LIMIT 20
-    """, ('%' + query + '%', '%' + query + '%'))
+    search_terms = query.lower().split()
+
+    # Dynamische SQL-Abfrage erstellen
+    sql_query = """
+        SELECT * FROM betriebsstellen 
+        WHERE 
+    """
+
+    # Füge für jedes Wort eine Bedingung hinzu
+    conditions = []
+    for term in search_terms:
+        conditions.append(f"(LOWER([RL100-Code]) LIKE ? OR LOWER([RL100-Langname]) LIKE ?)")
+
+    # Kombiniere alle Bedingungen mit AND
+    sql_query += " AND ".join(conditions)
+
+    # Sortierung und Limitierung hinzufügen
+    sql_query += " ORDER BY LENGTH([RL100-Code]) ASC LIMIT 20"
+
+    # Parameter für die Platzhalter vorbereiten
+    params = []
+    for term in search_terms:
+        params.extend([f'%{term}%', f'%{term}%'])
+
+    # Abfrage ausführen
+    cursor.execute(sql_query, params)
+
+    # Ergebnisse abrufen
     results = cursor.fetchall()
-    conn.close()
-    conn.close()
 
     return jsonify([
         {'plc': row['PLC-Gesamt'],
@@ -63,6 +85,11 @@ def search():
 @app.route('/impressum', methods=['GET'])
 def impressum():
     return render_template('impressum.html')
+
+@app.route('/test', methods=['GET'])
+def test():
+    """Start page"""
+    return render_template('test.html')
 
 
 @app.route('/api/data', methods=['GET'])
