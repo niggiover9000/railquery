@@ -1,6 +1,8 @@
 # Basis-Image
 FROM python:3.12-slim
 
+ARG VERSION=latest
+
 EXPOSE 5000
 
 # Arbeitsverzeichnis im Container
@@ -14,4 +16,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Standardbefehl zum Starten der Anwendung
+ENTRYPOINT ["python", "load_database.py"]
 CMD ["python", "-m" , "flask", "run", "--host=0.0.0.0"]
