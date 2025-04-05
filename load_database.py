@@ -20,6 +20,7 @@ local_file = "Download-betriebsstellen-data.xlsx"
 
 # Herunterladen der neuesten Datei
 def download_file(url, local_file):
+    print("Database flow started.")
     session = requests.Session()
     retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
     session.mount('https://', HTTPAdapter(max_retries=retries))

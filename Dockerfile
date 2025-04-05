@@ -10,11 +10,11 @@ WORKDIR /app
 
 # Abhängigkeiten installieren
 COPY requirements.txt requirements.txt
+RUN apt-get update && apt-get upgrade -y
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Kopiere den Rest des Projekts
 COPY . .
 
 # Standardbefehl zum Starten der Anwendung
-ENTRYPOINT ["python", "load_database.py"]
-CMD ["python", "-m" , "flask", "run", "--host=0.0.0.0"]
+ENTRYPOINT ["./start.sh"]
