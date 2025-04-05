@@ -10,13 +10,18 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 ## Installation
 - Die Datei ".env.example" in ".env" umbenennen
 - ID und Secret Key für die API auf https://developers.deutschebahn.com/db-api-marketplace/apis/product/152577 erstellen und in der ".env"-Datei einfügen.
+- Die neueste Excel-Datei für die Datenbank der Betriebsstellen kann unter https://www.dbinfrago.com/web/schienennetz/betrieb/allgemeine-betriebsinformationen/betriebsstellen-12592996 unter "Downloads" gefunden werden. Die Datei wird am Monatsende aktualisiert.
 - `docker compose pull && docker compose up -d`
 
 ## To Do
-- [x] Kartenfunktion hinzufügen
+- [ ] Debug-Mode remote deaktivieren
+- [ ] Port-Settings in .env
+- [ ] Wenn möglich Host-Settings (URL) in .env
+- [ ] Karte in Website einbinden
 - [ ] Spendenlink hinzufügen
+- [ ] Werbung einbetten
 - [ ] Link zu FAQ einfügen
 - [ ] Link zu Github einfügen
-- [x] Link zu Umgebungsplänen hinzufügen
+- [ ] Abfragen, ob Gleisplan existiert, ansonsten Button ausblenden
 
 Featurewünsche gerne per GitHub oder per LinkedIn an mich!
