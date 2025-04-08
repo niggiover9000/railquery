@@ -23,5 +23,6 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 - [ ] Link zu FAQ einfügen
 - [ ] Link zu Github einfügen
 - [ ] Abfragen, ob Gleisplan existiert, ansonsten Button ausblenden
+- [ ] Captcha für Abfragen einfügen
 
 Featurewünsche gerne per GitHub oder per LinkedIn an mich!
