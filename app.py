@@ -5,6 +5,7 @@ from variables import art, sonderart, region
 from api import get_api_data
 from os import getenv
 from dotenv import load_dotenv
+from waitress import serve
 
 # Nur wenn die Umgebungsvariable nicht gesetzt ist, wird die .env-Datei geladen (für lokale Entwicklung)
 if not getenv('DATE'):
@@ -24,9 +25,6 @@ def get_db_connection():
 def index():
     """Start page"""
     return render_template('index.html', date=DATE)
-
-
-
 
 
 @app.route('/search', methods=['GET'])
@@ -149,4 +147,9 @@ def details(code):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    debug_mode = eval(getenv('DEBUG', False))
+    print(f"DEBUG MODE: {debug_mode}")
+    if debug_mode:
+        app.run(host=getenv('HOST', "0.0.0.0"), port=getenv('PORT', 5000))
+    else:
+        serve(app, host=getenv('HOST', "0.0.0.0"), port=getenv('PORT', 5000))
