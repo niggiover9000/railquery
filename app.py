@@ -6,6 +6,7 @@ from api import get_api_data
 from os import getenv
 from dotenv import load_dotenv
 from waitress import serve
+from personal_data import name, street, address, mail
 
 # Nur wenn die Umgebungsvariable nicht gesetzt ist, wird die .env-Datei geladen (für lokale Entwicklung)
 if not getenv('DATE'):
@@ -82,7 +83,7 @@ def search():
 
 @app.route('/impressum', methods=['GET'])
 def impressum():
-    return render_template('impressum.html')
+    return render_template('impressum.html', name=name, street=street, address=address, mail=mail)
 
 @app.route('/test', methods=['GET'])
 def test():
