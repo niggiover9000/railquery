@@ -18,7 +18,6 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 ## To Do
 - [ ] Kürzel als primäres Kriterium zur Sortierung
 - [ ] Link zu Github einfügen
-- [ ] Impressum hinzufügen
 - [ ] https://stellwerke.info anbinden
 - [ ] Downloadbutton ausblenden, wenn es keinen Download gibt
 - [ ] https://iris.noncd.db.de anbinden
