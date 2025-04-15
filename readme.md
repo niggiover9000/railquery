@@ -22,6 +22,7 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 - [ ] Karte in Website einbinden
 - [ ] Werbung einbetten
 - [ ] Link zu FAQ einfügen
+- [ ] Anzeige "True" und "False" auf Details-Seite durch Symbol ersetzen
 - [ ] Abfragen, ob Gleisplan existiert, ansonsten Button ausblenden
 - [ ] Captcha für Abfragen einfügen
 - [ ] ÖBB-Betriebsstellen hinzufügen
