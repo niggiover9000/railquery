@@ -15,6 +15,7 @@ if not getenv('DATE'):
 DATE = getenv('DATE')
 ANALYTICS_TAG = getenv('ANALYTICS_TAG')
 ADSENSE_CLIENT = getenv('ADSENSE_CLIENT')
+CONSENTMANAGER_ID = getenv('CONSENTMANAGER_ID')
 app = Flask(__name__)
 
 
@@ -28,7 +29,7 @@ def get_db_connection():
 def index():
     """Start page"""
     return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT)
+                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.route('/search', methods=['GET'])
@@ -118,7 +119,7 @@ def search():
 @app.route('/impressum', methods=['GET'])
 def impressum():
     return render_template('impressum.html', name=name, street=street, address=address, mail=mail,
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT)
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -165,7 +166,7 @@ def get_date(date):
 @app.route('/typen')
 def types():
     return render_template('typen.html', art=art, ANALYTICS_TAG=ANALYTICS_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT)
+                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.route('/<code>', methods=['GET'])
@@ -181,7 +182,8 @@ def details(code):
                            region=region,
                            sonderart=sonderart,
                            date_db=DATE,
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT)
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 if __name__ == '__main__':
