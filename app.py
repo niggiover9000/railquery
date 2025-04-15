@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import sqlite3
 from urllib.parse import unquote
 from variables import art, sonderart, region
@@ -7,17 +7,19 @@ from os import getenv
 from dotenv import load_dotenv
 from waitress import serve
 from personal_data import name, street, address, mail
+from flask_sitemap import Sitemap
 
-# Nur wenn die Umgebungsvariable nicht gesetzt ist, wird die .env-Datei geladen (für lokale Entwicklung)
-if not getenv('DATE'):
-    load_dotenv(dotenv_path='.env')
+load_dotenv(dotenv_path='.env')
 
 DATE = getenv('DATE')
 ANALYTICS_TAG = getenv('ANALYTICS_TAG')
 ADSENSE_CLIENT = getenv('ADSENSE_CLIENT')
 CONSENTMANAGER_ID = getenv('CONSENTMANAGER_ID')
 app = Flask(__name__)
+app.config["SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS"] = True
+app.config["SITEMAP_URL_SCHEME"] = "https"
 
+ext = Sitemap(app=app)
 
 def get_db_connection():
     connection = sqlite3.connect('betriebsstellen.db')
@@ -184,6 +186,11 @@ def details(code):
                            date_db=DATE,
                            ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+
+
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory(app.static_folder, "robots.txt")
 
 
 if __name__ == '__main__':
