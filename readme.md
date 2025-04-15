@@ -16,14 +16,10 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 - `docker compose pull && docker compose up -d`
 
 ## To Do
-- [ ] Kürzel als primäres Kriterium zur Sortierung
-- [ ] Link zu Github einfügen
 - [ ] https://stellwerke.info anbinden
-- [ ] Downloadbutton ausblenden, wenn es keinen Download gibt
 - [ ] https://iris.noncd.db.de anbinden
 - [ ] Definitionen zu Betriebsstellen hinzufügen (z.B. "Abzweistellen sind Blockstellen der freien Strecke, wo Züge von einer Strecke auf eine andere Strecke übergehen können.")
 - [ ] Karte in Website einbinden
-- [ ] Spendenlink hinzufügen
 - [ ] Werbung einbetten
 - [ ] Link zu FAQ einfügen
 - [ ] Abfragen, ob Gleisplan existiert, ansonsten Button ausblenden
