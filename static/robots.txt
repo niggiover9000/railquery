@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://railquery.de/sitemap.xml
