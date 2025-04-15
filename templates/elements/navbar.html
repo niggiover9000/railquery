@@ -1,43 +1,66 @@
 <nav class="navbar bg-light">
-  <div class="container">
-    <a class="navbar-brand" href="/">
-      <img src="{{url_for('static', filename='img/logo4.png')}}" alt="bahn-info.de" width="60" height="30">
-      railquery.de
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menü</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-start flex-grow-1 pe-3">
-          <li class="nav-item">
-            <a class="nav-link" href="/">
-                <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/arrow-right-circle.svg')}}" class="align-middle" alt="" title="RIL100">
-                RIL100
-            </a>
-          </li>
-            <li class="nav-item">
-            <a class="nav-link" href="/typen">
-                <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg')}}" class="align-middle" alt="" title="Typen von Betriebsstellen">
-                Typen von Betriebsstellen
-            </a>
-          </li>
-            </ul>
-          <hr>
-            <ul class="navbar-nav justify-content-start flex-grow-1 pe-3">
-            <li class="nav-item ">
-              <a class="nav-link" href="/impressum">
-                  <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/blockquote-left.svg')}}" class="align-middle" alt="" title="Home">
-                  Impressum
-              </a>
-            </li>
-          </ul>
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', filename='img/logo4.png') }}" alt="bahn-info.de" width="60" height="30">
+            railquery.de
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
+             aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menü</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-start flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/arrow-right-circle.svg') }}"
+                                 class="align-middle" alt="" title="RIL100">
+                            RIL100
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/typen">
+                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg') }}"
+                                 class="align-middle" alt="" title="Typen von Betriebsstellen">
+                            Typen von Betriebsstellen
+                        </a>
+                    </li>
+                    <hr>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/impressum">
+                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/blockquote-left.svg') }}"
+                                 class="align-middle" alt="" title="Home">
+                            Impressum
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="https://github.com/niggiover9000/railquery">
+                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/github.svg') }}"
+                                 class="align-middle" alt="" title="Github">
+                            Github
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="https://https://paypal.me/NicolasBartels">
+                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/paypal.svg') }}"
+                                 class="align-middle" alt="" title="Paypal">
+                            Spenden
+                        </a>
+                    </li>
+                    <hr>
+                    <li class="nav-item ">
+                        © <span id="year"></span> Nicolas Bartels
+                    </li>
+                    <script>
+                        document.getElementById("year").textContent = new Date().getFullYear();
+                    </script>
+                </ul>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </nav>
