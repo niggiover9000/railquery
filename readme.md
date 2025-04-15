@@ -26,5 +26,6 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 - [ ] Abfragen, ob Gleisplan existiert, ansonsten Button ausblenden
 - [ ] Captcha für Abfragen einfügen
 - [ ] ÖBB-Betriebsstellen hinzufügen
+- [ ] personal_data.py durch sauberere Lösung ersetzen
 
 Featurewünsche gerne per GitHub oder per [LinkedIn](https://www.linkedin.com/in/nicolas-bartels/) an mich!
