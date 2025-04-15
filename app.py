@@ -13,6 +13,8 @@ if not getenv('DATE'):
     load_dotenv(dotenv_path='.env')
 
 DATE = getenv('DATE')
+ANALYTICS_TAG = getenv('ANALYTICS_TAG')
+ADSENSE_CLIENT = getenv('ADSENSE_CLIENT')
 app = Flask(__name__)
 
 
@@ -25,7 +27,8 @@ def get_db_connection():
 @app.route('/')
 def index():
     """Start page"""
-    return render_template('index.html', date=DATE)
+    return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG,
+                           ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 
 @app.route('/search', methods=['GET'])
@@ -42,48 +45,80 @@ def search():
 
     search_terms = query.lower().split()
 
-    # Dynamische SQL-Abfrage erstellen
+    # SQL query with parameter weighting
     sql_query = """
-        SELECT * FROM betriebsstellen 
-        WHERE 
+        SELECT *,
+            CASE
     """
 
-    # Füge für jedes Wort eine Bedingung hinzu
+    # Conditions for weighting
+    for i, term in enumerate(search_terms):
+        sql_query += f"""
+            WHEN LOWER([RL100-Code]) = ? THEN 0
+            WHEN LOWER([RL100-Code]) LIKE ? THEN 1
+            WHEN LOWER([RL100-Langname]) LIKE ? THEN 2
+        """
+
+    sql_query += """
+            ELSE 3
+            END AS relevance
+        FROM betriebsstellen
+        WHERE
+    """
+
+    # WHERE-Klauseln
     conditions = []
     for term in search_terms:
-        conditions.append(f"(LOWER([RL100-Code]) LIKE ? OR LOWER([RL100-Langname]) LIKE ?)")
-
-    # Kombiniere alle Bedingungen mit AND
+        conditions.append("(LOWER([RL100-Code]) LIKE ? OR LOWER([RL100-Langname]) LIKE ?)")
     sql_query += " AND ".join(conditions)
 
-    # Sortierung und Limitierung hinzufügen
-    sql_query += " ORDER BY LENGTH([RL100-Code]) ASC LIMIT 20"
+    # Sort for relevance, then length of code
+    sql_query += """
+        ORDER BY relevance ASC,
+                 LENGTH(REPLACE([RL100-Code], ' ', '')) ASC,
+                 [RL100-Code] ASC
+        LIMIT 20
+    """
 
-    # Parameter für die Platzhalter vorbereiten
+    # Parameter zusammenbauen: zuerst für CASE-Bewertung
     params = []
     for term in search_terms:
-        params.extend([f'%{term}%', f'%{term}%'])
+        params.extend([
+            term,  # exact
+            f'{term}%',  # Code beginnt mit
+            f'%{term}%'  # Langname enthält
+        ])
+
+    # Dann für WHERE-Klauseln
+    for term in search_terms:
+        params.extend([
+            f'%{term}%',  # LIKE Code
+            f'%{term}%'  # LIKE Langname
+        ])
 
     # Abfrage ausführen
     cursor.execute(sql_query, params)
-
-    # Ergebnisse abrufen
     results = cursor.fetchall()
 
+    # Ergebnisse zurückgeben
     return jsonify([
-        {'plc': row['PLC-Gesamt'],
-         'code': row['RL100-Code'],
-         'name': row['RL100-Langname'],
-         'kurzname': row['RL100-Kurzname'],
-         'typ': row['Typ-Kurz'],
-         'betriebszustand': row['Betriebszustand'],
-         'Datum': row['Datum-Ab']}
-        for row in results])
+        {
+            'plc': row['PLC-Gesamt'],
+            'code': row['RL100-Code'],
+            'name': row['RL100-Langname'],
+            'kurzname': row['RL100-Kurzname'],
+            'typ': row['Typ-Kurz'],
+            'betriebszustand': row['Betriebszustand'],
+            'Datum': row['Datum-Ab']
+        }
+        for row in results
+    ])
 
 
 @app.route('/impressum', methods=['GET'])
 def impressum():
-    return render_template('impressum.html', name=name, street=street, address=address, mail=mail)
+    return render_template('impressum.html', name=name, street=street, address=address, mail=mail,
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -129,7 +164,8 @@ def get_date(date):
 
 @app.route('/typen')
 def types():
-    return render_template('typen.html', art=art)
+    return render_template('typen.html', art=art, ANALYTICS_TAG=ANALYTICS_TAG,
+                           ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 
 @app.route('/<code>', methods=['GET'])
@@ -144,7 +180,8 @@ def details(code):
                            art=art,
                            region=region,
                            sonderart=sonderart,
-                           date_db=DATE)
+                           date_db=DATE,
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 
 if __name__ == '__main__':
