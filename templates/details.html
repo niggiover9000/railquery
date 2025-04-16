@@ -4,152 +4,190 @@
 
 <div class="container mt-5">
     <h1 class="mb-4 d-inline">Betriebsstellen-Details</h1>
-        <span class="badge rounded-pill text-success bg-success-subtle d-inline align-top">Stand: {{ date_db }}</span>
+    <span class="badge rounded-pill text-success bg-success-subtle d-inline align-top">Stand: {{ date_db }}</span>
     <hr>
     <div class="row">
         <div class="col-md">
             <ul id="results" class="list-group">
-            {% if result %}
-            {% for row in result %}
-                <li class="list-group-item">
-                    <div class="d-flex">
-                        <div class="p-1 flex-grow-1">
-                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/check-square.svg') }}"
-                                 class="align-center me-3" alt="" title="Name">
-                            {% if row[2] != row[3] %}
-                                Langname: {{ row[2] }}
-                                </div>
-                                <div class="p-1">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                         class="align-center" alt="" title="Help">
-                                </div>
-                                </div>
-                                <div class="p-1 flex-grow-1 w-100">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/substack.svg') }}"
+                {% if result %}
+                    {% for row in result %}
+                        <li class="list-group-item">
+                            <div class="d-flex">
+                                <div class="p-1 flex-grow-1">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/check-square.svg') }}"
                                          class="align-center me-3" alt="" title="Name">
-                                    Kurzname: {{ row[3] }}
+                                    {% if row[2] != row[3] %}
+                                        Langname: {{ row[2] }}
+                                        </div>
+                                        <div class="p-1">
+                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
+                                                 class="align-center" alt="" title="Help">
+                                        </div>
+                                        </div>
+                                        <div class="p-1 flex-grow-1 w-100">
+                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/substack.svg') }}"
+                                                 class="align-center me-3" alt="" title="Name">
+                                            Kurzname: {{ row[3] }}
+                                        </div>
+                                    {% else %}
+                                        Name: {{ row[2] }}
+                                    {% endif %}
+                            <div class="p-1 flex-grow-1 w-100">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/slash-square.svg') }}"
+                                     class="align-center me-3" alt="" title="Abkürzung">
+                                Abkürzung: {{ row[1] }}
+                            </div>
+
+                        </li>
+
+
+                        {% if row[1][0] in region %}
+                            <li class="list-group-item d-flex">
+                                <div class="p-1 flex-grow-1 flex-grow-1">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
+                                         class="align-center me-3" alt="" title="Abkürzung">
+                                    Regionale Lage:
+                                    {{ region[row[1][0]] }} ({{ row[1][0] }})
+
                                 </div>
-                            {% else %}
-                                Name: {{ row[2] }}
-                            {% endif %}
-                    <div class="p-1 flex-grow-1 w-100">
-                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/slash-square.svg') }}"
-                             class="align-center me-3" alt="" title="Abkürzung">
-                        Abkürzung: {{ row[1] }}
-                    </div>
-
-                </li>
-
-
-                {% if row[1][0] in region %}
-                    <li class="list-group-item d-flex">
-                        <div class="p-1 flex-grow-1 flex-grow-1">
-                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
-                                 class="align-center me-3" alt="" title="Abkürzung">
-                            Regionale Lage:
-                            {{ region[row[1][0]] }} ({{ row[1][0] }})
-
-                        </div>
-                        <div class="p-1"><img
-                                src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                class="align-center" alt="" title="Help"></div>
-                    </li>
-                {% endif %}
-                {% if row[0] %}
-                    <li class="list-group-item d-flex">
-                        <div class="p-1 flex-grow-1">
-                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/upc-scan.svg') }}"
-                                 class="align-center me-3" alt="" title="Code">
-                            Code: {{ row[0] }}
-                        </div>
-                        <div class="p-1"><img
-                                src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                class="align-center" alt="" title="Help"></div>
-                    </li>
-                {% endif %}
-                <li class="list-group-item d-flex">
-                    <div class="p-1 flex-grow-1">
-                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg') }}"
-                             class="align-center me-3" alt="" title="Typ">
-                        {% if row[4].startswith("NE") == True %}
-                            Typ: {{ sonderart["NE-"] }}{{ art[row[4]] }} ({{ row[4] }})
-                        {% elif row[4].startswith("vp-") == True %}
-                            Typ: {{ sonderart["vp-"] }} {{ art[row[4] | replace("vp-", "")] }} ({{ row[4] }})
-                        {% elif row[4] in art %}
-                            Typ: {{ art[row[4]] }} ({{ row[4] }})
-                        {% else %}
-                            Typ: {{ row[4] }}
+                                <div class="p-1"><img
+                                        src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
+                                        class="align-center" alt="" title="Help"></div>
+                            </li>
                         {% endif %}
-                    </div>
-                    <div class="p-1">
-                        <a href="typen">
-                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                 class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                                 data-bs-custom-class="custom-tooltip" alt=""
-                                 data-bs-title="Es sind verschiedene Typen definiert.
+                        {% if row[0] %}
+                            <li class="list-group-item d-flex">
+                                <div class="p-1 flex-grow-1">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/upc-scan.svg') }}"
+                                         class="align-center me-3" alt="" title="Code">
+                                    Code: {{ row[0] }}
+                                </div>
+                                <div class="p-1"><img
+                                        src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
+                                        class="align-center" alt="" title="Help"></div>
+                            </li>
+                        {% endif %}
+                        <li class="list-group-item d-flex">
+                            <div class="p-1 flex-grow-1">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg') }}"
+                                     class="align-center me-3" alt="" title="Typ">
+                                {% if row[4].startswith("NE") == True %}
+                                    Typ: {{ sonderart["NE-"] }}{{ art[row[4]] }} ({{ row[4] }})
+                                {% elif row[4].startswith("vp-") == True %}
+                                    Typ: {{ sonderart["vp-"] }} {{ art[row[4] | replace("vp-", "")] }} ({{ row[4] }})
+                                {% elif row[4] in art %}
+                                    Typ: {{ art[row[4]] }} ({{ row[4] }})
+                                {% else %}
+                                    Typ: {{ row[4] }}
+                                {% endif %}
+                            </div>
+                            <div class="p-1">
+                                <a href="typen">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
+                                         class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                                         data-bs-custom-class="custom-tooltip" alt=""
+                                         data-bs-title="Es sind verschiedene Typen definiert.
                  FÜr eine vollständige Liste klicken.">
-                        </a>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="d-flex">
-                        <div class="p-1 flex-grow-1">
-                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/activity.svg') }}"
-                                 class="align-center me-3" alt="" title="Betriebszustand">
-                            Betriebszustand: {{ row[5] }}
+                                </a>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex">
+                                <div class="p-1 flex-grow-1">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/activity.svg') }}"
+                                         class="align-center me-3" alt="" title="Betriebszustand">
+                                    Betriebszustand: {{ row[5] }}
+                                </div>
+                                <div class="p-1"><img
+                                        src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
+                                        class="align-center" alt="" title="Help"></div>
+                            </div>
+                            <div class="p-1 w-100 flex-grow-1">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/calendar-event.svg') }}"
+                                     class="align-center me-3" alt="" title="Betriebszustand seit...">
+                                seit: {{ date[0] }}.{{ date[1] }}.{{ date[2] }}
+                            </div>
+
+                        </li>
+                        </ul>
+
+                        <div class="card list-group mt-3" id="infoContainer-1">
+                            <h5 class="card-header"> Weitere Informationen</h5>
+                            <div class="card-body">
+                                <button class="btn btn-primary" role="button" id="loadDataBtn-1"
+                                        onclick="openTab('https://trassenfinder.de/apn/{{ row[1] }}')" disabled>
+                                    Gleisplan
+                                    herunterladen
+                                </button>
+                                <script>
+                                    async function checkGleisplan(apn) {
+                                        // Nutze window.location.origin, um die aktuelle Domain zu erhalten
+                                        const backendUrl = `${window.location.origin}/api/check-gleisplan/${apn}`;
+                                        try {
+                                            const response = await fetch(backendUrl);
+                                            const data = await response.json();
+                                            return data.exists;
+                                        } catch (error) {
+                                            console.error("Fehler beim API-Call:", error);
+                                            return false;
+                                        }
+                                    }
+
+                                    async function initButton() {
+                                        const apn = '{{ row[1] }}'; // APN aus deinem Template
+                                        const button = document.getElementById('loadDataBtn-1');
+
+                                        const gleisplanExists = await checkGleisplan(apn);
+
+                                        if (gleisplanExists) {
+                                            button.disabled = false; // Button aktivieren (normales Aussehen)
+                                        } else {
+                                            button.disabled = true;  // Button deaktivieren (ausgegraut)
+                                            // Optional: Tooltip hinzufügen, warum der Button disabled ist
+                                            button.title = "Kein Gleisplan verfügbar";
+                                        }
+                                    }
+
+                                    document.addEventListener('DOMContentLoaded', initButton);
+                                </script>
+                                <button class="btn btn-primary" role="button" id="loadDataBtn-2"
+                                        onclick="openTab('https://iris.noncd.db.de/wbt/js/index.html?bhf={{ row[1] }}')">
+                                    Live-Abfahrtszeiten
+                                </button>
+
+                            </div>
                         </div>
-                        <div class="p-1"><img
-                                src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                class="align-center" alt="" title="Help"></div>
-                    </div>
-                    <div class="p-1 w-100 flex-grow-1">
-                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/calendar-event.svg') }}"
-                             class="align-center me-3" alt="" title="Betriebszustand seit...">
-                        seit: {{ date[0] }}.{{ date[1] }}.{{ date[2] }}
-                    </div>
+                        </div>
 
-                </li>
-            </ul>
+                        <div class="col-md">
+                        <div id="infoContainer" class="card list-group">
+                            <h5 class="card-header">
+                                Weitere Details
+                            </h5>
+                            <div class="card-body">
+                                <h6 class="card-title">Hinweis</h6>
+                                <p class="card-text">Die Informationen werden von der <a
+                                        href="https://developers.deutschebahn.com/db-api-marketplace/apis/product/stada">DB
+                                    Station Data
+                                    API</a> abgerufen. Diese Daten werden unter der <a
+                                        href="https://creativecommons.org/licenses/by/4.0/">CC
+                                    BY 4.0</a>-Lizenz zur Verfügung gestellt. </p>
+                                <a id="loadDataBtn" class="btn btn-primary">Weitere Daten laden</a>
+                            </div>
+                        </div>
 
-            <div class="card list-group mt-3" id="infoContainer-1">
-                <h5 class="card-header"> Weitere Informationen</h5>
-                <div class="card-body">
-                    <a class="btn btn-primary" role="button" id="loadDataBtn-1"
-                       href="https://trassenfinder.de/apn/{{ row[1] }}">Gleisplan
-                        herunterladen</a>
+                        <div id="resultContainer" class="card list-group">
+                            <!-- Hier erscheinen die Ergebnisse -->
+                        </div>
+
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item bg-danger-subtle">Die von dir gesuchte Betriebsstelle existiert nicht.
+                    </li>
+                    </ul>
+                {% endif %}
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md">
-            <div id="infoContainer" class="card list-group">
-                    <h5 class="card-header">
-                        Weitere Details
-                    </h5>
-                    <div class="card-body">
-                        <h6 class="card-title">Hinweis</h6>
-                        <p class="card-text">Die Informationen werden von der <a
-                                href="https://developers.deutschebahn.com/db-api-marketplace/apis/product/stada">DB
-                            Station Data
-                            API</a> abgerufen. Diese Daten werden unter der <a
-                                href="https://creativecommons.org/licenses/by/4.0/">CC
-                            BY 4.0</a>-Lizenz zur Verfügung gestellt. </p>
-                        <a id="loadDataBtn" class="btn btn-primary">Weitere Daten laden</a>
-                    </div>
-                </div>
-
-                <div id="resultContainer" class="card list-group">
-                    <!-- Hier erscheinen die Ergebnisse -->
-                </div>
-
-        {% endfor %}
-        {% else %}
-            <li class="list-group-item bg-danger-subtle">Die von dir gesuchte Betriebsstelle existiert nicht.
-            </li>
-            </ul>
-        {% endif %}
-            </div>
-        </div>
+    </div>
 
     <hr>
     <a class="btn btn-outline-danger text-black" href="/" role="button">

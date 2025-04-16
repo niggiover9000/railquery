@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
+from requests import head
 import sqlite3
 from urllib.parse import unquote
 from variables import art, sonderart, region
@@ -33,6 +34,15 @@ def index():
     return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
+
+@app.route('/api/check-gleisplan/<apn>')
+def check_gleisplan(apn):
+    try:
+        response = head(f"https://trassenfinder.de/apn/{apn}")
+        return jsonify({"exists": response.status_code == 200})
+    except Exception as e:
+        print("Fehler:", e)
+        return jsonify({"exists": False})
 
 @app.route('/search', methods=['GET'])
 def search():
