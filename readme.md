@@ -17,7 +17,7 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 
 ## To Do
 - [ ] https://stellwerke.info anbinden
-- [ ] https://iris.noncd.db.de anbinden
+- [x] https://iris.noncd.db.de anbinden
 - [ ] Definitionen zu Betriebsstellen hinzufügen (z.B. "Abzweistellen sind Blockstellen der freien Strecke, wo Züge von einer Strecke auf eine andere Strecke übergehen können.")
 - [ ] Karte in Website einbinden
 - [ ] Werbung einbetten
@@ -26,6 +26,7 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 - [ ] Abfragen, ob Gleisplan existiert, ansonsten Button ausblenden
 - [ ] Captcha für Abfragen einfügen
 - [ ] ÖBB-Betriebsstellen hinzufügen
+- [ ] Tiptools zu den Fragezeichen hinzufügen
 - [ ] personal_data.py durch sauberere Lösung ersetzen
 
 Featurewünsche gerne per GitHub oder per [LinkedIn](https://www.linkedin.com/in/nicolas-bartels/) an mich!
