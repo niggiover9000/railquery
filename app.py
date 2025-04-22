@@ -202,6 +202,10 @@ def details(code):
 def robots():
     return send_from_directory(app.static_folder, "robots.txt")
 
+@app.route("/ads.txt")
+def ads():
+    return send_from_directory(app.static_folder, "ads.txt")
+
 
 if __name__ == '__main__':
     debug_mode = eval(getenv('DEBUG', False))
