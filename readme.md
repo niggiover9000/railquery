@@ -17,7 +17,7 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 
 ## To Do
 - [ ] https://stellwerke.info anbinden
-- [x] https://iris.noncd.db.de anbinden
+- [ ] Link zur [Abfahrtstafel](https://iris.noncd.db.de) ausblenden wenn nicht verfügbar
 - [ ] Definitionen zu Betriebsstellen hinzufügen (z.B. "Abzweigstellen sind Blockstellen der freien Strecke, wo Züge von einer Strecke auf eine andere Strecke übergehen können.")
 - [ ] Karte in Website einbinden
 - [ ] Werbung einbetten
