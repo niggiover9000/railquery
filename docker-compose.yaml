@@ -7,4 +7,5 @@ services:
       - "5000:5000"
     volumes:
       - .env:/app/.env
-      - personal_data.py:/app/personal_data.py
+      - ./personal_data.py:/app/personal_data.py
+      - ./ads.txt:/app/static/ads.txt
