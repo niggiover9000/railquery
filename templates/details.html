@@ -15,18 +15,18 @@
                             <div class="d-flex">
                                 <div class="p-1 flex-grow-1">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/check-square.svg') }}"
-                                         class="align-center me-3" alt="" title="Name">
+                                         class="align-center me-3" alt="Abgehaktes Kästchen" title="Name">
                                     {% if row[2] != row[3] %}
                                         Langname: {{ row[2] }}
                                         </div>
                                         <div class="p-1">
                                             <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                                 class="align-center" alt="" title="Help">
+                                                 class="align-center" alt="Fragezeichen" title="Help">
                                         </div>
                                         </div>
                                         <div class="p-1 flex-grow-1 w-100">
                                             <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/substack.svg') }}"
-                                                 class="align-center me-3" alt="" title="Name">
+                                                 class="align-center me-3" alt="Symbol für Kurzname" title="Name">
                                             Kurzname: {{ row[3] }}
                                         </div>
                                     {% else %}
@@ -34,7 +34,7 @@
                                     {% endif %}
                             <div class="p-1 flex-grow-1 w-100">
                                 <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/slash-square.svg') }}"
-                                     class="align-center me-3" alt="" title="Abkürzung">
+                                     class="align-center me-3" alt="Halb abgehaktes Kästchen" title="Abkürzung">
                                 Abkürzung: {{ row[1] }}
                             </div>
 
@@ -45,32 +45,32 @@
                             <li class="list-group-item d-flex">
                                 <div class="p-1 flex-grow-1 flex-grow-1">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
-                                         class="align-center me-3" alt="" title="Abkürzung">
+                                         class="align-center me-3" alt="Karte" title="Regionale Lage">
                                     Regionale Lage:
                                     {{ region[row[1][0]] }} ({{ row[1][0] }})
 
                                 </div>
                                 <div class="p-1"><img
                                         src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                        class="align-center" alt="" title="Help"></div>
+                                        class="align-center" alt="Fragezeichen" title="Help"></div>
                             </li>
                         {% endif %}
                         {% if row[0] %}
                             <li class="list-group-item d-flex">
                                 <div class="p-1 flex-grow-1">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/upc-scan.svg') }}"
-                                         class="align-center me-3" alt="" title="Code">
+                                         class="align-center me-3" alt="Barcode" title="Code">
                                     Code: {{ row[0] }}
                                 </div>
                                 <div class="p-1"><img
                                         src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                        class="align-center" alt="" title="Help"></div>
+                                        class="align-center" alt="Fragezeichen" title="Help"></div>
                             </li>
                         {% endif %}
                         <li class="list-group-item d-flex">
                             <div class="p-1 flex-grow-1">
                                 <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg') }}"
-                                     class="align-center me-3" alt="" title="Typ">
+                                     class="align-center me-3" alt="Sprechblase mit Zitat" title="Typ">
                                 {% if row[4].startswith("NE") == True %}
                                     Typ: {{ sonderart["NE-"] }}{{ art[row[4]] }} ({{ row[4] }})
                                 {% elif row[4].startswith("vp-") == True %}
@@ -85,9 +85,9 @@
                                 <a href="typen">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
                                          class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                                         data-bs-custom-class="custom-tooltip" alt=""
+                                         data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
                                          data-bs-title="Es sind verschiedene Typen definiert.
-                 FÜr eine vollständige Liste klicken.">
+                 Für eine vollständige Liste klicken.">
                                 </a>
                             </div>
                         </li>
@@ -95,16 +95,16 @@
                             <div class="d-flex">
                                 <div class="p-1 flex-grow-1">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/activity.svg') }}"
-                                         class="align-center me-3" alt="" title="Betriebszustand">
+                                         class="align-center me-3" alt="Herzschlag" title="Betriebszustand">
                                     Betriebszustand: {{ row[5] }}
                                 </div>
                                 <div class="p-1"><img
                                         src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                        class="align-center" alt="" title="Help"></div>
+                                        class="align-center" alt="Fragezeichen" title="Help"></div>
                             </div>
                             <div class="p-1 w-100 flex-grow-1">
                                 <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/calendar-event.svg') }}"
-                                     class="align-center me-3" alt="" title="Betriebszustand seit...">
+                                     class="align-center me-3" alt="Kalender" title="Betriebszustand seit...">
                                 seit: {{ date[0] }}.{{ date[1] }}.{{ date[2] }}
                             </div>
 
@@ -192,7 +192,7 @@
     <hr>
     <a class="btn btn-outline-danger text-black" href="/" role="button">
         <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/box-arrow-in-left.svg') }}"
-             class="align-center" alt="" title="Home">
+             class="align-center" alt="Pfeil nach Links" title="Home">
         Zurück
     </a>
 </div>
