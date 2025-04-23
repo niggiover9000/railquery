@@ -3,7 +3,7 @@ from os import getenv
 from urllib.parse import unquote
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, abort
 from flask_sitemap import Sitemap
 from flask_caching import Cache
 from requests import head
@@ -27,6 +27,7 @@ cache = Cache(app)
 
 ext = Sitemap(app=app)
 
+
 def get_db_connection():
     connection = sqlite3.connect('betriebsstellen.db')
     connection.row_factory = sqlite3.Row
@@ -49,6 +50,7 @@ def check_gleisplan(apn):
     except Exception as e:
         print("Fehler:", e)
         return jsonify({"exists": False})
+
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -138,7 +140,9 @@ def search():
 @cache.cached(timeout=1440)
 def impressum():
     return render_template('impressum.html', name=name, street=street, address=address, mail=mail,
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -193,6 +197,8 @@ def types():
 def details(code):
     code = unquote(code)
     result = get_db_data(code)
+    if not result:
+        abort(404)
     date = get_date(result[0][6]) if result else None
     return render_template('details.html',
                            code=code,
@@ -211,10 +217,17 @@ def details(code):
 def robots():
     return send_from_directory(app.static_folder, "robots.txt")
 
+
 @app.route("/ads.txt")
 @cache.cached(timeout=300)
 def ads():
     return send_from_directory(app.static_folder, "ads.txt")
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html", date=DATE, error=e, ANALYTICS_TAG=ANALYTICS_TAG,
+                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID), 404
 
 
 if __name__ == '__main__':

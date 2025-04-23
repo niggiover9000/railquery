@@ -1,0 +1,17 @@
+{% include "elements/header.html" %}
+<body>
+{% include "elements/navbar.html" %}
+<div class="container mt-5">
+    <h1 class="mb-4 d-inline">Betriebsstellen-Suche</h1><span
+        class="badge rounded-pill text-success bg-success-subtle d-inline align-top">Stand: {{ date }}</span>
+    <hr>
+    <div class="alert alert-danger" role="alert">
+        <b>Diese Seite wurde nicht gefunden.</b> Vielleicht wurde die Betriebsstelle falsch geschrieben?
+        <hr>
+        {{ error }}
+    </div>
+    {% include "elements/footer.html" %}
+</div>
+</body>
+{% include "elements/scripts.html" %}
+</html>
