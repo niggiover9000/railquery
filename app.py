@@ -42,14 +42,32 @@ def index():
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
-@app.route('/api/check-gleisplan/<apn>')
-def check_gleisplan(apn):
+@app.route('/api/check-gleisplan/<code>')
+def check_gleisplan(code):
     try:
-        response = head(f"https://trassenfinder.de/apn/{apn}")
+        response = head(f"https://trassenfinder.de/apn/{code}")
         return jsonify({"exists": response.status_code == 200})
     except Exception as e:
         print("Fehler:", e)
         return jsonify({"exists": False})
+
+
+@app.route('/api/check-stellwerk/<code>')
+def check_stellwerk(code):
+    code = unquote(code)
+    try:
+        response = head(f"https://stellwerke.info/stw/?ds100={code}", timeout=5)
+        return jsonify({"exists": response.status_code == 200})
+    except Exception as e:
+        print("Fehler:", e)
+        return jsonify({"exists": False})
+
+
+@app.route('/api/check-iris/<code>')
+def check_iris(code):
+    """This function always returns 200, because I have not yet thought of a way to determine that the site exists or not.
+    On the page, the content is loaded via Javascript, so it is very difficult to perform a backend check."""
+    return jsonify({"exists": 200})
 
 
 @app.route('/search', methods=['GET'])
