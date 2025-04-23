@@ -1,14 +1,17 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
-from requests import head
 import sqlite3
-from urllib.parse import unquote
-from variables import art, sonderart, region
-from api import get_api_data
 from os import getenv
+from urllib.parse import unquote
+
 from dotenv import load_dotenv
-from waitress import serve
-from personal_data import name, street, address, mail
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_sitemap import Sitemap
+from flask_caching import Cache
+from requests import head
+from waitress import serve
+
+from api import get_api_data
+from personal_data import name, street, address, mail
+from variables import art, sonderart, region
 
 load_dotenv(dotenv_path='.env')
 
