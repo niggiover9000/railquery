@@ -22,6 +22,8 @@ CONSENTMANAGER_ID = getenv('CONSENTMANAGER_ID')
 app = Flask(__name__)
 app.config["SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS"] = True
 app.config["SITEMAP_URL_SCHEME"] = "https"
+app.config['CACHE_TYPE'] = 'SimpleCache'
+cache = Cache(app)
 
 ext = Sitemap(app=app)
 
@@ -32,6 +34,7 @@ def get_db_connection():
 
 
 @app.route('/')
+@cache.cached(timeout=300)
 def index():
     """Start page"""
     return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG,
@@ -132,6 +135,7 @@ def search():
 
 
 @app.route('/impressum', methods=['GET'])
+@cache.cached(timeout=1440)
 def impressum():
     return render_template('impressum.html', name=name, street=street, address=address, mail=mail,
                            ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
@@ -179,6 +183,7 @@ def get_date(date):
 
 
 @app.route('/typen')
+@cache.cached(timeout=1440)
 def types():
     return render_template('typen.html', art=art, ANALYTICS_TAG=ANALYTICS_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
@@ -202,10 +207,12 @@ def details(code):
 
 
 @app.route("/robots.txt")
+@cache.cached(timeout=300)
 def robots():
     return send_from_directory(app.static_folder, "robots.txt")
 
 @app.route("/ads.txt")
+@cache.cached(timeout=300)
 def ads():
     return send_from_directory(app.static_folder, "ads.txt")
 
