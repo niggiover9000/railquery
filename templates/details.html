@@ -114,46 +114,94 @@
                         <div class="card list-group mt-3" id="infoContainer-1">
                             <h5 class="card-header"> Weitere Informationen</h5>
                             <div class="card-body">
+                                <!-- Gleisplan-Button -->
                                 <button class="btn btn-primary" role="button" id="loadDataBtn-1"
                                         onclick="openTab('https://trassenfinder.de/apn/{{ row[1] }}')" disabled>
-                                    Gleisplan
-                                    herunterladen
+                                    Gleisplan herunterladen
                                 </button>
+
+                                <button class="btn btn-primary" role="button" id="loadDataBtn-3"
+                                        onclick="openTab('https://stellwerke.info/stw/?ds100={{ row[1] }}')" disabled>
+                                    Stellwerks-Infos
+                                </button>
+
+                                <button class="btn btn-primary" role="button" id="loadDataBtn-2"
+                                        onclick="openTab('https://iris.noncd.db.de/wbt/js/index.html?bhf={{ row[1] }}')">
+                                    Live-Abfahrtszeiten
+                                </button>
+
                                 <script>
+                                    function openTab(url) {
+                                        window.open(url, '_blank');
+                                    }
+
                                     async function checkGleisplan(apn) {
-                                        // Nutze window.location.origin, um die aktuelle Domain zu erhalten
                                         const backendUrl = `${window.location.origin}/api/check-gleisplan/${apn}`;
                                         try {
                                             const response = await fetch(backendUrl);
                                             const data = await response.json();
                                             return data.exists;
                                         } catch (error) {
-                                            console.error("Fehler beim API-Call:", error);
+                                            console.error("Fehler beim API-Call (Gleisplan):", error);
                                             return false;
                                         }
                                     }
 
-                                    async function initButton() {
-                                        const apn = '{{ row[1] }}'; // APN aus deinem Template
-                                        const button = document.getElementById('loadDataBtn-1');
-
-                                        const gleisplanExists = await checkGleisplan(apn);
-
-                                        if (gleisplanExists) {
-                                            button.disabled = false; // Button aktivieren (normales Aussehen)
-                                        } else {
-                                            button.disabled = true;  // Button deaktivieren (ausgegraut)
-                                            // Optional: Tooltip hinzufügen, warum der Button disabled ist
-                                            button.title = "Kein Gleisplan verfügbar";
+                                    async function checkStellwerk(ds100) {
+                                        const backendUrl = `${window.location.origin}/api/check-stellwerk/${ds100}`;
+                                        try {
+                                            const response = await fetch(backendUrl);
+                                            const data = await response.json();
+                                            return data.exists;
+                                        } catch (error) {
+                                            console.error("Fehler beim API-Call (Stellwerk):", error);
+                                            return false;
                                         }
                                     }
 
-                                    document.addEventListener('DOMContentLoaded', initButton);
+                                    async function checkIris(bhf) {
+                                        const backendUrl = `${window.location.origin}/api/check-iris/${bhf}`;
+                                        try {
+                                            const response = await fetch(backendUrl);
+                                            const data = await response.json();
+                                            return data.exists;
+                                        } catch (error) {
+                                            console.error("Fehler beim API-Call (IRIS):", error);
+                                            return false;
+                                        }
+                                    }
+
+                                    async function initButtons() {
+                                        const code = '{{ row[1] }}';
+
+                                        const btnGleisplan = document.getElementById('loadDataBtn-1');
+                                        const btnIris = document.getElementById('loadDataBtn-2');
+                                        const btnStellwerk = document.getElementById('loadDataBtn-3');
+
+                                        if (await checkGleisplan(code)) {
+                                            btnGleisplan.disabled = false;
+                                        } else {
+                                            btnGleisplan.disabled = true;
+                                            btnGleisplan.title = "Kein Gleisplan verfügbar";
+                                        }
+
+                                        if (await checkIris(code)) {
+                                            btnIris.disabled = false;
+                                        } else {
+                                            btnIris.disabled = true;
+                                            btnIris.title = "Keine Live-Daten verfügbar";
+                                        }
+
+                                        if (await checkStellwerk(code)) {
+                                            btnStellwerk.disabled = false;
+                                        } else {
+                                            btnStellwerk.disabled = true;
+                                            btnStellwerk.title = "Keine Stellwerks-Infos verfügbar";
+                                        }
+                                    }
+
+                                    document.addEventListener('DOMContentLoaded', initButtons);
                                 </script>
-                                <button class="btn btn-primary" role="button" id="loadDataBtn-2"
-                                        onclick="openTab('https://iris.noncd.db.de/wbt/js/index.html?bhf={{ row[1] }}')">
-                                    Live-Abfahrtszeiten
-                                </button>
 
                             </div>
                         </div>
