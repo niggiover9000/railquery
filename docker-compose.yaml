@@ -1,7 +1,7 @@
 services:
-  bahninfo:
+  railquery:
     image: niggiover9000/bahninfo:latest
-    container_name: bahninfo
+    container_name: railquery
     restart: unless-stopped
     ports:
       - "5000:5000"
