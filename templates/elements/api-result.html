@@ -1,163 +1,117 @@
 <h5 class="card-header">
-        Weitere Details
+    Weitere Details
 </h5>
-<ul class="list-group">
-
-    <!--
-    TODO: What are public facilities?
-    -->
+<ul class="list-group featureList" id="list-group">
 
     <li class="list-group-item d-flex">
         <div class="card-body">
-            <a class="btn btn-primary" role="button" id="loadDataBtn-2"
-               href="https://www.bahnhof.de/downloads/station-plans/${result.number}.pdf">Lageplan herunterladen</a>
-        </div>
-        <div class="card-body">
-            <a class="btn btn-primary" role="button" id="loadDataBtn-3"
-               href="https://www.bahnhof.de/downloads/replacement-service-maps/${result.number}.pdf">Umgebungsplan
-                herunterladen</a>
-        </div>
-         <div class="card-body">
-            <a class="btn btn-primary" role="button" id="loadDataBtn-4"
-               href="https://www.openrailwaymap.org/?style=standard&lat=${result.ril100Identifiers[0].geographicCoordinates.coordinates[1]}&lon=${result.ril100Identifiers[0].geographicCoordinates.coordinates[0]}&zoom=16">Auf Karte anzeigen</a>
-        </div>
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg')}}" class="align-center me-3" alt=">Pin-Nadel"
-             title="Adresse">
-        ${result.mailingAddress.street}<br>
-        ${result.mailingAddress.zipcode}, ${result.mailingAddress.city}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg')}}" class="align-center me-3" alt="Kartensymbol"
-             title="Regionalbereich">
-        Regionalbereich:<br>
-        ${result.regionalbereich.name} (${result.regionalbereich.number})
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/bookmark-check.svg')}}"
-             class="align-center me-3" alt="Lesezeichen" title="Bahnhofsart">
-        Bahnhofsart: ${result.productLine.segment}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/tag.svg')}}" class="align-center me-3" alt="Preisschild"
-             title="Bahnhofskategorie">
-        Bahnhofskategorie: ${result.category}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/cash-coin.svg')}}" class="align-center me-3"
-             alt="Geld" title="Preiskategorie">
-        Preiskategorie: ${result.priceCategory}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/bus-front.svg')}}" class="align-center me-3"
-             alt="Bus" title="ÖPNV">
-        ÖPNV: ${result.hasLocalPublicTransport}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/icons-8-custom/stairs.svg')}}" class="align-center me-3" alt="Stufen"
-             title="Barrierefreier Zugang">
-        Barrierefreier Zugang:
-        ${result.hasSteplessAccess }
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/p-square.svg')}}" class="align-center me-3"
-             alt="Parkplatzsymbol" title="Parkplätze">
-        Parkplätze: ${result.hasParking}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/bicycle.svg')}}" class="align-center me-3"
-             alt="Fahrrad" title="Fahrradstellplätze">
-        Fahrradstellplätze: ${result.hasBicycleParking}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/taxi-front.svg')}}" class="align-center me-3"
-             alt="Taxi" title="Taxistand">
-        Taxistand: ${result.hasTaxiRank}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/wifi.svg')}}" class="align-center me-3"
-             alt="Wifi" title="WLAN">
-        WLAN: ${result.hasWiFi}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/key.svg')}}" class="align-center me-3" alt="Schlüssel"
-             title="Schließfächer">
-        Schließfächer: ${result.hasLockerSystem}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/icons-8-custom/public.svg')}}" class="align-center me-3" alt="Öffentlich"
-             title="Öffentliche Einrichtungen">
-        Öffentliche Einrichtungen: ${result.hasPublicFacilities}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/info-square.svg')}}"
-             class="align-center me-3" alt="Info" title="Reisezentrum">
-        Reisezentrum: ${result.hasTravelCenter}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/cup-hot.svg')}}" class="align-center me-3"
-             alt="Kaffeetasse" title="DB Lounge">
-        DB Lounge: ${result.hasDBLounge}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/icons-8-custom/lost-and-found.svg')}}" class="align-center me-3"
-             alt="Regenschirm mit Fragezeichen" title="Fundbüro">
-        Fundbüro: ${result.hasLostAndFound}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/person-wheelchair.svg')}}"
-             class="align-center me-3" alt="Rollstuhlfahrer" title="Mobilitätszentrale">
-        Mobilitätszentrale: ${result.hasMobilityService}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/icons-8-custom/management.svg')}}" class="align-center me-3" alt="Köpfe"
-             title="Bahnhofsmanagement">
-        Bahnhofsmanagement: ${result.stationManagement.name} (${result.stationManagement.number})
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/exclamation-triangle.svg')}}"
-             class="align-center me-3" alt="Ausrufezeichen" title="3-S-Zentrale">
-        3-S-Zentrale: ${result.szentrale.name} (${result.szentrale.number})<br>
-        Telefonnummer: ${result.szentrale.publicPhoneNumber}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/envelope-at.svg')}}"
-             class="align-center me-3" alt="E-Mail-Symbol" title="Fahrplanzentrale">
-        Fahrplanzentrale: ${result.timeTableOffice.email}<br>
-        Sitz: ${result.timeTableOffice.name}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/car-front.svg')}}" class="align-center me-3"
-             alt="Auto" title="Autovermietung">
-        Autovermietung: ${result.hasCarRental}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/icons-8-custom/volunteering.svg')}}" class="align-center me-3"
-             alt="Hand mit Herz" title="Bahnhofsmission">
-        Bahnhofsmission: ${result.hasRailwayMission}
-    </li>
-    <li class="list-group-item d-flex">
-        <img src="{{url_for('static', filename='img/bootstrap-icons-1.11.3/basket.svg')}}" class="align-center me-3"
-             alt="Einkaufskorb" title="Einkaufsmöglichkeiten">
-        Einkaufsmöglichkeiten: ${result.hasTravelNecessities}
-    </li>
-    <li class="list-group-item">
-        <div class="accordion" id="accordionExample">
-            <div class="accordion-item border-0">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                        Komplette API-Antwort ansehen
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                     data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        <pre>${JSON.stringify(result, null, 2)}</pre>
+            <button class="btn btn-primary" role="button" id="loadDataBtn-1"
+                    onclick="openTab('https://www.bahnhof.de/downloads/station-plans/${result.number}.pdf')">
+                Lageplan herunterladen
+            </button>
+            <button class="btn btn-primary" role="button" id="loadDataBtn-1"
+                    onclick="openTab('https://www.bahnhof.de/downloads/replacement-service-maps/${result.number}.pdf')">
+                Umgebungsplan herunterladen
+            </button>
+            <button class="btn btn-primary" role="button" id="loadDataBtn-1"
+                    onclick="openTab('https://www.openrailwaymap.org/?style=standard&lat=${result.ril100Identifiers[0].geographicCoordinates.coordinates[1]}&lon=${result.ril100Identifiers[0].geographicCoordinates.coordinates[0]}&zoom=16')">
+                Karte
+            </button>
+
+
+            <li class="list-group-item d-flex">
+                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg') }}"
+                     class="align-center me-3"
+                     alt=">Pin-Nadel"
+                     title="Adresse">
+                ${result.mailingAddress.street}<br>
+                ${result.mailingAddress.zipcode} ${result.mailingAddress.city}
+            </li>
+
+            <!---<li class="list-group-item d-flex">
+                <div id="map" style="width: 100%; height: 400px;"></div>--->
+
+
+            <li class="list-group-item d-flex">
+                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
+                     class="align-center me-3"
+                     alt="Kartensymbol"
+                     title="Regionalbereich">
+                Regionalbereich:<br>
+                ${result.regionalbereich.name} (${result.regionalbereich.number})
+
+            </li>
+            <li class="list-group-item d-flex">
+                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/bookmark-check.svg') }}"
+                     class="align-center me-3" alt="Lesezeichen" title="Bahnhofsart">
+                Bahnhofsart: ${result.productLine.segment}
+            </li>
+            <li class="list-group-item d-flex">
+                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/tag.svg') }}"
+                     class="align-center me-3"
+                     alt="Preisschild"
+                     title="Bahnhofskategorie">
+                Bahnhofskategorie: ${result.category}
+            </li>
+            <li class="list-group-item d-flex">
+                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/cash-coin.svg') }}"
+                     class="align-center me-3"
+                     alt="Geld" title="Preiskategorie">
+                Preiskategorie: ${result.priceCategory}
+            </li>
+            <li class="list-group-item d-flex">
+                <img src="{{ url_for('static', filename='img/icons-8-custom/management.svg') }}"
+                     class="align-center me-3"
+                     alt="Köpfe"
+                     title="Bahnhofsmanagement">
+                Bahnhofsmanagement: ${result.stationManagement.name} (${result.stationManagement.number})
+            </li>
+            <li class="list-group-item d-flex">
+                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/exclamation-triangle.svg') }}"
+                     class="align-center me-3" alt="Ausrufezeichen" title="3-S-Zentrale">
+                3-S-Zentrale: ${result.szentrale.name} (${result.szentrale.number})<br>
+                Telefonnummer: ${result.szentrale.publicPhoneNumber}
+            </li>
+            <li class="list-group-item d-flex">
+                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/envelope-at.svg') }}"
+                     class="align-center me-3" alt="E-Mail-Symbol" title="Fahrplanzentrale">
+                Fahrplanzentrale: ${result.timeTableOffice.email}<br>
+                Sitz: ${result.timeTableOffice.name}
+            </li>
+            <div id="feature-hasLocalPublicTransport"></div>
+            <div id="feature-hasSteplessAccess"></div>
+            <div id="feature-hasParking"></div>
+            <div id="feature-hasBicycleParking"></div>
+            <div id="feature-hasTaxiRank"></div>
+            <div id="feature-hasCarRental"></div>
+            <div id="feature-hasWiFi"></div>
+            <div id="feature-hasLockerSystem"></div>
+            <div id="feature-hasLocalPublicTransport"></div>
+            <div id="feature-hasPublicFacilities"></div>
+            <div id="feature-hasTravelCenter"></div>
+            <div id="feature-hasDBLounge"></div>
+            <div id="feature-hasLostAndFound"></div>
+            <div id="feature-hasMobilityService"></div>
+            <div id="feature-hasRailwayMission"></div>
+            <div id="feature-hasTravelNecessities"></div>
+            <li class="list-group-item">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item border-0">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Komplette API-Antwort ansehen
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                             data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <pre>${JSON.stringify(result, null, 2)}</pre>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </li>
         </div>
     </li>
 </ul>
