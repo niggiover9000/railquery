@@ -1,24 +1,70 @@
-{%include "elements/header.html"%}
+{% include "elements/header.html" %}
 <body>
-{%include "elements/navbar.html"%}
+{% include "elements/navbar.html" %}
 <div class="container mt-5">
-    <h1 class="mb-4 d-inline">Betriebsstellen-Suche</h1><span class="badge rounded-pill text-success bg-success-subtle d-inline align-top">Stand: {{ date }}</span>
-<hr>
+    <h1 class="mb-4 d-inline">Betriebsstellen-Suche</h1><span
+        class="badge rounded-pill text-success bg-success-subtle d-inline align-top">Stand: {{ date }}</span>
+    <hr>
+
     <input type="text" id="searchInput" class="form-control" placeholder="RIL-100-Kürzel oder Bahnhofsname eingeben...">
     <ul id="results" class="list-group mt-3"></ul>
+
+    <div class="fixed-bottom container">
+        <div class="accordion" id="accordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne"
+                            aria-expanded="true" aria-controls="collapseOne">
+                        Was ist eine Betriebsstelle?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                    <div class="accordion-body">
+                        Eine Betriebsstelle ist ein essenzieller Punkt im Eisenbahnnetz, der für den Betriebsablauf von
+                        Bedeutung ist.
+                        Dazu gehören Infrastrukturmerkmale wie Bahnhöfe, Haltepunkte, Abzweigstellen, Blockstellen,
+                        Überleitstellen,
+                        Anschlussstellen, aber auch Umrichterwerke und Tarifpunkte. Eine vollständige Liste aller Arten
+                        von Betriebsstellen findet sich <a href="/typen">hier</a>. Jede Betriebsstelle ist durch ein
+                        einzigartiges RIL100-Kürzel (ehemals DS100-Code) gekennzeichnet, das ihre eindeutige
+                        Identifikation ermöglicht. Daten zu diesen Betriebsstellen können in unserer Datenbank gefunden
+                        werden.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Was kann diese Suchmaschine?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                    <div class="accordion-body">
+                        Mit dieser Suchmaschine können alle Betriebsstellen und RIL100-Kürzel in Deutschland und im
+                        Ausland gefunden werden. Auf der Ergebnisseite werden alle relevanten Infrastrukturdetails, wie
+                        die geografische Lage, die Ausstattung der Betriebsstelle, Gleis-
+                        und Umgebungspläne und Informationen zum Bahnhof und zum Stellwerk angezeigt.
+                        Die Daten werden monatlich aktualisiert, sodass immer ein möglichst aktueller Betriebszustand
+                        angezeigt werden kann.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 </body>
-{%include "elements/scripts.html"%}
 <script>
-    $(document).ready(function() {
-        $('#searchInput').on('input', function() {
+    $(document).ready(function () {
+        $('#searchInput').on('input', function () {
             var query = $(this).val();
             if (query.length > 0) {
-                $.get('/search', { q: query }, function(data) {
+                $.get('/search', {q: query}, function (data) {
                     $('#results').empty();
-                    data.forEach(function(item) {
+                    data.forEach(function (item) {
                         $('#results').append('<li class="list-group-item"><a class="text-black link-underline-opacity-0 link-underline-opacity-75-hover link-underline-dark" href=' + encodeURIComponent(item.code) + '>' + item.code + ' - ' + item.name + '</a></li>');
                     });
                 });
@@ -28,6 +74,5 @@
         });
     });
 </script>
-
 
 </html>
