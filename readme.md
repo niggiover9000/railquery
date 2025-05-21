@@ -20,6 +20,7 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 - [ ] Wenn ein Bahnhof mit einem Umlaut beginnt, wird er nicht gefunden
 
 - [x] https://stellwerke.info anbinden
+- [ ] Cachen, ob beispielsweise Stellwerksinfos vorhanden sind.
 - [ ] Infrastrukturregister anbinden (über Koordinaten sollte das möglich sein)
 - [ ] Link zur [Abfahrtstafel](https://iris.noncd.db.de) ausblenden wenn nicht verfügbar
 - [ ] Definitionen zu Betriebsstellen hinzufügen (z.B. "Abzweigstellen sind Blockstellen der freien Strecke, wo Züge von einer Strecke auf eine andere Strecke übergehen können.")
