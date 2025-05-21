@@ -3,7 +3,7 @@ from os import getenv
 from urllib.parse import unquote
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify, send_from_directory, abort
+from flask import Flask, render_template, request, jsonify, send_from_directory, abort, url_for
 from flask_sitemap import Sitemap
 from flask_caching import Cache
 from requests import head
@@ -35,7 +35,6 @@ def get_db_connection():
 
 
 @app.route('/')
-@cache.cached(timeout=300)
 def index():
     """Start page"""
     return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG,
@@ -209,6 +208,25 @@ def get_date(date):
 def types():
     return render_template('typen.html', art=art, ANALYTICS_TAG=ANALYTICS_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+
+
+@app.template_filter('boolean_icon')
+def boolean_icon(value):
+    if isinstance(value, str):
+        value = value.strip().lower() in ("yes", "true", "1")
+    elif isinstance(value, (int, bool)):
+        value = bool(value)
+    if value:
+        return ('<img src="' + url_for('static',
+                                       filename='img/bootstrap-icons-1.11.3/check-square.svg')
+                + '" class="align-center me-3" alt="Ja" title="Ja">')
+    else:
+        return ('<img src="' + url_for('static',
+                                       filename='img/bootstrap-icons-1.11.3/x-square.svg')
+                + '" class="align-center me-3" alt="Nein" title="Nein">')
+
+
+app.jinja_env.filters['boolean_icon'] = boolean_icon
 
 
 @app.route('/<code>', methods=['GET'])
