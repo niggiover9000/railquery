@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from requests import get, RequestException
+from requests import get, RequestException, HTTPError
 from os import getenv
 
 # Todo: Add license
@@ -43,6 +43,9 @@ def get_api_data(ril):
                        headers={'accept': ACCEPT, 'DB-Client-ID': CLIENT_ID, 'DB-Api-Key': CLIENT_SECRET})
         response.raise_for_status()
         return response.json(), response.status_code
+    except HTTPError as e:
+        print(f"HTTP error: {e}")
+        return {"error": str(e)}, e.response.status_code if e.response else 500
     except RequestException as e:
-        print(f"Error fetching data from API: {e}")
-        return None, response.status_code
+        print(f"General request error: {e}")
+        return {"error": str(e)}, 500
