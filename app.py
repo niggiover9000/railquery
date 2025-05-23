@@ -192,6 +192,15 @@ def get_db_data(request_input):
     return result
 
 
+def generate_sitemap():
+    conn = sqlite3.connect('betriebsstellen.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT [RL100-Code] FROM betriebsstellen")
+    codes = cursor.fetchall()
+    conn.close()
+    return [row[0] for row in codes]
+
+
 def get_date(date):
     try:
         date = str(date)
@@ -202,6 +211,12 @@ def get_date(date):
     except IndexError:
         return "-"
 
+
+
+@ext.register_generator
+def station_sitemap():
+    for code in generate_sitemap():
+        yield 'details', {'code': code}
 
 @app.route('/typen')
 @cache.cached(timeout=1440)
