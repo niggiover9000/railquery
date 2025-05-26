@@ -20,6 +20,7 @@ Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
 - [ ] Wenn ein Bahnhof mit einem Umlaut beginnt, wird er nicht gefunden
 
 - [x] https://stellwerke.info anbinden
+- [ ] JQuery aus CDN beziehen
 - [ ] Cachen, ob beispielsweise Stellwerksinfos vorhanden sind.
 - [ ] Infrastrukturregister anbinden (über Koordinaten sollte das möglich sein)
 - [ ] Link zur [Abfahrtstafel](https://iris.noncd.db.de) ausblenden wenn nicht verfügbar
