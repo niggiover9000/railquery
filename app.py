@@ -31,8 +31,20 @@ ext = Sitemap(app=app)
 def get_db_connection():
     connection = sqlite3.connect('betriebsstellen.db')
     connection.row_factory = sqlite3.Row
-    return connection
 
+    def normalize_string_for_search(s):
+        """
+        Normalize a string for search by removing special characters and converting to lowercase.
+        """
+        if not s:
+            return ""
+        s = s.lower()
+        s = s.replace('ä', 'a').replace('ö', 'o').replace('ü', 'u')
+        s = s.replace('ß', 'ss')
+        return s
+
+    connection.create_function("NORMALIZE_FOR_SEARCH", 1, normalize_string_for_search)
+    return connection
 
 @app.route('/')
 def index():
@@ -75,13 +87,14 @@ def search():
     Handles the search functionality for real-time search queries.
     Retrieves the search query from the request, performs a database search for matching RL100 codes or long names,
     and returns the results as a JSON response.
+    Special characters are normalized for better matching.
     Returns: flask.Response: A JSON response containing the search results.
     """
     query = request.args.get('q', '').lower()
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    search_terms = query.lower().split()
+    search_terms = query.split()
 
     # SQL query with parameter weighting
     sql_query = """
@@ -92,10 +105,10 @@ def search():
     # Conditions for weighting
     for i, term in enumerate(search_terms):
         sql_query += f"""
-            WHEN LOWER([RL100-Code]) = ? THEN 0
-            WHEN LOWER([RL100-Code]) LIKE ? THEN 1
-            WHEN LOWER([RL100-Langname]) LIKE ? THEN 2
-        """
+                    WHEN NORMALIZE_FOR_SEARCH([RL100-Code]) = NORMALIZE_FOR_SEARCH(?) THEN 0
+                    WHEN NORMALIZE_FOR_SEARCH([RL100-Code]) LIKE NORMALIZE_FOR_SEARCH(?) || '%' THEN 1
+                    WHEN NORMALIZE_FOR_SEARCH([RL100-Langname]) LIKE NORMALIZE_FOR_SEARCH(?) || '%' THEN 2
+                """
 
     sql_query += """
             ELSE 3
@@ -107,8 +120,11 @@ def search():
     # WHERE-Klauseln
     conditions = []
     for term in search_terms:
-        conditions.append("(LOWER([RL100-Code]) LIKE ? OR LOWER([RL100-Langname]) LIKE ?)")
-    sql_query += " AND ".join(conditions)
+        conditions.append(
+            "(NORMALIZE_FOR_SEARCH([RL100-Code]) LIKE NORMALIZE_FOR_SEARCH(?) || '%' OR "
+            "NORMALIZE_FOR_SEARCH([RL100-Langname]) LIKE '%' || NORMALIZE_FOR_SEARCH(?) || '%')"
+        )
+        sql_query += " AND ".join(conditions)
 
     # Sort for relevance, then length of code
     sql_query += """
