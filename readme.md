@@ -17,7 +17,7 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 
 ## To Do
 - [ ] TMKL liefert "Ein Fehler ist aufgetreten: Cannot read properties of undefined (reading 'coordinates')"
-- [ ] Wenn ein Bahnhof mit einem Umlaut beginnt, wird er nicht gefunden
+- [x] Wenn ein Bahnhof mit einem Umlaut beginnt, wird er nicht gefunden
 
 - [x] https://stellwerke.info anbinden
 - [ ] JQuery aus CDN beziehen
