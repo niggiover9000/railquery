@@ -4,7 +4,7 @@ Dieses Suchmaschine dient dazu, die Betriebsstellen zu finden, die sich hinter e
 
 ![image](https://github.com/user-attachments/assets/ef4c4c75-af26-46e0-a68c-41a0384e9ae5)
 
-Nach einem Klick die Betriebsstelle werden weitere Details angezeigt.
+Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 
 ![image](https://github.com/user-attachments/assets/8e6cccb4-ed73-49a8-9cc4-b5f824e9f5b8)
 
