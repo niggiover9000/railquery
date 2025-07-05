@@ -13,6 +13,8 @@ from api import get_api_data
 from personal_data import name, street, address, mail
 from variables import art, sonderart, region
 
+from datetime import datetime, timedelta
+
 load_dotenv(dotenv_path='.env')
 
 DATE = getenv('DATE')
@@ -28,8 +30,8 @@ cache = Cache(app)
 ext = Sitemap(app=app)
 
 
-def get_db_connection():
-    connection = sqlite3.connect('betriebsstellen.db')
+def get_db_connection(database='betriebsstellen.db'):
+    connection = sqlite3.connect(database)
     connection.row_factory = sqlite3.Row
 
     def normalize_string_for_search(s):
@@ -55,12 +57,44 @@ def index():
 
 @app.route('/api/check-gleisplan/<code>')
 def check_gleisplan(code):
+    code = unquote(code).strip().lower()
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    today = datetime.now()
+
+    cursor.execute("""
+        SELECT gleisplan_exists, gleisplan_checked_at
+        FROM betriebsstellen
+        WHERE LOWER(TRIM([RL100-Code])) = ?
+    """, (code,))
+    row = cursor.fetchone()
+
+    if row and row["gleisplan_checked_at"]:
+        try:
+            last_checked = datetime.strptime(row["gleisplan_checked_at"], "%Y-%m-%d")
+            if today - last_checked < timedelta(days=30):
+                return jsonify({"exists": bool(row["gleisplan_exists"])})
+        except ValueError:
+            pass  # Fehlerhafte Datumskonvertierung ignorieren
+
     try:
         response = head(f"https://trassenfinder.de/apn/{code}")
-        return jsonify({"exists": response.status_code == 200})
+        exists = response.status_code == 200
     except Exception as e:
         print("Fehler:", e)
-        return jsonify({"exists": False})
+        exists = False
+
+    cursor.execute("""
+        UPDATE betriebsstellen
+        SET gleisplan_exists     = ?,
+            gleisplan_checked_at = ?
+        WHERE LOWER(TRIM([RL100-Code])) = ?
+    """, (int(exists), today.strftime("%Y-%m-%d"), code))
+    conn.commit()
+    print(f"Statusupdate im der Datenbank für Betriebsstelle '{code.upper()}' durchgeführt. Anzahl Änderungen: {cursor.rowcount}")
+
+    return jsonify({"exists": exists})
 
 
 @app.route('/api/check-stellwerk/<code>')
@@ -199,8 +233,8 @@ def api_data():
         return jsonify({"error": "Fehler beim Abrufen der Daten"}), status_code
 
 
-def get_db_data(request_input):
-    conn = sqlite3.connect('betriebsstellen.db')
+def get_db_data(request_input, database='betriebsstellen.db'):
+    conn = sqlite3.connect(database)
     cursor = conn.cursor()
     query = "SELECT * FROM betriebsstellen WHERE LOWER([RL100-Code]) = ?"
     cursor.execute(query, (request_input.lower(),))
@@ -208,8 +242,8 @@ def get_db_data(request_input):
     return result
 
 
-def generate_sitemap():
-    conn = sqlite3.connect('betriebsstellen.db')
+def generate_sitemap(database='betriebsstellen.db'):
+    conn = sqlite3.connect(database)
     cursor = conn.cursor()
     cursor.execute("SELECT [RL100-Code] FROM betriebsstellen")
     codes = cursor.fetchall()

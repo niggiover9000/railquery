@@ -48,7 +48,7 @@ def extract_sheet_and_date(file_path):
     return first_sheet, stand
 
 # Daten in SQLite-Datenbank laden
-def load_data_to_db(file_path, sheet_name):
+def load_data_to_db(file_path, sheet_name, database_name='betriebsstellen.db'):
     df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=3)
 
     # Entferne leere Spalten und bereinige die Daten
@@ -58,8 +58,24 @@ def load_data_to_db(file_path, sheet_name):
     df.columns = [col.strip() for col in df.columns]
 
     # Datenbankverbindung herstellen
-    conn = sqlite3.connect('betriebsstellen.db')
+    conn = sqlite3.connect(database_name)
+
+    # Tabelle ersetzen
     df.to_sql('betriebsstellen', conn, if_exists='replace', index=False)
+
+    # Zusätzliche Spalten hinzufügen (nur wenn sie nicht existieren)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("ALTER TABLE betriebsstellen ADD COLUMN gleisplan_exists INTEGER;")
+    except sqlite3.OperationalError:
+        pass  # Spalte existiert bereits
+
+    try:
+        cursor.execute("ALTER TABLE betriebsstellen ADD COLUMN gleisplan_checked_at TEXT;")
+    except sqlite3.OperationalError:
+        pass  # Spalte existiert bereits
+
+    conn.commit()
     conn.close()
 
     print("Daten wurden erfolgreich in die SQLite-Datenbank importiert.")
