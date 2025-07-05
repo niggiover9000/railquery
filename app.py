@@ -48,6 +48,7 @@ def get_db_connection(database='betriebsstellen.db'):
     connection.create_function("NORMALIZE_FOR_SEARCH", 1, normalize_string_for_search)
     return connection
 
+
 @app.route('/')
 def index():
     """Start page"""
@@ -55,57 +56,64 @@ def index():
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
-@app.route('/api/check-gleisplan/<code>')
-def check_gleisplan(code):
+def check_database_cache(code, check_query, update_query, checked_field, api_url):
     code = unquote(code).strip().lower()
     conn = get_db_connection()
     cursor = conn.cursor()
 
     today = datetime.now()
 
-    cursor.execute("""
-        SELECT gleisplan_exists, gleisplan_checked_at
-        FROM betriebsstellen
-        WHERE LOWER(TRIM([RL100-Code])) = ?
-    """, (code,))
+    cursor.execute(check_query, (code,))
     row = cursor.fetchone()
 
-    if row and row["gleisplan_checked_at"]:
+    if row and row[checked_field]:
         try:
-            last_checked = datetime.strptime(row["gleisplan_checked_at"], "%Y-%m-%d")
+            last_checked = datetime.strptime(row[checked_field], "%Y-%m-%d")
             if today - last_checked < timedelta(days=30):
-                return jsonify({"exists": bool(row["gleisplan_exists"])})
+                return jsonify({"exists": bool(row[checked_field])})
         except ValueError:
             pass  # Fehlerhafte Datumskonvertierung ignorieren
 
     try:
-        response = head(f"https://trassenfinder.de/apn/{code}")
+        response = head(api_url, timeout=5)
         exists = response.status_code == 200
     except Exception as e:
         print("Fehler:", e)
         exists = False
-
-    cursor.execute("""
-        UPDATE betriebsstellen
-        SET gleisplan_exists     = ?,
-            gleisplan_checked_at = ?
-        WHERE LOWER(TRIM([RL100-Code])) = ?
-    """, (int(exists), today.strftime("%Y-%m-%d"), code))
+    cursor.execute(update_query, (int(exists), today.strftime("%Y-%m-%d"), code))
     conn.commit()
-    print(f"Statusupdate im der Datenbank für Betriebsstelle '{code.upper()}' durchgeführt. Anzahl Änderungen: {cursor.rowcount}")
+    print(
+        f"Statusupdate im der Datenbank für Betriebsstelle '{code.upper()}' durchgeführt. Anzahl Änderungen: {cursor.rowcount}")
 
     return jsonify({"exists": exists})
 
 
+@app.route('/api/check-gleisplan/<code>')
+def check_gleisplan(code):
+    return check_database_cache(code, """
+                               SELECT gleisplan_exists, gleisplan_checked_at
+                               FROM betriebsstellen
+                               WHERE LOWER(TRIM([RL100-Code])) = ?
+                               """, """
+                                    UPDATE betriebsstellen
+                                    SET gleisplan_exists     = ?,
+                                        gleisplan_checked_at = ?
+                                    WHERE LOWER(TRIM([RL100-Code])) = ?
+                                    """, "gleisplan_checked_at", f"https://trassenfinder.de/apn/{code}")
+
+
 @app.route('/api/check-stellwerk/<code>')
 def check_stellwerk(code):
-    code = unquote(code)
-    try:
-        response = head(f"https://stellwerke.info/stw/?ds100={code}", timeout=5)
-        return jsonify({"exists": response.status_code == 200})
-    except Exception as e:
-        print("Fehler:", e)
-        return jsonify({"exists": False})
+    return check_database_cache(code, """
+                               SELECT stellwerk_exists, stellwerk_checked_at
+                               FROM betriebsstellen
+                               WHERE LOWER(TRIM([RL100-Code])) = ?
+                               """, """
+                                    UPDATE betriebsstellen
+                                    SET stellwerk_exists     = ?,
+                                        stellwerk_checked_at = ?
+                                    WHERE LOWER(TRIM([RL100-Code])) = ?
+                                    """, "stellwerk_checked_at", f"https://stellwerke.info/stw/?ds100={code}")
 
 
 @app.route('/api/check-iris/<code>')
@@ -262,11 +270,11 @@ def get_date(date):
         return "-"
 
 
-
 @ext.register_generator
 def station_sitemap():
     for code in generate_sitemap():
         yield 'details', {'code': code}
+
 
 @app.route('/typen')
 @cache.cached(timeout=1440)

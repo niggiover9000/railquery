@@ -18,6 +18,7 @@ BASEDATA_URL = getenv('BASEDATA_URL')
 url = BASEDATA_URL
 local_file = "Download-betriebsstellen-data.xlsx"
 
+
 # Herunterladen der neuesten Datei
 def download_file(url, local_file):
     print("Database flow started.")
@@ -38,6 +39,7 @@ def download_file(url, local_file):
     except requests.exceptions.RequestException as e:
         raise Exception(f"Fehler beim Herunterladen der Datei: {e}")
 
+
 # Tabellenblatt und Datum extrahieren
 def extract_sheet_and_date(file_path):
     xls = pd.ExcelFile(file_path)
@@ -46,6 +48,7 @@ def extract_sheet_and_date(file_path):
     stand = datetime.strptime(date_part, "%Y%m%d").strftime("%d.%m.%Y")
     print(f"Verarbeitetes Tabellenblatt: {first_sheet}, Stand: {stand}")
     return first_sheet, stand
+
 
 # Daten in SQLite-Datenbank laden
 def load_data_to_db(file_path, sheet_name, database_name='betriebsstellen.db'):
@@ -65,26 +68,31 @@ def load_data_to_db(file_path, sheet_name, database_name='betriebsstellen.db'):
 
     # Zusätzliche Spalten hinzufügen (nur wenn sie nicht existieren)
     cursor = conn.cursor()
-    try:
-        cursor.execute("ALTER TABLE betriebsstellen ADD COLUMN gleisplan_exists INTEGER;")
-    except sqlite3.OperationalError:
-        pass  # Spalte existiert bereits
 
-    try:
-        cursor.execute("ALTER TABLE betriebsstellen ADD COLUMN gleisplan_checked_at TEXT;")
-    except sqlite3.OperationalError:
-        pass  # Spalte existiert bereits
+    additional_columns = ["ALTER TABLE betriebsstellen ADD COLUMN gleisplan_exists INTEGER;",
+                          "ALTER TABLE betriebsstellen ADD COLUMN gleisplan_checked_at TEXT;",
+                          "ALTER TABLE betriebsstellen ADD COLUMN stellwerk_exists INTEGER;",
+                          "ALTER TABLE betriebsstellen ADD COLUMN stellwerk_checked_at TEXT;"
+                          ]
 
-    conn.commit()
+    for column in additional_columns:
+        try:
+            cursor.execute(column)
+            conn.commit()
+        except sqlite3.OperationalError:
+            pass  # Spalte existiert bereits
+
     conn.close()
 
     print("Daten wurden erfolgreich in die SQLite-Datenbank importiert.")
+
 
 # Stand-Variable in .env-Datei schreiben
 def write_to_env(stand):
     set_key(dotenv_path='.env', key_to_set="DATE", value_to_set=stand)
 
     print("Stand-Variable erfolgreich in .env-Datei geschrieben.")
+
 
 if __name__ == "__main__":
     try:
