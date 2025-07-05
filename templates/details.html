@@ -18,20 +18,18 @@
                                          class="align-center me-3" alt="Abgehaktes Kästchen" title="Name">
                                     {% if row[2] != row[3] %}
                                         Langname: {{ row[2] }}
-                                        </div>
-                                        <div class="p-1">
-                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                                 class="align-center" alt="Fragezeichen" title="Help">
-                                        </div>
-                                        </div>
-                                        <div class="p-1 flex-grow-1 w-100">
-                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/substack.svg') }}"
-                                                 class="align-center me-3" alt="Symbol für Kurzname" title="Name">
-                                            Kurzname: {{ row[3] }}
-                                        </div>
                                     {% else %}
                                         Name: {{ row[2] }}
                                     {% endif %}
+                                </div>
+                            </div>
+                            {% if row[2] != row[3] %}
+                                <div class="p-1 flex-grow-1 w-100">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/substack.svg') }}"
+                                         class="align-center me-3" alt="Symbol für Kurzname" title="Name">
+                                    Kurzname: {{ row[3] }}
+                                </div>
+                            {% endif %}
                             <div class="p-1 flex-grow-1 w-100">
                                 <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/slash-square.svg') }}"
                                      class="align-center me-3" alt="Halb abgehaktes Kästchen" title="Abkürzung">
