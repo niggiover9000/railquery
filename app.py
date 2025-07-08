@@ -8,6 +8,7 @@ from flask_sitemap import Sitemap
 from flask_caching import Cache
 from requests import head
 from waitress import serve
+from json import loads, dumps
 
 from api import get_api_data
 from personal_data import name, street, address, mail
@@ -56,11 +57,10 @@ def index():
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
-def check_database_cache(code, check_query, update_query, checked_field, api_url):
+def check_database_cache(code, check_query, update_query, checked_field, api_url, mode="exists", request_function=None):
     code = unquote(code).strip().lower()
     conn = get_db_connection()
     cursor = conn.cursor()
-
     today = datetime.now()
 
     cursor.execute(check_query, (code,))
@@ -70,68 +70,104 @@ def check_database_cache(code, check_query, update_query, checked_field, api_url
         try:
             last_checked = datetime.strptime(row[checked_field], "%Y-%m-%d")
             if today - last_checked < timedelta(days=30):
-                return jsonify({"exists": bool(row[checked_field])})
-        except ValueError:
-            pass  # Fehlerhafte Datumskonvertierung ignorieren
+                if mode == 'exists':
+                    return jsonify({"exists": bool(row[0])})
+                elif mode == 'json' and row["api_response_json"]:
+                    return jsonify(loads(row["api_response_json"]))
+        except Exception as e:
+            print("Fehler beim Lesen des Cache-Datums:", e)
 
-    try:
-        response = head(api_url, timeout=5)
-        exists = response.status_code == 200
-    except Exception as e:
-        print("Fehler:", e)
-        exists = False
-    cursor.execute(update_query, (int(exists), today.strftime("%Y-%m-%d"), code))
-    conn.commit()
-    print(
-        f"Statusupdate im der Datenbank für Betriebsstelle '{code.upper()}' durchgeführt. Anzahl Änderungen: {cursor.rowcount}")
+        # Wenn kein gültiger Cache → externer Request
+    if mode == 'exists':
+        try:
+            response = head(api_url, timeout=5)
+            exists = response.status_code == 200
+        except Exception as e:
+            print("Fehler bei HEAD-Request:", e)
+            exists = False
 
-    return jsonify({"exists": exists})
+        cursor.execute(update_query, (int(exists), today.strftime("%Y-%m-%d"), code))
+        conn.commit()
+        print(f"HEAD-Status für '{code.upper()}' aktualisiert: {exists}")
+        return jsonify({"exists": exists})
+
+    elif mode == 'json' and request_function:
+        data, status = request_function(code)
+        if status == 200:
+            try:
+                json_data = dumps(data)
+                cursor.execute(update_query, (json_data, today.strftime("%Y-%m-%d"), code))
+                conn.commit()
+                print(f"API-Daten für '{code.upper()}' gespeichert.")
+            except Exception as e:
+                print("Fehler beim Speichern der API-Daten:", e)
+        conn.close()
+        return jsonify(data), status
+
+    else:
+        return jsonify({"error": "Ungültiger Aufruf der Funktion."}), 500
 
 
 @app.route('/api/check-gleisplan/<code>')
 def check_gleisplan(code):
     return check_database_cache(code, """
-                               SELECT gleisplan_exists, gleisplan_checked_at
-                               FROM betriebsstellen
-                               WHERE LOWER(TRIM([RL100-Code])) = ?
-                               """, """
-                                    UPDATE betriebsstellen
-                                    SET gleisplan_exists     = ?,
-                                        gleisplan_checked_at = ?
-                                    WHERE LOWER(TRIM([RL100-Code])) = ?
-                                    """, "gleisplan_checked_at", f"https://trassenfinder.de/apn/{code}")
+                                      SELECT gleisplan_exists, gleisplan_checked_at
+                                      FROM betriebsstellen
+                                      WHERE LOWER(TRIM([RL100-Code])) = ?
+                                      """, """
+                                           UPDATE betriebsstellen
+                                           SET gleisplan_exists     = ?,
+                                               gleisplan_checked_at = ?
+                                           WHERE LOWER(TRIM([RL100-Code])) = ?
+                                           """, "gleisplan_checked_at", f"https://trassenfinder.de/apn/{code}",
+                                "exists", "gleisplan_checked_at")
 
 
 @app.route('/api/check-stellwerk/<code>')
 def check_stellwerk(code):
     return check_database_cache(code, """
-                               SELECT stellwerk_exists, stellwerk_checked_at
-                               FROM betriebsstellen
-                               WHERE LOWER(TRIM([RL100-Code])) = ?
-                               """, """
-                                    UPDATE betriebsstellen
-                                    SET stellwerk_exists     = ?,
-                                        stellwerk_checked_at = ?
-                                    WHERE LOWER(TRIM([RL100-Code])) = ?
-                                    """, "stellwerk_checked_at", f"https://stellwerke.info/stw/?ds100={code}")
+                                      SELECT stellwerk_exists, stellwerk_checked_at
+                                      FROM betriebsstellen
+                                      WHERE LOWER(TRIM([RL100-Code])) = ?
+                                      """, """
+                                           UPDATE betriebsstellen
+                                           SET stellwerk_exists     = ?,
+                                               stellwerk_checked_at = ?
+                                           WHERE LOWER(TRIM([RL100-Code])) = ?
+                                           """, "stellwerk_checked_at", f"https://stellwerke.info/stw/?ds100={code}",
+                                "exists", "stellwerk_checked_at")
+
+
+@app.route('/api/stada/<code>', methods=['GET'])
+def check_stada(code):
+    return check_database_cache(code, """
+                                      SELECT stada_response, stada_checked_at
+                                      FROM betriebsstellen
+                                      WHERE LOWER(TRIM([RL100-Code])) = ?
+                                      """, """UPDATE betriebsstellen
+                                              SET stada_response   = ?,
+                                                  stada_checked_at = ?
+                                              WHERE LOWER(TRIM([RL100-Code])) = ?
+                                           """, "stada_checked_at", "json", request_function=get_api_data)
 
 
 @app.route('/api/check-iris/<code>')
 def check_iris(code):
-    """This function always returns 200, because I have not yet thought of a way to determine that the site exists or not.
-    On the page, the content is loaded via Javascript, so it is very difficult to perform a backend check."""
+    """
+    This function always returns 200, because I have not yet thought of a way to determine that the site exists or not.
+    On the page, the content is loaded via Javascript, so it is very difficult to perform a backend check.
+    """
     return jsonify({"exists": 200})
 
 
 @app.route('/search', methods=['GET'])
 def search():
     """
-    Handles the search functionality for real-time search queries.
-    Retrieves the search query from the request, performs a database search for matching RL100 codes or long names,
-    and returns the results as a JSON response.
-    Special characters are normalized for better matching.
-    Returns: flask.Response: A JSON response containing the search results.
-    """
+    Handles the search functionality for real - time search queries. Retrieves the search query from the request,
+    performs a database search for matching RL100 codes or long names, and returns the results as a JSON response.
+    Special characters are normalized for better matching. Returns: flask.Response: A JSON response containing the
+    search results. """
+
     query = request.args.get('q', '').lower()
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -141,8 +177,8 @@ def search():
     # SQL query with parameter weighting
     sql_query = """
         SELECT *,
-            CASE
-    """
+        CASE
+        """
 
     # Conditions for weighting
     for i, term in enumerate(search_terms):
@@ -153,10 +189,7 @@ def search():
                 """
 
     sql_query += """
-            ELSE 3
-            END AS relevance
-        FROM betriebsstellen
-        WHERE
+            ELSE 3 END AS relevance FROM betriebsstellen WHERE
     """
 
     # WHERE-Klauseln

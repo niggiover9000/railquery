@@ -157,6 +157,31 @@
                                         }
                                     }
 
+                                    async function checkStaDa(ds100) {
+                                        const backendUrl = `${window.location.origin}/api/stada/${ds100}`;
+                                        try {
+                                            const response = await fetch(backendUrl);
+                                            if (!response.ok) throw new Error("Status: " + response.status);
+                                            const data = await response.json();
+
+                                            // Beispielhafte Darstellung im resultContainer
+                                            const container = document.getElementById("resultContainer");
+                                            container.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">API-Ergebnisse</h5>
+                    <pre class="card-text bg-light p-3 rounded border">${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+                                        } catch (error) {
+                                            console.error("Fehler beim API-Call (DB API):", error);
+                                        }
+                                    }
+
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        initButtons();
+                                        const code = '{{ row[1] }}';
+                                        checkStaDa(code); // Beim Laden ausführen
+                                    });
+
                                     async function checkIris(bhf) {
                                         const backendUrl = `${window.location.origin}/api/check-iris/${bhf}`;
                                         try {
