@@ -148,7 +148,7 @@ def check_stada(code):
                                               SET stada_response   = ?,
                                                   stada_checked_at = ?
                                               WHERE LOWER(TRIM([RL100-Code])) = ?
-                                           """, "stada_checked_at", "json", request_function=get_api_data)
+                                           """, "stada_checked_at", "", "json", request_function=get_api_data)
 
 
 @app.route('/api/check-iris/<code>')
@@ -199,7 +199,7 @@ def search():
             "(NORMALIZE_FOR_SEARCH([RL100-Code]) LIKE NORMALIZE_FOR_SEARCH(?) || '%' OR "
             "NORMALIZE_FOR_SEARCH([RL100-Langname]) LIKE '%' || NORMALIZE_FOR_SEARCH(?) || '%')"
         )
-        sql_query += " AND ".join(conditions)
+    sql_query += " AND ".join(conditions)
 
     # Sort for relevance, then length of code
     sql_query += """
@@ -339,18 +339,23 @@ app.jinja_env.filters['boolean_icon'] = boolean_icon
 def details(code):
     code = unquote(code)
     result = get_db_data(code)
+    if len(result) > 1:
+        result = (result[0],)
+        """ Das ist ein Workaround, wenn mehrere Einträge mit dem gleichen Code in der Datenbank sind. 
+        Das kommt vor allem vor, wenn ein Bahnhof in Planung ist, aber bereits ein Inbetriebnahmedatum festgelegt wurde.
+        ToDo: Eigentlich sollten beide Ergebnisse angezeigt werden."""
+    data, status = check_stada(code)
+    json_str = data.data.decode('utf-8')
+    if status == 200:
+        stada = loads(json_str)["result"][0]
+    else:
+        stada = None
     if not result:
         abort(404)
     date = get_date(result[0][6]) if result else None
     return render_template('details.html',
-                           code=code,
-                           result=result,
-                           date=date,
-                           art=art,
-                           region=region,
-                           sonderart=sonderart,
-                           date_db=DATE,
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           code=code, result=result, date=date, art=art, region=region, sonderart=sonderart,
+                           stada_data=stada, date_db=DATE, ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
@@ -370,6 +375,57 @@ def ads():
 def page_not_found(e):
     return render_template("404.html", date=DATE, error=e, ANALYTICS_TAG=ANALYTICS_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID), 404
+
+
+@app.template_filter('tojson_utf8')
+def tojson_utf8(value, indent=2):
+    return dumps(value, ensure_ascii=False, indent=indent)
+
+
+@app.template_filter('add_icons')
+def add_icons(feature_tuple):
+    key, value = feature_tuple
+
+    feature_map = {
+        "hasTaxiRank": ("Taxistand", "taxi-front.svg", "bootstrap-icons-1.11.3"),
+        "hasWiFi": ("WLAN", "wifi.svg", "bootstrap-icons-1.11.3"),
+        "hasDBLounge": ("DB Lounge", "cup-hot.svg", "bootstrap-icons-1.11.3"),
+        "hasParking": ("Parkplätze", "p-square.svg", "bootstrap-icons-1.11.3"),
+        "hasSteplessAccess": ("Barrierefreier Zugang", "stairs.svg", "icons-8-custom"),
+        "hasMobilityService": ("Mobilitätszentrale", "person-wheelchair.svg", "bootstrap-icons-1.11.3"),
+        "hasBicycleParking": ("Fahrradstellplätze", "bicycle.svg", "bootstrap-icons-1.11.3"),
+        "hasLockerSystem": ("Schließfächer", "key.svg", "bootstrap-icons-1.11.3"),
+        "hasPublicFacilities": ("Öffentliche Einrichtungen", "public.svg", "icons-8-custom"),
+        "hasLostAndFound": ("Fundbüro", "lost-and-found.svg", "icons-8-custom"),
+        "hasTravelCenter": ("Reisezentrum", "info-square.svg", "bootstrap-icons-1.11.3"),
+        "hasCarRental": ("Autovermietung", "car-front.svg", "bootstrap-icons-1.11.3"),
+        "hasRailwayMission": ("Bahnhofsmission", "volunteering.svg", "icons-8-custom"),
+        "hasTravelNecessities": ("Einkaufsmöglichkeiten", "basket.svg", "bootstrap-icons-1.11.3"),
+        "hasLocalPublicTransport": ("ÖPNV-Anschluss", "bus-front.svg", "bootstrap-icons-1.11.3"),
+    }
+
+    if key not in feature_map:
+        return ""
+
+    label, icon, iconset = feature_map[key]
+    icon_html = f'<img src="/static/img/{iconset}/{icon}" class="align-center me-3" alt="{label}" title="{label}">'
+    yes_no_icon = (f'<img src="/static/img/bootstrap-icons-1.11.3/{"check-square.svg" if value else "x-square.svg"}" '
+                   f'class="align-center ms-3" style="filter: {"invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);" if value else "invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"} '
+                   f'alt="{"Ja" if value else "Nein"}" title="{"Ja" if value else "Nein"}">')
+
+    return f'''
+        <li class="list-group-item">
+        <div class="row">
+            <div class="col-10">
+                {icon_html}
+                {label}: 
+            </div>
+            <div class="col">
+                {yes_no_icon}
+            </div>
+        </div>
+        </li>
+        '''
 
 
 if __name__ == '__main__':
