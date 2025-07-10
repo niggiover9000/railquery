@@ -16,10 +16,14 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 - `docker compose pull && docker compose up -d`
 
 ## To Do
-- [ ] TMKL liefert "Ein Fehler ist aufgetreten: Cannot read properties of undefined (reading 'coordinates')"
+- [x] TMKL liefert "Ein Fehler ist aufgetreten: Cannot read properties of undefined (reading 'coordinates')"
 - [x] Wenn ein Bahnhof mit einem Umlaut beginnt, wird er nicht gefunden
+- [ ] Tooltips funktionieren aktuell nicht.
+- [ ] Bad Friedrichshall Süd: Daten werden doppelt angezeigt
 
 - [ ] JQuery aus CDN beziehen
+- [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
+- [ ] Strukturierte Daten für Suchmaschinen hinzufügen
 - [x] Cachen, ob beispielsweise Stellwerksinfos vorhanden sind.
 - [ ] Tiptools zu den Fragezeichen hinzufügen
 - [ ] Infrastrukturregister anbinden (über Koordinaten sollte das möglich sein)
