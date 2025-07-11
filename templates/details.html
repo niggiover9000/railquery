@@ -1,7 +1,72 @@
 {% include "elements/header.html" %}
+{% if result %}
+    {% for row in result %}
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "TrainStation",
+            "name": "{{ row[2] }}",
+            "branchCode": "{{ row[0] }}",
+            "identifier": "{{ row[1] }}",
+            "alternateName": "{{ row[3] }}",
+            "description": "Betriebsstelle {{ row[2] }} ({{ row[1] }}) mit RIL100-Kürzel. Informationen zu Gleisplänen, Ausstattung, Stellwerken und Infrastruktur.",
+            {% if stada_data is defined
+                  and stada_data
+                  and stada_data.DBinformation is defined
+                  and stada_data.mailingAddress is defined
+                  and stada_data.ril100Identifiers[0].geographicCoordinates %}
+            "openingHours": ["Mo {{ stada_data.DBinformation.availability.monday.fromTime }}-
+            {{ stada_data.DBinformation.availability.monday.toTime }}",
+"Tu {{ stada_data.DBinformation.availability.tuesday.fromTime }}-
+            {{ stada_data.DBinformation.availability.tuesday.toTime }}",
+"We {{ stada_data.DBinformation.availability.wednesday.fromTime }}-
+            {{ stada_data.DBinformation.availability.wednesday.toTime }}",
+"Th {{ stada_data.DBinformation.availability.thursday.fromTime }}-
+            {{ stada_data.DBinformation.availability.thursday.toTime }}",
+"Fr {{ stada_data.DBinformation.availability.friday.fromTime }}-
+            {{ stada_data.DBinformation.availability.friday.toTime }}",
+"Sa {{ stada_data.DBinformation.availability.saturday.fromTime }}-
+            {{ stada_data.DBinformation.availability.saturday.toTime }}",
+"Su {{ stada_data.DBinformation.availability.sunday.fromTime }}-
+            {{ stada_data.DBinformation.availability.sunday.toTime }}"],
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "{{ stada_data.mailingAddress.street }}",
+                    "addressLocality": "{{ stada_data.mailingAddress.city }}",
+                    "postalCode": "{{ stada_data.mailingAddress.zipcode }}"},
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "{{ stada_data.category }}",
+                    "bestRating": "1", "worstRating": "5"},
+                "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": "{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1] }}",
+                    "longitude": "{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }}"
+                }
+}
+            {% endif %}
+
+
+        </script>
+    {% endfor %}
+{% endif %}
+
+{% if stada_data is defined
+                  and stada_data
+                  and stada_data.ril100Identifiers is defined
+                  and stada_data.ril100Identifiers
+                  and stada_data.ril100Identifiers[0].geographicCoordinates is defined %}
+    <!-- Leaflet CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+{% endif %}
+</head>
 <body>
 {% include "elements/navbar.html" %}
-
 
 <div class="container mt-5">
     <h1 class="mb-4 d-inline">Betriebsstellen-Details</h1>
@@ -111,38 +176,39 @@
 
                         <div class="card list-group mt-3" id="infoContainer-1">
                             <h5 class="card-header"> Externe Links </h5>
-                            <div class="card-body">
+                            <div class="card-body row ms-lg-3">
                                 <!-- Gleisplan-Button -->
-                                <button class="btn btn-primary mb-1" role="button" id="loadDataBtn-1"
+
+                                <button class="btn btn-primary mb-1 me-1 col-lg-4 col-sm-12" role="button"
+                                        id="loadDataBtn-1"
                                         onclick="openTab('https://trassenfinder.de/apn/{{ row[1] }}')" disabled>
                                     Gleisplan herunterladen
                                 </button>
 
-                                <button class="btn btn-primary mb-1" role="button" id="loadDataBtn-3"
+                                <button class="btn btn-primary mb-1 me-1 col-lg-3 col-sm-12" role="button"
+                                        id="loadDataBtn-3"
                                         onclick="openTab('https://stellwerke.info/stw/?ds100={{ row[1] }}')" disabled>
                                     Stellwerks-Infos
                                 </button>
 
-                                <button class="btn btn-primary mb-1" role="button" id="loadDataBtn-2"
+                                <button class="btn btn-primary mb-1 col-lg-4 col-sm-12" role="button"
+                                        id="loadDataBtn-2"
                                         onclick="openTab('https://iris.noncd.db.de/wbt/js/index.html?bhf={{ row[1] }}')">
                                     Live-Abfahrtszeiten
                                 </button>
 
                                 {% if stada_data %}
 
-                                    <button class="btn btn-primary mb-1" role="button" id="loadDataBtn-4"
+                                    <button class="btn btn-primary mb-1 me-2 col-lg-5 col-sm-12" role="button"
+                                            id="loadDataBtn-4"
                                             onclick="openTab('https://www.bahnhof.de/downloads/station-plans/{{ stada_data.number }}.pdf')">
                                         Lageplan anzeigen
                                     </button>
 
-                                    <button class="btn btn-primary mb-1" role="button" id="loadDataBtn-5"
+                                    <button class="btn btn-primary mb-1 col-lg-6 col-sm-12" role="button"
+                                            id="loadDataBtn-5"
                                             onclick="openTab('https://www.bahnhof.de/downloads/replacement-service-maps/{{ stada_data.number }}.pdf')">
                                         Umgebungsplan anzeigen
-                                    </button>
-
-                                    <button class="btn btn-primary mb-1" role="button" id="loadDataBtn-6"
-                                            onclick="openTab('https://www.openrailwaymap.org/?style=standard&lat={{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1] }}&lon={{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }}&zoom=16')">
-                                        OpenRailwayMap
                                     </button>
 
                                 {% endif %}
@@ -175,12 +241,6 @@
                                             return false;
                                         }
                                     }
-
-                                    document.addEventListener('DOMContentLoaded', () => {
-                                        initButtons();
-                                        const code = '{{ row[1] }}';
-                                        checkStaDa(code); // Beim Laden ausführen
-                                    });
 
                                     async function checkIris(bhf) {
                                         const backendUrl = `${window.location.origin}/api/check-iris/${bhf}`;
@@ -225,12 +285,55 @@
 
                                     document.addEventListener('DOMContentLoaded', initButtons);
                                 </script>
-
                             </div>
-                        </div>
                         </div>
                     {% endfor %}
                 {% endif %}
+            {% if stada_data is defined
+                  and stada_data
+                  and stada_data.ril100Identifiers is defined
+                  and stada_data.ril100Identifiers
+                  and stada_data.ril100Identifiers[0].geographicCoordinates is defined %}
+                <div class="card list-group mt-3 mb-3" id="infoContainer-2">
+                    <h5 class="card-header"> Karte </h5>
+                    <div class="card-body">
+                        <div id="map" style="width: 100%; height: 500px;"></div>
+                    </div>
+                </div>
+                <script>
+                    var map = L.map('map').setView([{{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1]}}, {{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0]}}], 15);
+
+                    var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    var railwayLayer = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenRailwayMap contributors',
+                        opacity: 0.7
+                    }).addTo(map);
+
+                    L.Icon.Default.imagePath = "";
+
+                    L.Icon.Default.mergeOptions({
+                        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+                        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+                    });
+
+                    var marker = L.marker([{{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1]}}, {{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0]}}]).addTo(map);
+
+                    // Center the map properly after loading
+                    setTimeout(() => {
+                        map.invalidateSize();
+                    }, 100);
+                </script>
+
+
+            {% endif %}
+        </div>
+
+
+
         {% if stada_data %}
             <div class="col-md">
                 <ul id="results" class="list-group">
@@ -256,7 +359,8 @@
                                          alt="Kartensymbol"
                                          title="Regionalbereich">
                                     Regionalbereich:
-                                    {{ stada_data.regionalbereich.name }} ({{ stada_data.regionalbereich.number }})
+                                    {{ stada_data.regionalbereich.name }}
+                                    ({{ stada_data.regionalbereich.number }})
                                     <br>
                                     Aufgabenträger: {{ stada_data.aufgabentraeger.name }}
                                     ({{ stada_data.aufgabentraeger.shortName }})
@@ -289,14 +393,16 @@
                                 </li>
                                 <li class="list-group-item d-flex">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/exclamation-triangle.svg') }}"
-                                         class="align-center me-3" alt="Ausrufezeichen" title="3-S-Zentrale">
+                                         class="align-center me-3" alt="Ausrufezeichen"
+                                         title="3-S-Zentrale">
                                     3-S-Zentrale: {{ stada_data.szentrale.name }}
                                     ({{ stada_data.szentrale.number }})<br>
                                     Telefonnummer: {{ stada_data.szentrale.publicPhoneNumber }}
                                 </li>
                                 <li class="list-group-item d-flex">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/envelope-at.svg') }}"
-                                         class="align-center me-3" alt="E-Mail-Symbol" title="Fahrplanzentrale">
+                                         class="align-center me-3" alt="E-Mail-Symbol"
+                                         title="Fahrplanzentrale">
                                     Fahrplanzentrale: {{ stada_data.timeTableOffice.email }}<br>
                                     Sitz: {{ stada_data.timeTableOffice.name }}
                                 </li>
@@ -350,5 +456,6 @@
     </div>
     {% include "elements/footer.html" %}
 </div>
+
 </body>
 </html>
