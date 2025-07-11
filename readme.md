@@ -16,22 +16,24 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 - `docker compose pull && docker compose up -d`
 
 ## To Do
-- [x] TMKL liefert "Ein Fehler ist aufgetreten: Cannot read properties of undefined (reading 'coordinates')"
-- [x] Wenn ein Bahnhof mit einem Umlaut beginnt, wird er nicht gefunden
 - [ ] Tooltips funktionieren aktuell nicht.
-- [ ] Bad Friedrichshall Süd: Daten werden doppelt angezeigt
+- [x] Bad Friedrichshall Süd: Daten werden doppelt angezeigt
+- "hasSteplessAccess": "partial" wird nicht korrekt angezeigt
+- "hasSteamPermission": sollte alle states anzeigen können
 
+- [ ] StaDa-Lizenz anzeigen
+- [ ] OpenRailwayMap als Karte einbinden
+- [ ] Lageplan und Umgebungsplan ausgrauen, wenn nicht verfügbar
 - [ ] JQuery aus CDN beziehen
 - [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
-- [ ] Strukturierte Daten für Suchmaschinen hinzufügen
-- [x] Cachen, ob beispielsweise Stellwerksinfos vorhanden sind.
+- [x] Strukturierte Daten für Suchmaschinen hinzufügen
+- [ ] Mehr Daten in strukturierte Daten aufnehmen (z.B. Amenities)
 - [ ] Tiptools zu den Fragezeichen hinzufügen
 - [ ] Infrastrukturregister anbinden (über Koordinaten sollte das möglich sein)
 - [ ] Link zur [Abfahrtstafel](https://iris.noncd.db.de) ausblenden wenn nicht verfügbar
 - [ ] Definitionen zu Betriebsstellen hinzufügen (z.B. "Abzweigstellen sind Blockstellen der freien Strecke, wo Züge von einer Strecke auf eine andere Strecke übergehen können.")
 - [ ] Karte in Website einbinden
 - [ ] Link zu FAQ einfügen
-- [x] Anzeige "True" und "False" auf Details-Seite durch Symbol ersetzen
 - [ ] Captcha für Abfragen einfügen
 - [ ] [FaSta](https://developers.deutschebahn.com/db-api-marketplace/apis/product/fasta) anbinden.
 - [ ] ÖBB-Betriebsstellen hinzufügen
