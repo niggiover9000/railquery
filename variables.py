@@ -77,3 +77,5 @@ bahnhofskategorien = {
     1: ["DB Information"]
 
 }
+
+betriebszustände = ["Planung", "Betrieb", "a.B. (außer Betrieb)", "ehemals", "Studie"]
