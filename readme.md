@@ -22,6 +22,7 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 - "hasSteamPermission": sollte alle states anzeigen können
 
 - [ ] StaDa-Lizenz anzeigen
+- [ ] Erklärungen zu Regionaler Lage, Code, etc einbinden
 - [ ] OpenRailwayMap als Karte einbinden
 - [ ] Lageplan und Umgebungsplan ausgrauen, wenn nicht verfügbar
 - [ ] JQuery aus CDN beziehen
