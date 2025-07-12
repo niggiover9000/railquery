@@ -1,0 +1,21 @@
+{% include "elements/header.html" %}
+</head>
+<body>
+{% include "elements/navbar.html" %}
+<div class="container mt-5">
+    <h1 class="mb-4 d-inline">Mögliche Betriebszustände von Betriebsstellen</h1>
+    <hr>
+    <div class="row">
+        <ul id="results" class="list-group mt-3 col-md-12 col-sm-12">
+            {% for elements in betriebszustaende %}
+                <li class="list-group-item">
+                    {{ elements }}
+                    <br>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% include "elements/footer.html" %}
+</div>
+</body>
+</html>
