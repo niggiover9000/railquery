@@ -12,7 +12,7 @@ from json import loads, dumps
 
 from api import get_api_data
 from personal_data import name, street, address, mail
-from variables import art, sonderart, region
+from variables import art, sonderart, region, betriebszustände
 
 from datetime import datetime, timedelta
 
@@ -314,6 +314,22 @@ def station_sitemap():
 def types():
     return render_template('typen.html', art=art, ANALYTICS_TAG=ANALYTICS_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+
+
+@app.route('/regionen')
+@cache.cached(timeout=1440)
+def regionen():
+    return render_template('regionen.html', region=region, ANALYTICS_TAG=ANALYTICS_TAG,
+                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+
+
+@app.route('/betriebszustand')
+@cache.cached(timeout=1440)
+def betriebszustand():
+    print(betriebszustände)
+    return render_template('betriebszustand.html', betriebszustaende=betriebszustände, ANALYTICS_TAG=ANALYTICS_TAG,
+                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+
 
 
 @app.template_filter('boolean_icon')
