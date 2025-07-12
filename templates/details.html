@@ -12,43 +12,42 @@
             "description": "Betriebsstelle {{ row[2] }} ({{ row[1] }}) mit RIL100-Kürzel. Informationen zu Gleisplänen, Ausstattung, Stellwerken und Infrastruktur.",
             {% if stada_data is defined
                   and stada_data
-                  and stada_data.DBinformation is defined
-                  and stada_data.mailingAddress is defined
-                  and stada_data.ril100Identifiers[0].geographicCoordinates %}
+                  and stada_data.DBinformation is defined %}
             "openingHours": ["Mo {{ stada_data.DBinformation.availability.monday.fromTime }}-
             {{ stada_data.DBinformation.availability.monday.toTime }}",
-"Tu {{ stada_data.DBinformation.availability.tuesday.fromTime }}-
+            "Tu {{ stada_data.DBinformation.availability.tuesday.fromTime }}-
             {{ stada_data.DBinformation.availability.tuesday.toTime }}",
-"We {{ stada_data.DBinformation.availability.wednesday.fromTime }}-
+            "We {{ stada_data.DBinformation.availability.wednesday.fromTime }}-
             {{ stada_data.DBinformation.availability.wednesday.toTime }}",
-"Th {{ stada_data.DBinformation.availability.thursday.fromTime }}-
+            "Th {{ stada_data.DBinformation.availability.thursday.fromTime }}-
             {{ stada_data.DBinformation.availability.thursday.toTime }}",
-"Fr {{ stada_data.DBinformation.availability.friday.fromTime }}-
+            "Fr {{ stada_data.DBinformation.availability.friday.fromTime }}-
             {{ stada_data.DBinformation.availability.friday.toTime }}",
-"Sa {{ stada_data.DBinformation.availability.saturday.fromTime }}-
+            "Sa {{ stada_data.DBinformation.availability.saturday.fromTime }}-
             {{ stada_data.DBinformation.availability.saturday.toTime }}",
-"Su {{ stada_data.DBinformation.availability.sunday.fromTime }}-
+            "Su {{ stada_data.DBinformation.availability.sunday.fromTime }}-
             {{ stada_data.DBinformation.availability.sunday.toTime }}"],
-                "address": {
-                    "@type": "PostalAddress",
-                    "streetAddress": "{{ stada_data.mailingAddress.street }}",
-                    "addressLocality": "{{ stada_data.mailingAddress.city }}",
-                    "postalCode": "{{ stada_data.mailingAddress.zipcode }}"},
-                "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": "{{ stada_data.category }}",
-                    "bestRating": "1", "worstRating": "5"},
-                "geo": {
-                    "@type": "GeoCoordinates",
-                    "latitude": "{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1] }}",
-                    "longitude": "{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }}"
-                }
-}
             {% endif %}
+            {% if stada_data is defined and stada_data.mailingAddress is defined %}
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "{{ stada_data.mailingAddress.street }}",
+                "addressLocality": "{{ stada_data.mailingAddress.city }}",
+                "postalCode": "{{ stada_data.mailingAddress.zipcode }}"},
+            {% endif %}
+            {% if stada_data is defined and stada_data.ril100Identifiers is defined
+                  and stada_data.ril100Identifiers
+                  and stada_data.ril100Identifiers[0].geographicCoordinates is defined %}
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1] }}",
+                "longitude": "{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }}"
+                }
+            {% endif %}
+        {% endfor %}
+        }
+    </script>
 
-
-        </script>
-    {% endfor %}
 {% endif %}
 
 {% if stada_data is defined
