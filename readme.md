@@ -16,14 +16,13 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 - `docker compose pull && docker compose up -d`
 
 ## To Do
-- [ ] Tooltips funktionieren aktuell nicht.
-- [x] Bad Friedrichshall Süd: Daten werden doppelt angezeigt
-- "hasSteplessAccess": "partial" wird nicht korrekt angezeigt
-- "hasSteamPermission": sollte alle states anzeigen können
+- [x] Tooltips funktionieren aktuell nicht.
+- [ ] "hasSteplessAccess": "partial" wird nicht korrekt angezeigt
+- [x] "hasSteamPermission": sollte alle states anzeigen können
 
 - [ ] StaDa-Lizenz anzeigen
-- [ ] Erklärungen zu Regionaler Lage, Code, etc einbinden
-- [ ] OpenRailwayMap als Karte einbinden
+- [x] Erklärungen zu Regionaler Lage, Code, etc einbinden
+- [x] OpenRailwayMap als Karte einbinden
 - [ ] Lageplan und Umgebungsplan ausgrauen, wenn nicht verfügbar
 - [ ] JQuery aus CDN beziehen
 - [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
