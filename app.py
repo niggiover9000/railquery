@@ -13,7 +13,7 @@ from waitress import serve
 from json import loads, dumps
 
 from api import get_api_data
-from personal_data import name, street, address
+from personal_data import name, street, address, mail_impressum
 from variables import art, sonderart, region, betriebszustände
 
 from datetime import datetime, timedelta
@@ -260,8 +260,8 @@ def search():
 @app.route('/impressum', methods=['GET'])
 @cache.cached(timeout=1440)
 def impressum():
-    return render_template('impressum.html', name=name, street=street, address=address, mail=mail,
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+    return render_template('impressum.html', name=name, street=street, address=address,
+                           mail=mail_impressum, ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
@@ -452,7 +452,6 @@ def add_icons(feature_tuple):
         "hasDBLounge": ("DB Lounge", "cup-hot.svg", "bootstrap-icons-1.11.3"),
         "hasParking": ("Parkplätze", "p-square.svg", "bootstrap-icons-1.11.3"),
         "hasSteplessAccess": ("Barrierefreier Zugang", "stairs.svg", "icons-8-custom"),
-        "hasMobilityService": ("Mobilitätszentrale", "person-wheelchair.svg", "bootstrap-icons-1.11.3"),
         "hasBicycleParking": ("Fahrradstellplätze", "bicycle.svg", "bootstrap-icons-1.11.3"),
         "hasLockerSystem": ("Schließfächer", "key.svg", "bootstrap-icons-1.11.3"),
         "hasPublicFacilities": ("Öffentliche Einrichtungen", "public.svg", "icons-8-custom"),
