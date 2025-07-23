@@ -348,16 +348,29 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
         </div>
 
 
-
         {% if stada_data %}
             <div class="col-md">
                 <ul id="results" class="list-group">
 
                     <div class="col-md">
                         <ul id="resultContainer" class="card list-group">
-                            <h5 class="card-header">
-                                Weitere Details
-                            </h5>
+                            <div class="d-flex card-header">
+                                <div class="p-1 flex-grow-1">
+                                    <h5>
+                                        Weitere Details
+                                    </h5>
+                                </div>
+                                <div class="p-1">
+                                    <a href="https://developers.deutschebahn.com/db-api-marketplace/apis/product/stada"
+                                       target="_blank">
+                                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
+                                             class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                                             data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
+                                             data-bs-title="Diese Daten werden von der StaDa-API der Deutschen Bahn unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt.">
+                                    </a>
+                                </div>
+                            </div>
+
                             <div class="col-md">
                                 <li class="list-group-item d-flex">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg') }}"
@@ -421,6 +434,33 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                     Fahrplanzentrale: {{ stada_data.timeTableOffice.email }}<br>
                                     Sitz: {{ stada_data.timeTableOffice.name }}
                                 </li>
+                                {% if stada_data.hasMobilityService %}
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            {% if stada_data.hasMobilityService == "no" %}
+                                                <div class="col-10">
+                                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/person-wheelchair.svg') }}"
+                                                         class="align-center me-3" alt="Rollstuhl"
+                                                         title="Mobilitätszentrale">
+                                                    Mobilitätszentrale:
+                                                </div>
+                                                <div class="col">
+                                                    <img src="/static/img/bootstrap-icons-1.11.3/x-square.svg"
+                                                         class="align-center ms-3"
+                                                         style="filter: invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"
+                                                         alt="Unrestricted" title="Unrestricted">
+                                                </div>
+                                            {% else %}
+                                                <div class="col">
+                                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/person-wheelchair.svg') }}"
+                                                         class="align-center me-3" alt="Rollstuhl"
+                                                         title="Mobilitätszentrale">
+                                                    Mobilitätszentrale: {{ stada_data.hasMobilityService }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                {% endif %}
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-10">
@@ -428,6 +468,7 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                                  class="align-center me-3" alt="Smoke" title="Zulassung Dampfloks">
                                             Zulassung Dampfloks:
                                         </div>
+
                                         <div class="col">
                                             {% for ril100 in stada_data.ril100Identifiers %}
                                                 {% if ril100.rilIdentifier == result[0][1] %}
@@ -451,11 +492,13 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                             {% endfor %}
                                         </div>
                                     </div>
+                                </li>
+
 
                                 </li>
                                 {% for key in [
                                     'hasTaxiRank', 'hasWiFi', 'hasDBLounge', 'hasParking',
-                                    'hasSteplessAccess', 'hasMobilityService', 'hasBicycleParking',
+                                    'hasSteplessAccess', 'hasBicycleParking',
                                     'hasLockerSystem', 'hasPublicFacilities', 'hasLostAndFound',
                                     'hasTravelCenter', 'hasCarRental', 'hasRailwayMission',
                                     'hasTravelNecessities', 'hasLocalPublicTransport'
