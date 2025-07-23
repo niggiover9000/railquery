@@ -6,7 +6,7 @@
     <h1 class="mb-4 d-inline">Kontakt</h1>
     <hr>
     <div class="row">
-        <ul id="results" class="list-group mt-3 col-md-12 col-sm-12">
+        <ul id="" class="list-group mt-3 col-md-12 col-sm-12">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <div class="alert alert-{{ messages[0][0] }} alert-dismissible fade show" role="alert">
@@ -15,28 +15,34 @@
                     </div>
                 {% endif %}
             {% endwith %}
+            <li class="list-group-item">
+                <p>Fragen, Anregungen, Kritik? Wir freuen uns auf deine Nachricht! Auch Feature-Wünsche können gerne
+                    über
+                    das Kontaktformular übermittelt werden.</p>
+            </li>
+            <li class="list-group-item">
+                <form method="POST" id="contact-form" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" name="name" id="name" class="form-control" required>
+                        <div class="invalid-feedback">Bitte gib deinen Namen ein.</div>
+                    </div>
 
-            <form method="POST" id="contact-form" class="needs-validation" novalidate>
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name:</label>
-                    <input type="text" name="name" id="name" class="form-control" required>
-                    <div class="invalid-feedback">Bitte gib deinen Namen ein.</div>
-                </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-Mail:</label>
+                        <input type="email" name="email" id="email" class="form-control" required>
+                        <div class="invalid-feedback">Bitte gib eine gültige E-Mail-Adresse ein.</div>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">E-Mail:</label>
-                    <input type="email" name="email" id="email" class="form-control" required>
-                    <div class="invalid-feedback">Bitte gib eine gültige E-Mail-Adresse ein.</div>
-                </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Nachricht:</label>
+                        <textarea name="message" id="message" rows="5" class="form-control" required></textarea>
+                        <div class="invalid-feedback">Bitte gib eine Nachricht ein.</div>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="message" class="form-label">Nachricht:</label>
-                    <textarea name="message" id="message" rows="5" class="form-control" required></textarea>
-                    <div class="invalid-feedback">Bitte gib eine Nachricht ein.</div>
-                </div>
-
-                <button type="submit" class="btn btn-primary" id="submit-button" disabled>Senden</button>
-            </form>
+                    <button type="submit" class="btn btn-primary" id="submit-button" disabled>Senden</button>
+                </form>
+            </li>
         </ul>
     </div>
     {% include "elements/footer.html" %}
