@@ -1,17 +1,19 @@
 import sqlite3
 from os import getenv
+from secrets import token_urlsafe
 from urllib.parse import unquote
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify, send_from_directory, abort, url_for
+from flask import Flask, render_template, request, jsonify, send_from_directory, abort, url_for, flash, redirect
 from flask_sitemap import Sitemap
 from flask_caching import Cache
+from flask_mail import Mail, Message
 from requests import head
 from waitress import serve
 from json import loads, dumps
 
 from api import get_api_data
-from personal_data import name, street, address, mail
+from personal_data import name, street, address
 from variables import art, sonderart, region, betriebszustände
 
 from datetime import datetime, timedelta
@@ -26,8 +28,19 @@ app = Flask(__name__)
 app.config["SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS"] = True
 app.config["SITEMAP_URL_SCHEME"] = "https"
 app.config['CACHE_TYPE'] = 'SimpleCache'
-cache = Cache(app)
+app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(getenv('MAIL_PORT'))
+app.config['MAIL_USERNAME'] = getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
+app.config['MAIL_USE_TLS'] = getenv('MAIL_USE_TLS')
 
+app.secret_key = token_urlsafe(32)
+
+print(f"Mail Server Config: {app.config['MAIL_SERVER']}, Port: {app.config['MAIL_PORT']}, User: {app.config['MAIL_USERNAME']}")
+
+cache = Cache(app)
+mail = Mail(app)
 ext = Sitemap(app=app)
 
 
@@ -313,6 +326,37 @@ def station_sitemap():
 @cache.cached(timeout=1440)
 def types():
     return render_template('typen.html', art=art, ANALYTICS_TAG=ANALYTICS_TAG,
+                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+
+        if not name or not email or not message:
+            flash("Bitte fülle alle Felder aus.", "warning")
+            return redirect('/contact')
+
+        msg = Message(subject=f"Neue Nachricht von {name} über railquery.de",
+                      sender=app.config['MAIL_USERNAME'],
+                      recipients=[app.config['MAIL_USERNAME']],  # deine eigene Mailadresse
+                      body=f"Neue Nachricht über railquery.de\n"
+                           f"Name: {name}\n"
+                           f"E-Mail: {email}\n\n"
+                           f"Nachricht:\n{message}")
+
+        try:
+            mail.send(msg)
+            flash("Nachricht erfolgreich gesendet!", "success")
+        except Exception as e:
+            print(e)
+            flash("Fehler beim Senden der Nachricht.", "danger")
+
+        return redirect('/contact')
+    return render_template('contact.html', art=art, ANALYTICS_TAG=ANALYTICS_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 

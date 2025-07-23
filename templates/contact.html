@@ -1,0 +1,81 @@
+{% include "elements/header.html" %}
+</head>
+<body>
+{% include "elements/navbar.html" %}
+<div class="container mt-5">
+    <h1 class="mb-4 d-inline">Kontakt</h1>
+    <hr>
+    <div class="row">
+        <ul id="results" class="list-group mt-3 col-md-12 col-sm-12">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="alert alert-{{ messages[0][0] }} alert-dismissible fade show" role="alert">
+                        {{ messages[0][1] }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Schließen"></button>
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" id="contact-form" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" name="name" id="name" class="form-control" required>
+                    <div class="invalid-feedback">Bitte gib deinen Namen ein.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-Mail:</label>
+                    <input type="email" name="email" id="email" class="form-control" required>
+                    <div class="invalid-feedback">Bitte gib eine gültige E-Mail-Adresse ein.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="message" class="form-label">Nachricht:</label>
+                    <textarea name="message" id="message" rows="5" class="form-control" required></textarea>
+                    <div class="invalid-feedback">Bitte gib eine Nachricht ein.</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submit-button" disabled>Senden</button>
+            </form>
+        </ul>
+    </div>
+    {% include "elements/footer.html" %}
+</div>
+<script>
+    const form = document.getElementById('contact-form');
+    const inputs = form.querySelectorAll('input, textarea');
+    const submitButton = document.getElementById('submit-button');
+
+    function checkValidity() {
+        let allValid = true;
+        inputs.forEach(input => {
+            if (!input.checkValidity()) {
+                allValid = false;
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+            }
+        });
+        submitButton.disabled = !allValid;
+    }
+
+    inputs.forEach(input => {
+        input.addEventListener('input', checkValidity);
+    });
+
+    window.addEventListener('load', checkValidity);
+
+    form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+            // optional: Ladeindikator oder Button deaktivieren
+        }
+        form.classList.add('was-validated');
+    });
+</script>
+</body>
+</html>
