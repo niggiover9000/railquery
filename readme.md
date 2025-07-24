@@ -17,10 +17,10 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 
 ## To Do
 - [x] Tooltips funktionieren aktuell nicht.
-- [ ] "hasSteplessAccess": "partial" wird nicht korrekt angezeigt
+- [x] "hasSteplessAccess": "partial" wird nicht korrekt angezeigt
 - [x] "hasSteamPermission": sollte alle states anzeigen können
 
-- [ ] StaDa-Lizenz anzeigen
+- [x] StaDa-Lizenz anzeigen
 - [x] Erklärungen zu Regionaler Lage, Code, etc einbinden
 - [x] OpenRailwayMap als Karte einbinden
 - [ ] Lageplan und Umgebungsplan ausgrauen, wenn nicht verfügbar
@@ -28,11 +28,12 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 - [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
 - [x] Strukturierte Daten für Suchmaschinen hinzufügen
 - [ ] Mehr Daten in strukturierte Daten aufnehmen (z.B. Amenities)
-- [ ] Tiptools zu den Fragezeichen hinzufügen
+- [x] Tiptools zu den Fragezeichen hinzufügen
+- [ ] Tiptools zu Bahnhofs- und Preiskategorie, 3-S-Zentrale und Fahrplanzentrale hinzufügen
 - [ ] Infrastrukturregister anbinden (über Koordinaten sollte das möglich sein)
 - [ ] Link zur [Abfahrtstafel](https://iris.noncd.db.de) ausblenden wenn nicht verfügbar
 - [ ] Definitionen zu Betriebsstellen hinzufügen (z.B. "Abzweigstellen sind Blockstellen der freien Strecke, wo Züge von einer Strecke auf eine andere Strecke übergehen können.")
-- [ ] Karte in Website einbinden
+- [x] Karte in Website einbinden
 - [ ] Link zu FAQ einfügen
 - [ ] Captcha für Abfragen einfügen
 - [ ] [FaSta](https://developers.deutschebahn.com/db-api-marketplace/apis/product/fasta) anbinden.
