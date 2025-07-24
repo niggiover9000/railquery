@@ -451,7 +451,6 @@ def add_icons(feature_tuple):
         "hasWiFi": ("WLAN", "wifi.svg", "bootstrap-icons-1.11.3"),
         "hasDBLounge": ("DB Lounge", "cup-hot.svg", "bootstrap-icons-1.11.3"),
         "hasParking": ("Parkplätze", "p-square.svg", "bootstrap-icons-1.11.3"),
-        "hasSteplessAccess": ("Barrierefreier Zugang", "stairs.svg", "icons-8-custom"),
         "hasBicycleParking": ("Fahrradstellplätze", "bicycle.svg", "bootstrap-icons-1.11.3"),
         "hasLockerSystem": ("Schließfächer", "key.svg", "bootstrap-icons-1.11.3"),
         "hasPublicFacilities": ("Öffentliche Einrichtungen", "public.svg", "icons-8-custom"),
