@@ -461,6 +461,42 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                         </div>
                                     </li>
                                 {% endif %}
+                                {% if stada_data.hasSteplessAccess %}
+                                    <li class="list-group-item">
+                                        <div class="row">
+
+                                            <div class="col-10">
+                                                <img src="{{ url_for('static', filename='img/icons-8-custom/stairs.svg') }}"
+                                                     class="align-center me-3" alt="Stufen"
+                                                     title="Barrierefreier Zugang">
+                                                Barrierefreier Zugang:
+                                            </div>
+                                            {% if stada_data.hasSteplessAccess == "partial" %}
+                                                <div class="col">
+                                                    <img src="/static/img/bootstrap-icons-1.11.3/slash-square.svg"
+                                                         class="align-center ms-3"
+                                                         style="filter: invert(60%) sepia(93%) saturate(1400%) hue-rotate(1deg) brightness(90%) contrast(105%);"
+                                                         alt="Teilweise" title="Teilweise">
+                                                </div>
+                                            {% elif stada_data.hasSteplessAccess == "no" %}
+                                                <div class="col">
+                                                    <img src="/static/img/bootstrap-icons-1.11.3/x-square.svg"
+                                                         class="align-center ms-3"
+                                                         style="filter: invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"
+                                                         alt="Nein" title="Nein">
+                                                </div>
+
+                                            {% elif stada_data.hasSteplessAccess == "yes" %}
+                                                <div class="col">
+                                                    <img src="/static/img/bootstrap-icons-1.11.3/check-square.svg"
+                                                         class="align-center ms-3"
+                                                         style="filter: invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);"
+                                                         alt="Teilweise" title="Teilweise">
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                {% endif %}
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-10">
@@ -498,8 +534,7 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                 </li>
                                 {% for key in [
                                     'hasTaxiRank', 'hasWiFi', 'hasDBLounge', 'hasParking',
-                                    'hasSteplessAccess', 'hasBicycleParking',
-                                    'hasLockerSystem', 'hasPublicFacilities', 'hasLostAndFound',
+                                    'hasBicycleParking', 'hasLockerSystem', 'hasPublicFacilities', 'hasLostAndFound',
                                     'hasTravelCenter', 'hasCarRental', 'hasRailwayMission',
                                     'hasTravelNecessities', 'hasLocalPublicTransport'
                                 ] %}
