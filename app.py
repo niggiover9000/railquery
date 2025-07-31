@@ -121,7 +121,7 @@ def check_database_cache(code, check_query, update_query, checked_field, api_url
         return jsonify({"error": "Ungültiger Aufruf der Funktion."}), 500
 
 
-@app.route('/api/check-gleisplan/<code>')
+@app.route('/api/gleisplan/<code>')
 def check_gleisplan(code):
     return check_database_cache(code, """
                                       SELECT gleisplan_exists, gleisplan_checked_at
@@ -136,7 +136,7 @@ def check_gleisplan(code):
                                 "exists", "gleisplan_checked_at")
 
 
-@app.route('/api/check-stellwerk/<code>')
+@app.route('/api/stellwerk/<code>')
 def check_stellwerk(code):
     return check_database_cache(code, """
                                       SELECT stellwerk_exists, stellwerk_checked_at
@@ -164,7 +164,37 @@ def check_stada(code):
                                            """, "stada_checked_at", "", "json", request_function=get_api_data)
 
 
-@app.route('/api/check-iris/<code>')
+@app.route('/api/bahnhofsplan/<code>', methods=['GET'])
+def check_bahnhofsplan(code):
+    return check_database_cache(code, """
+                                      SELECT bahnhofsplan_response, bahnhofsplan_checked_at
+                                      FROM betriebsstellen
+                                      WHERE LOWER(TRIM([RL100-Code])) = ?
+                                      """, """UPDATE betriebsstellen
+                                              SET bahnhofsplan_response   = ?,
+                                                  bahnhofsplan_checked_at = ?
+                                              WHERE LOWER(TRIM([RL100-Code])) = ?
+                                           """, "bahnhofsplan_checked_at",
+                                f"https://www.bahnhof.de/downloads/station-plans/{code}.pdf", "exists",
+                                "bahnhofsplan_checked_at")
+
+
+@app.route('/api/umgebungsplan/<code>', methods=['GET'])
+def check_umgebungsplan(code):
+    return check_database_cache(code, """
+                                      SELECT umgebungsplan_response, umgebungsplan_checked_at
+                                      FROM betriebsstellen
+                                      WHERE LOWER(TRIM([RL100-Code])) = ?
+                                      """, """UPDATE betriebsstellen
+                                              SET umgebungsplan_response   = ?,
+                                                  umgebungsplan_checked_at = ?
+                                              WHERE LOWER(TRIM([RL100-Code])) = ?
+                                           """, "umgebungsplan_checked_at",
+                                f"https://www.bahnhof.de/downloads/replacement-service-maps/{code}.pdf", "exists",
+                                "umgebungsplan_checked_at")
+
+
+@app.route('/api/iris/<code>')
 def check_iris(code):
     """
     This function always returns 200, because I have not yet thought of a way to determine that the site exists or not.

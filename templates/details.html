@@ -217,7 +217,7 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                     <button class="btn btn-primary mb-1 me-2 col-lg-5 col-sm-12" role="button"
                                             id="loadDataBtn-4"
                                             onclick="openTab('https://www.bahnhof.de/downloads/station-plans/{{ stada_data.number }}.pdf')">
-                                        Lageplan anzeigen
+                                        Bahnhofsplan anzeigen
                                     </button>
 
                                     <button class="btn btn-primary mb-1 col-lg-6 col-sm-12" role="button"
@@ -234,7 +234,7 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                     }
 
                                     async function checkGleisplan(apn) {
-                                        const backendUrl = `${window.location.origin}/api/check-gleisplan/${apn}`;
+                                        const backendUrl = `${window.location.origin}/api/gleisplan/${apn}`;
                                         try {
                                             const response = await fetch(backendUrl);
                                             const data = await response.json();
@@ -246,7 +246,7 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                     }
 
                                     async function checkStellwerk(ds100) {
-                                        const backendUrl = `${window.location.origin}/api/check-stellwerk/${ds100}`;
+                                        const backendUrl = `${window.location.origin}/api/stellwerk/${ds100}`;
                                         try {
                                             const response = await fetch(backendUrl);
                                             const data = await response.json();
@@ -258,7 +258,7 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                     }
 
                                     async function checkIris(bhf) {
-                                        const backendUrl = `${window.location.origin}/api/check-iris/${bhf}`;
+                                        const backendUrl = `${window.location.origin}/api/iris/${bhf}`;
                                         try {
                                             const response = await fetch(backendUrl);
                                             const data = await response.json();
@@ -269,12 +269,39 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                         }
                                     }
 
+                                    async function checkBahnhofsplan(bhf) {
+                                        const backendUrl = `${window.location.origin}/api/bahnhofsplan/${bhf}`;
+                                        try {
+                                            const response = await fetch(backendUrl);
+                                            const data = await response.json();
+                                            return data.exists;
+                                        } catch (error) {
+                                            console.error("Fehler beim API-Call (Bahnhofsplan):", error);
+                                            return false;
+                                        }
+                                    }
+
+                                    async function checkUmgebungsplan(bhf) {
+                                        const backendUrl = `${window.location.origin}/api/umgebungsplan/${bhf}`;
+                                        try {
+                                            const response = await fetch(backendUrl);
+                                            const data = await response.json();
+                                            return data.exists;
+                                        } catch (error) {
+                                            console.error("Fehler beim API-Call (Umgebungsplan):", error);
+                                            return false;
+                                        }
+                                    }
+
                                     async function initButtons() {
                                         const code = '{{ row[1] }}';
+                                        const station_number = '{{stada_data.number}}'
 
                                         const btnGleisplan = document.getElementById('loadDataBtn-1');
                                         const btnIris = document.getElementById('loadDataBtn-2');
                                         const btnStellwerk = document.getElementById('loadDataBtn-3');
+                                        const btnBahnhofsplan = document.getElementById('loadDataBtn-4');
+                                        const btnUmgebungsplan = document.getElementById('loadDataBtn-5');
 
                                         if (await checkGleisplan(code)) {
                                             btnGleisplan.disabled = false;
@@ -295,6 +322,20 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                         } else {
                                             btnStellwerk.disabled = true;
                                             btnStellwerk.title = "Keine Stellwerks-Infos verfügbar";
+                                        }
+
+                                        if (await checkBahnhofsplan(station_number)) {
+                                            btnBahnhofsplan.disabled = false;
+                                        } else {
+                                            btnBahnhofsplan.disabled = true;
+                                            btnBahnhofsplan.title = "Kein Bahnhofsplan verfügbar";
+                                        }
+
+                                        if (await checkUmgebungsplan(station_number)) {
+                                            btnUmgebungsplan.disabled = false;
+                                        } else {
+                                            btnUmgebungsplan.disabled = true;
+                                            btnUmgebungsplan.title = "Kein Umgebungsplan verfügbar";
                                         }
                                     }
 
