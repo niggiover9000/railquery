@@ -141,6 +141,22 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                 </div>
                             </li>
                         {% endif %}
+                        {% if stada_data %}
+                            <li class="list-group-item d-flex">
+                                <div class="p-1 flex-grow-1">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/crosshair.svg') }}"
+                                         class="align-center me-3" alt="Barcode" title="Code">
+                                    IFOPT: {{ stada_data.ifopt }}
+                                </div>
+                                <div class="p-1">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
+                                         class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                                         data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
+                                         data-bs-title="IFOPT steht für 'Identification of Fixed Objects in Public Transport'.
+                                         Die IFOPT-Nummer ist eine international eindeutige Nummer zur Referenzierung von ÖPNV-Haltestellen.">
+                                </div>
+                            </li>
+                        {% endif %}
                         <li class="list-group-item d-flex">
                             <div class="p-1 flex-grow-1">
                                 <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg') }}"
@@ -208,7 +224,8 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
 
                                 <button class="btn btn-primary mb-1 col-lg-4 col-sm-12" role="button"
                                         id="loadDataBtn-2"
-                                        onclick="openTab('https://iris.noncd.db.de/wbt/js/index.html?bhf={{ row[1] }}')" disabled>
+                                        onclick="openTab('https://iris.noncd.db.de/wbt/js/index.html?bhf={{ row[1] }}')"
+                                        disabled>
                                     Live-Abfahrtszeiten
                                 </button>
 
@@ -216,13 +233,15 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
 
                                     <button class="btn btn-primary mb-1 me-2 col-lg-5 col-sm-12" role="button"
                                             id="loadDataBtn-4"
-                                            onclick="openTab('https://www.bahnhof.de/downloads/station-plans/{{ stada_data.number }}.pdf')" disabled>
+                                            onclick="openTab('https://www.bahnhof.de/downloads/station-plans/{{ stada_data.number }}.pdf')"
+                                            disabled>
                                         Bahnhofsplan anzeigen
                                     </button>
 
                                     <button class="btn btn-primary mb-1 col-lg-6 col-sm-12" role="button"
                                             id="loadDataBtn-5"
-                                            onclick="openTab('https://www.bahnhof.de/downloads/replacement-service-maps/{{ stada_data.number }}.pdf')" disabled>
+                                            onclick="openTab('https://www.bahnhof.de/downloads/replacement-service-maps/{{ stada_data.number }}.pdf')"
+                                            disabled>
                                         Umgebungsplan anzeigen
                                     </button>
 
@@ -345,46 +364,65 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                         </div>
                     {% endfor %}
                 {% endif %}
-            {% if stada_data is defined
-                  and stada_data
-                  and stada_data.ril100Identifiers is defined
-                  and stada_data.ril100Identifiers
-                  and stada_data.ril100Identifiers[0].geographicCoordinates is defined %}
+            {% if stada_data %}
                 <div class="card list-group mt-3 mb-3" id="infoContainer-2">
-                    <h5 class="card-header"> Karte </h5>
-                    <div class="card-body">
-                        <div id="map" style="width: 100%; height: 500px;"></div>
-                    </div>
-                </div>
-                <script>
-                    var map = L.map('map').setView([{{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1]}}, {{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0]}}], 15);
+                    <h5 class="card-header"> Geografische Lage </h5>
+                    {% if stada_data.ril100Identifiers is defined
+                          and stada_data.ril100Identifiers
+                          and stada_data.ril100Identifiers[0].geographicCoordinates is defined %}
+                        <div class="col-md">
+                            <li class="list-group-item d-flex">
+                                <div id="map" style="width: 100%; height: 500px;"></div>
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg') }}"
+                                     class="align-center me-3"
+                                     alt=">Pin-Nadel"
+                                     title="Adresse">
+                                {{ stada_data.name }} ({{ stada_data.number }})<br>
+                                {{ stada_data.mailingAddress.street }}<br>
+                                {{ stada_data.mailingAddress.zipcode }} {{ stada_data.mailingAddress.city }}
+                            </li>
+                        </div>
+                        </div>
+                        <script>
+                            var map = L.map('map').setView([{{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1]}}, {{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0]}}], 15);
 
-                    var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; OpenStreetMap contributors'
-                    }).addTo(map);
+                            var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                attribution: '&copy; OpenStreetMap contributors'
+                            }).addTo(map);
 
-                    var railwayLayer = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
-                        attribution: '&copy; OpenRailwayMap contributors',
-                        opacity: 0.7
-                    }).addTo(map);
+                            var railwayLayer = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
+                                attribution: '&copy; OpenRailwayMap contributors',
+                                opacity: 0.7
+                            }).addTo(map);
 
-                    L.Icon.Default.imagePath = "";
+                            L.Icon.Default.imagePath = "";
 
-                    L.Icon.Default.mergeOptions({
-                        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-                        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
-                    });
+                            L.Icon.Default.mergeOptions({
+                                iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+                                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+                            });
 
-                    var marker = L.marker([{{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1]}}, {{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0]}}]).addTo(map);
+                            var marker = L.marker([{{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1]}}, {{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0]}}]).addTo(map);
 
-                    // Center the map properly after loading
-                    setTimeout(() => {
-                        map.invalidateSize();
-                    }, 100);
-                </script>
-
-
+                            // Center the map properly after loading
+                            setTimeout(() => {
+                                map.invalidateSize();
+                            }, 100);
+                        </script>
+                    {% else %}
+                        <li class="list-group-item d-flex">
+                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg') }}"
+                                 class="align-center me-3"
+                                 alt=">Pin-Nadel"
+                                 title="Adresse">
+                            {{ stada_data.name }} ({{ stada_data.number }})<br>
+                            {{ stada_data.mailingAddress.street }}<br>
+                            {{ stada_data.mailingAddress.zipcode }} {{ stada_data.mailingAddress.city }}
+                        </li>
+                    {% endif %}
             {% endif %}
         </div>
 
@@ -413,15 +451,7 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                             </div>
 
                             <div class="col-md">
-                                <li class="list-group-item d-flex">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg') }}"
-                                         class="align-center me-3"
-                                         alt=">Pin-Nadel"
-                                         title="Adresse">
-                                    {{ stada_data.name }} ({{ stada_data.number }})<br>
-                                    {{ stada_data.mailingAddress.street }}<br>
-                                    {{ stada_data.mailingAddress.zipcode }} {{ stada_data.mailingAddress.city }}
-                                </li>
+
                                 <li class="list-group-item d-flex">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
                                          class="align-center me-3"
@@ -438,6 +468,7 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/bookmark-check.svg') }}"
                                          class="align-center me-3" alt="Lesezeichen" title="Bahnhofsart">
                                     Bahnhofsart: {{ stada_data.productLine.productLine }}
+                                    ({{ stada_data.productLine.segment }})
                                 </li>
                                 <li class="list-group-item d-flex">
                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/tag.svg') }}"
