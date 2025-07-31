@@ -19,7 +19,8 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 
 - [x] Lageplan und Umgebungsplan ausgrauen, wenn nicht verfügbar
 - [x] JQuery aus CDN beziehen
-- [ ] Lizenz hinzufügen
+- [x] Lizenz hinzufügen
+- [ ] SEO-Optimierung
 - [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
 - [ ] Tiptools zu Bahnhofs- und Preiskategorie, 3-S-Zentrale und Fahrplanzentrale hinzufügen
 - [ ] Infrastrukturregister anbinden (über Koordinaten sollte das möglich sein)
