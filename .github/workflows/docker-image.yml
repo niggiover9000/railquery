@@ -2,7 +2,7 @@ name: Build and Push Railquery to Docker Hub with Version Tag
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "master" ]
 
 jobs:
   build-and-push:
