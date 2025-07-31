@@ -37,7 +37,8 @@ app.config['MAIL_USE_TLS'] = getenv('MAIL_USE_TLS')
 
 app.secret_key = token_urlsafe(32)
 
-print(f"Mail Server Config: {app.config['MAIL_SERVER']}, Port: {app.config['MAIL_PORT']}, User: {app.config['MAIL_USERNAME']}")
+print(
+    f"Mail Server Config: {app.config['MAIL_SERVER']}, Port: {app.config['MAIL_PORT']}, User: {app.config['MAIL_USERNAME']}")
 
 cache = Cache(app)
 mail = Mail(app)
@@ -291,13 +292,13 @@ def search():
 @cache.cached(timeout=1440)
 def impressum():
     return render_template('impressum.html', name=name, street=street, address=address,
-                           mail=mail_impressum, ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           mail=mail_impressum, title="Impressum", ANALYTICS_TAG=ANALYTICS_TAG,
+                           ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.route('/test', methods=['GET'])
 def test():
-    """Start page"""
     return render_template('test.html')
 
 
@@ -355,8 +356,8 @@ def station_sitemap():
 @app.route('/typen')
 @cache.cached(timeout=1440)
 def types():
-    return render_template('typen.html', art=art, ANALYTICS_TAG=ANALYTICS_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+    return render_template('typen.html', art=art, title="Typen von Betriebsstellen",
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.route('/contact', methods=['GET', 'POST'])
@@ -386,24 +387,23 @@ def contact():
             flash("Fehler beim Senden der Nachricht.", "danger")
 
         return redirect('/contact')
-    return render_template('contact.html', art=art, ANALYTICS_TAG=ANALYTICS_TAG,
+    return render_template('contact.html', title="Kontakt", ANALYTICS_TAG=ANALYTICS_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.route('/regionen')
 @cache.cached(timeout=1440)
 def regionen():
-    return render_template('regionen.html', region=region, ANALYTICS_TAG=ANALYTICS_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+    return render_template('regionen.html', region=region, title="Eisenbahndirektionen nach RIL100",
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.route('/betriebszustand')
 @cache.cached(timeout=1440)
 def betriebszustand():
     print(betriebszustände)
-    return render_template('betriebszustand.html', betriebszustaende=betriebszustände, ANALYTICS_TAG=ANALYTICS_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
-
+    return render_template('betriebszustand.html', betriebszustaende=betriebszustände, title="Betriebszustände",
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.template_filter('boolean_icon')

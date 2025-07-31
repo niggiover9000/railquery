@@ -58,8 +58,12 @@
     {% for row in result %}
     <title>{{ row[2] }} ({{ row[1] }}) | RIL100-Betriebsstellen-Suche</title>
     {% endfor %}
+    {% elif title %}
+         <title>{{ title }} | RIL100-Betriebsstellen-Suche</title>
+    {% else %}
+        <title>RailQuery | RIL100-Betriebsstellen-Suche</title>
     {% endif %}
-    <title>RailQuery | RIL100-Betriebsstellen-Suche</title>
+
 
     <link rel="canonical" href="https://railquery.de{{ request.path }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
