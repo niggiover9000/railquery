@@ -10,7 +10,9 @@
             {% for elements in betriebszustaende %}
                 <li class="list-group-item">
                     {{ elements }}
-                    <br>
+                    {% if betriebszustaende[elements] %}
+                        ({{ betriebszustaende[elements] }})
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

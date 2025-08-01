@@ -14,7 +14,7 @@ from json import loads, dumps
 
 from api import get_api_data
 from personal_data import name, street, address, mail_impressum
-from variables import art, sonderart, region, betriebszustände
+from variables import art, sonderart, region, betriebszustände, betriebsstellen
 
 from datetime import datetime, timedelta
 
@@ -356,8 +356,9 @@ def station_sitemap():
 @app.route('/typen')
 @cache.cached(timeout=1440)
 def types():
-    return render_template('typen.html', art=art, title="Typen von Betriebsstellen",
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+    return render_template('typen.html', betriebsstellen=betriebsstellen, title="Typen von Betriebsstellen",
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.route('/contact', methods=['GET', 'POST'])
@@ -395,7 +396,8 @@ def contact():
 @cache.cached(timeout=1440)
 def regionen():
     return render_template('regionen.html', region=region, title="Eisenbahndirektionen nach RIL100",
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.route('/betriebszustand')
@@ -403,7 +405,8 @@ def regionen():
 def betriebszustand():
     print(betriebszustände)
     return render_template('betriebszustand.html', betriebszustaende=betriebszustände, title="Betriebszustände",
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
 @app.template_filter('boolean_icon')
@@ -445,7 +448,8 @@ def details(code):
     date = get_date(result[0][6]) if result else None
     return render_template('details.html',
                            code=code, result=result, date=date, art=art, region=region, sonderart=sonderart,
-                           stada_data=stada, date_db=DATE, ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           betriebsstellen=betriebsstellen, betriebszustaende=betriebszustände, stada_data=stada,
+                           date_db=DATE, ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 

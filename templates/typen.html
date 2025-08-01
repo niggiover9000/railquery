@@ -4,13 +4,15 @@
 {% include "elements/navbar.html" %}
 <div class="container mt-5">
     <h1 class="mb-4 d-inline">Typen von Betriebsstellen</h1>
+    <p class="mt-2">Die Betriebsstellentypen werden durch §4 der <a href="https://www.gesetze-im-internet.de/ebo/__4.html" target="_blank">Eisenbahn-Bau-
+        und Betriebsordnung (EBO)</a> definiert.</p>
     <hr>
     <div class="row">
         <ul id="results" class="list-group mt-3 col-md-12 col-sm-12">
-            {% for elements in art %}
+            {% for elements in betriebsstellen %}
                 <li class="list-group-item">
-                    {{ elements }}: {{ art[elements] }}
-                    <br>
+                    <h5>{{ betriebsstellen[elements][0] }} ({{ elements }})</h5>
+                    {{ betriebsstellen[elements][1] }} {{ betriebsstellen[elements][2] }}
                 </li>
             {% endfor %}
         </ul>

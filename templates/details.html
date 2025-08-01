@@ -171,31 +171,38 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
                                     Typ: {{ row[4] }}
                                 {% endif %}
                             </div>
-                            <div class="p-1">
-                                <a href="typen">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                         class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                                         data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
-                                         data-bs-title="Es sind verschiedene Typen definiert. Für eine vollständige Liste klicken.">
-                                </a>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="d-flex">
-                                <div class="p-1 flex-grow-1">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/activity.svg') }}"
-                                         class="align-center me-3" alt="Herzschlag" title="Betriebszustand">
-                                    Betriebszustand: {{ row[5] }}
-                                </div>
+                            {% if betriebsstellen[row[4]] is defined and betriebsstellen[row[4]][1] %}
                                 <div class="p-1">
-                                    <a href="betriebszustand">
+                                    <a href="typen">
                                         <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
                                              class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
                                              data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
-                                             data-bs-title="Es sind verschiedene Betriebszustände definiert. Für eine vollständige Liste klicken.">
+                                             data-bs-title="{{ betriebsstellen[row[4]][1] }} Für eine vollständige Liste aller Typen klicken.">
                                     </a>
                                 </div>
-                            </div>
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item">
+                            {% if row[5] is not none %}
+                                <div class="d-flex">
+                                    <div class="p-1 flex-grow-1">
+                                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/activity.svg') }}"
+                                             class="align-center me-3" alt="Herzschlag" title="Betriebszustand">
+                                        Betriebszustand: {{ row[5] }}
+                                        {% if betriebszustaende[row[5]] %}
+                                            ({{ betriebszustaende[row[5]] }})
+                                        {% endif %}
+                                    </div>
+                                    <div class="p-1">
+                                        <a href="betriebszustand">
+                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
+                                                 class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                                                 data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
+                                                 data-bs-title="Es sind verschiedene Betriebszustände definiert. Für eine vollständige Liste klicken.">
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endif %}
                             <div class="p-1 w-100 flex-grow-1">
                                 <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/calendar-event.svg') }}"
                                      class="align-center me-3" alt="Kalender" title="Betriebszustand seit...">
