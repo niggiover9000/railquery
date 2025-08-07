@@ -17,11 +17,10 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 
 ## To Do
 
-- [x] Lageplan und Umgebungsplan ausgrauen, wenn nicht verfügbar
-- [x] JQuery aus CDN beziehen
-- [x] Lizenz hinzufügen
 - [ ] SEO-Optimierung
 - [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
+- [ ] Erklärung der Bahnhofs- und Preiskategorien
+- [ ] Optimierung der Suchgeschwindigkeit
 - [ ] Tiptools zu Bahnhofs- und Preiskategorie, 3-S-Zentrale und Fahrplanzentrale hinzufügen
 - [ ] Infrastrukturregister anbinden (über Koordinaten sollte das möglich sein)
 - [ ] Link zur [Abfahrtstafel](https://iris.noncd.db.de) ausblenden wenn nicht verfügbar
