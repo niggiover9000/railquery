@@ -1,0 +1,32 @@
+{% include "elements/header.html" %}
+</head>
+<body>
+{% include "elements/navbar.html" %}
+<div class="container mt-5">
+    <h1 class="mb-4 d-inline">Open-Source-Lizenzen</h1>
+    <p class="mt-2">Diese Anwendung verwendet Open-Source-Software. Nachfolgend sind die verwendeten Bibliotheken und
+        ihre jeweiligen Lizenzen aufgeführt. Diese Website wird unter der <a
+                href="https://github.com/niggiover9000/railquery?tab=GPL-3.0-1-ov-file#readme" target="_blank">GPL-3.0
+            license</a> zur Verfügung gestellt.</p>
+    <hr>
+    <div class="row">
+        <ul id="results" class="list-group mt-3 col-md-12 col-sm-12">
+            {% for elements in license %}
+                <li class="list-group-item">
+                    <h5 class="mb-3">{{ elements }}</h5>
+                    <p class="mb-0">Lizenz: {{ license[elements][0] }}</p>
+                    <p class="mb-0">Software-Version: {{ license[elements][1] }}</p>
+                    <p>© <span class="copyright-year"></span>, {{ license[elements][2] }}</p>
+                </li>
+            {% endfor %}
+            <script>
+                document.querySelectorAll('.copyright-year').forEach(function (el) {
+                    el.textContent = new Date().getFullYear();
+                });
+            </script>
+        </ul>
+    </div>
+    {% include "elements/footer.html" %}
+</div>
+</body>
+</html>

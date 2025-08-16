@@ -14,7 +14,7 @@ from json import loads, dumps
 
 from api import get_api_data
 from personal_data import name, street, address, mail_impressum
-from variables import art, sonderart, region, betriebszustände, betriebsstellen
+from variables import art, sonderart, region, betriebszustände, betriebsstellen, licenses
 
 from datetime import datetime, timedelta
 
@@ -357,6 +357,14 @@ def station_sitemap():
 @cache.cached(timeout=1440)
 def types():
     return render_template('typen.html', betriebsstellen=betriebsstellen, title="Typen von Betriebsstellen",
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+
+
+@app.route('/license')
+@cache.cached(timeout=1440)
+def license():
+    return render_template('licenses.html', license=licenses, title="Open-Source-Lizenzen",
                            ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 

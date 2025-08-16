@@ -197,4 +197,15 @@ betriebsstellen = {"AA": ["Abnehmeranlage", "", ""],
                    "vp-Hp": ["Verpachteter Haltepunkt",
                              "Bahnanlage, die im Eigentum der Deutschen Bahn AG steht, aber an Dritte verpachtet ist.",
                              "Siehe Haltepunkt."]
-                     }
+                   }
+
+licenses = {"python-dotenv": ["BSD-3-Clause", "1.1.1", "Saurabh Kumar und Mitwirkende"],
+            "requests": ["Apache-2.0", "2.32.4", "Kenneth Reitz und Mitwirkende"],
+            "Flask": ["BSD-3-Clause", "3.1.1", "Pallets Project"],
+            "waitress": ["Zope Public License 2.1", "3.0.2", "Zope Foundation und Mitwirkende"],
+            "pandas": ["BSD-3-Clause", "2.3.1", "Pandas Development Team"],
+            "urllib3": ["MIT License", "2.5.0", "urllib3-Entwickler"],
+            "openpyxl": ["MIT License", "3.1.5", "openpyxl-Entwickler"],
+            "flask_sitemap": ["MIT License", "0.4.0", "Sergio Oliveira"],
+            "flask_caching": ["BSD-3-Clause", "2.3.1", "Flask-Caching-Entwickler"],
+            "flask_mail": ["BSD-3-Clause", "0.10.0", "Dan Jacob"]}
