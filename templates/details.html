@@ -41,7 +41,7 @@
             "@type": "GeoCoordinates",
             "latitude": "{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1] }}",
                 "longitude": "{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }}"
-                }
+                },
     {% endif %}
             "description": "Betriebsstelle {{ row[2] }} ({{ row[1] }}) mit RIL100-Kürzel. Informationen zu Gleisplänen, Ausstattung, Stellwerken und Infrastruktur."
         {% endfor %}
