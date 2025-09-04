@@ -20,8 +20,9 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 - [ ] SEO-Optimierung
 - [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
 - [ ] Erklärung der Bahnhofs- und Preiskategorien
-- [ ] Optimierung der Suchgeschwindigkeit
-- [ ] Tiptools zu Bahnhofs- und Preiskategorie, 3-S-Zentrale und Fahrplanzentrale hinzufügen
+- [x] Optimierung der Suchgeschwindigkeit
+- [ ] Tooltips durch Accordion ersetzen
+- [ ] Tooltips zu Bahnhofs- und Preiskategorie, 3-S-Zentrale und Fahrplanzentrale hinzufügen
 - [ ] Infrastrukturregister anbinden (über Koordinaten sollte das möglich sein)
 - [ ] Link zur [Abfahrtstafel](https://iris.noncd.db.de) ausblenden wenn nicht verfügbar
 - [ ] Definitionen zu Betriebsstellen hinzufügen (z.B. "Abzweigstellen sind Blockstellen der freien Strecke, wo Züge von einer Strecke auf eine andere Strecke übergehen können.")
