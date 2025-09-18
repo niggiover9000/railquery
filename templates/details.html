@@ -9,7 +9,7 @@
             "branchCode": "{{ row[0] }}",
             "identifier": "{{ row[1] }}",
             "alternateName": "{{ row[3] }}",
-                    {% if stada_data is defined
+        {% if stada_data is defined
                   and stada_data
                   and stada_data.DBinformation is defined %}
             "openingHours": ["Mo {{ stada_data.DBinformation.availability.monday.fromTime }}-
@@ -43,8 +43,9 @@
                 "longitude": "{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }}"
                 },
     {% endif %}
-            "description": "Betriebsstelle {{ row[2] }} ({{ row[1] }}) mit RIL100-Kürzel. Informationen zu Gleisplänen, Ausstattung, Stellwerken und Infrastruktur."
-        {% endfor %}
+        "description": "Betriebsstelle {{ row[2] }} ({{ row[1] }}
+        ) mit RIL100-Kürzel. Informationen zu Gleisplänen, Ausstattung, Stellwerken und Infrastruktur."
+    {% endfor %}
 }
 </script>
 
@@ -105,110 +106,157 @@
 
 
                         {% if row[1][0] in region %}
-                            <li class="list-group-item d-flex">
-                                <div class="p-1 flex-grow-1 flex-grow-1">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
-                                         class="align-center me-3" alt="Karte" title="Regionale Lage">
-                                    Regionale Lage:
-                                    {{ region[row[1][0]] }} ({{ row[1][0] }})
+                            <li class="list-group-item p-0">
+                                <div class="accordion accordion-flush" id="accordionFlush1">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapse1"
+                                                    aria-expanded="false" aria-controls="flush-collapse1">
+                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
+                                                     class="align-center me-3" alt="Karte" title="Regionale Lage">
+                                                Regionale Lage:
+                                                {{ region[row[1][0]] }} ({{ row[1][0] }})
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapse1" class="accordion-collapse collapse"
+                                             data-bs-parent="#accordionFlushExample">
+                                            <div class="accordion-body">Die regionale Lage ergibt sich aus dem ersten
+                                                Buchstaben des RIL100-Kürzels. Insgesamt gibt es 15 Regionen, die sich
+                                                aus den ehemaligen Eisenbahn-Direktionen in Deutschland
+                                                ergeben, sowie weitere Sonderbuchstaben. Der Buchstabe "{{ row[1][0] }}"
+                                                steht für "{{ region[row[1][0]] }}". <a href="/regionen">Hier</a> gibt
+                                                es eine Übersicht aller möglichen Kürzel.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                </div>
-                                <div class="p-1">
-                                    <a href="regionen">
-                                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                             class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                                             data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
-                                             data-bs-title="Die regionale Lage ergibt sich aus dem ersten Buchstaben
-                                         des RIL100-Kürzels. Insgesamt gibt es 10 Regionen. Für eine vollständige Liste klicken.">
-                                    </a>
-                                </div>
                             </li>
                         {% endif %}
                         {% if row[0] %}
-                            <li class="list-group-item d-flex">
-                                <div class="p-1 flex-grow-1">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/upc-scan.svg') }}"
-                                         class="align-center me-3" alt="Barcode" title="Code">
-                                    Primary Location Code (PLC): {{ row[0] }}
-                                </div>
-                                <div class="p-1">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                         class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                                         data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
-                                         data-bs-title="Der PLC ist ein europaweit eindeutiger Code für Betriebsstellen und setzt sich aus einem zweistellige Ländercode und einer 5-stelligen Nummer zusammen.
-Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt, das unter anderem auf dem PLC basiert.">
+                            <li class="list-group-item p-0">
+                                <div class="accordion accordion-flush" id="accordionFlush2">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapse2"
+                                                    aria-expanded="false" aria-controls="flush-collapse2">
+                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/upc-scan.svg') }}"
+                                                     class="align-center me-3" alt="Barcode" title="Code">
+                                                Primary Location Code (PLC): {{ row[0] }}
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapse2" class="accordion-collapse collapse"
+                                             data-bs-parent="#accordionFlush2">
+                                            <div class="accordion-body">Der PLC ist ein europaweit eindeutiger Code für
+                                                Betriebsstellen und setzt sich aus einem zweistelligen Ländercode und
+                                                einer 5-stelligen Nummer zusammen. Im Rahmen der <a
+                                                        href="https://www.dbinfrago.com/web/schienennetz/netzzugang-und-regulierung/taf-tap-tsi/allgemein-11089206#"
+                                                        target="_blank">EU-Verordnung
+                                                    TAF/TAP TSI</a> wird bis 2027 auf ein System zur Interoperabilität
+                                                der Telematik im Güter- und Personenverkehr umgestellt, das unter
+                                                anderem den PLC als eindeutigen Indikator nutzt.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </li>
                         {% endif %}
                         {% if stada_data %}
-                            <li class="list-group-item d-flex">
-                                <div class="p-1 flex-grow-1">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/crosshair.svg') }}"
-                                         class="align-center me-3" alt="Barcode" title="Code">
-                                    IFOPT: {{ stada_data.ifopt }}
-                                </div>
-                                <div class="p-1">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                         class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                                         data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
-                                         data-bs-title="IFOPT steht für 'Identification of Fixed Objects in Public Transport'.
-                                         Die IFOPT-Nummer ist eine international eindeutige Nummer zur Referenzierung von ÖPNV-Haltestellen.">
+                            <li class="list-group-item p-0">
+                                <div class="accordion accordion-flush" id="accordionFlush3">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapse3"
+                                                    aria-expanded="false" aria-controls="flush-collapse3">
+                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/crosshair.svg') }}"
+                                                     class="align-center me-3" alt="Barcode" title="Code">
+                                                IFOPT: {{ stada_data.ifopt }}
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapse3" class="accordion-collapse collapse"
+                                             data-bs-parent="#accordionFlush3">
+                                            <div class="accordion-body">IFOPT steht für <a
+                                                    href="https://en.wikipedia.org/wiki/Identification_of_Fixed_Objects_in_Public_Transport"
+                                                    target="_blank">'Identification
+                                                of Fixed Objects in Public Transport'.</a> Die IFOPT-Nummer ist eine
+                                                international eindeutige Nummer zur Referenzierung von
+                                                ÖPNV-Haltestellen.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </li>
                         {% endif %}
-                        <li class="list-group-item d-flex">
-                            <div class="p-1 flex-grow-1">
-                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg') }}"
-                                     class="align-center me-3" alt="Sprechblase mit Zitat" title="Typ">
-                                {% if row[4].startswith("NE") == True %}
-                                    Typ: {{ sonderart["NE-"] }}{{ art[row[4]] }} ({{ row[4] }})
-                                {% elif row[4].startswith("vp-") == True %}
-                                    Typ: {{ sonderart["vp-"] }} {{ art[row[4] | replace("vp-", "")] }} ({{ row[4] }})
-                                {% elif row[4] in art %}
-                                    Typ: {{ art[row[4]] }} ({{ row[4] }})
-                                {% else %}
-                                    Typ: {{ row[4] }}
-                                {% endif %}
-                            </div>
-                            {% if betriebsstellen[row[4]] is defined and betriebsstellen[row[4]][1] %}
-                                <div class="p-1">
-                                    <a href="typen">
-                                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                             class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                                             data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
-                                             data-bs-title="{{ betriebsstellen[row[4]][1] }} Für eine vollständige Liste aller Typen klicken.">
-                                    </a>
-                                </div>
-                            {% endif %}
-                        </li>
-                        <li class="list-group-item">
-                            {% if row[5] is not none %}
-                                <div class="d-flex">
-                                    <div class="p-1 flex-grow-1">
-                                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/activity.svg') }}"
-                                             class="align-center me-3" alt="Herzschlag" title="Betriebszustand">
-                                        Betriebszustand: {{ row[5] }}
-                                        {% if betriebszustaende[row[5]] %}
-                                            ({{ betriebszustaende[row[5]] }})
+                        <li class="list-group-item p-0">
+                            <div class="accordion accordion-flush" id="accordionFlush4">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#flush-collapse4"
+                                                aria-expanded="false" aria-controls="flush-collapse4">
+                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg') }}"
+                                                 class="align-center me-3" alt="Sprechblase mit Zitat" title="Typ">
+                                            {% if row[4].startswith("NE") == True %}
+                                                Typ: {{ sonderart["NE-"] }}{{ art[row[4]] }} ({{ row[4] }})
+                                            {% elif row[4].startswith("vp-") == True %}
+                                                Typ: {{ sonderart["vp-"] }} {{ art[row[4] | replace("vp-", "")] }} (
+                                                {{ row[4] }})
+                                            {% elif row[4] in art %}
+                                                Typ: {{ art[row[4]] }} ({{ row[4] }})
+                                            {% else %}
+                                                Typ: {{ row[4] }}
+                                            {% endif %}
+                                        </button>
+                                    </h2>
+                                    <div id="flush-collapse4" class="accordion-collapse collapse"
+                                         data-bs-parent="#accordionFlush4">
+                                        {% if betriebsstellen[row[4]] is defined and betriebsstellen[row[4]][1] %}
+                                            <div class="accordion-body">{{ betriebsstellen[row[4]][1] }} <a
+                                                    href="/typen">Hier</a> gibt
+                                                es eine Übersicht aller möglichen Betriebsstellentypen.
+                                            </div>
+                                        {% else %}
+                                            <div class="accordion-body">Für diesen Betriebsstellentyp ist keine offizielle Definition hinterlegt. <a
+                                                    href="/typen">Hier</a> gibt
+                                                es eine Übersicht aller möglichen Betriebsstellentypen.
+                                            </div>
                                         {% endif %}
                                     </div>
-                                    <div class="p-1">
-                                        <a href="betriebszustand">
-                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                                 class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                                                 data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
-                                                 data-bs-title="Es sind verschiedene Betriebszustände definiert. Für eine vollständige Liste klicken.">
-                                        </a>
+                                </div>
+                            </div>
+                        </li>
+                        {% if row[5] is not none %}
+                            <li class="list-group-item p-0">
+                                <div class="accordion accordion-flush" id="accordionFlush5">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapse5"
+                                                    aria-expanded="false" aria-controls="flush-collapse5">
+                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/activity.svg') }}"
+                                                     class="align-center me-3" alt="Herzschlag" title="Betriebszustand">
+                                                Betriebszustand: {{ row[5] }}
+                                                {% if betriebszustaende[row[5]] %}
+                                                    ({{ betriebszustaende[row[5]] }})
+                                                {% endif %}
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapse5" class="accordion-collapse collapse"
+                                             data-bs-parent="#accordionFlush5">
+                                            <div class="accordion-body">Diese Betriebsstelle
+                                                ist
+                                                seit {{ date[0] }}.{{ date[1] }}.{{ date[2] }} im Betriebszustand
+                                                "{{ row[5] }}". <a href="/betriebszustand">Hier</a> gibt
+                                                es eine Übersicht aller möglichen Betriebszustände.
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            {% endif %}
-                            <div class="p-1 w-100 flex-grow-1">
-                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/calendar-event.svg') }}"
-                                     class="align-center me-3" alt="Kalender" title="Betriebszustand seit...">
-                                seit: {{ date[0] }}.{{ date[1] }}.{{ date[2] }}
-                            </div>
-
-                        </li>
+                            </li>
+                        {% endif %}
                         </ul>
 
                         <div class="card list-group mt-3" id="infoContainer-1">
@@ -237,22 +285,26 @@ Im Rahmen der EU-Verordnung TAF/TAP TSI wird bis 2027 auf ein System umgestellt,
 
                                 {% if stada_data %}
 
-                                    <button class="btn btn-primary mb-1 me-2 col-lg-5 col-sm-12" role="button"
+                                    <button class="btn btn-primary mb-1 me-1 col-lg-3 col-sm-12" role="button"
                                             id="loadDataBtn-4"
                                             onclick="openTab('https://www.bahnhof.de/downloads/station-plans/{{ stada_data.number }}.pdf')"
                                             disabled>
-                                        Bahnhofsplan anzeigen
+                                        Bahnhofsplan
                                     </button>
 
-                                    <button class="btn btn-primary mb-1 col-lg-6 col-sm-12" role="button"
+                                    <button class="btn btn-primary mb-1 me-1 col-lg-4 col-sm-12" role="button"
                                             id="loadDataBtn-5"
                                             onclick="openTab('https://www.bahnhof.de/downloads/replacement-service-maps/{{ stada_data.number }}.pdf')"
                                             disabled>
-                                        Umgebungsplan anzeigen
+                                        Umgebungsplan
                                     </button>
 
+                                    <button class="btn btn-primary mb-1 col-lg-4 col-sm-12" role="button"
+                                            id="loadDataBtn-5"
+                                            onclick="openTab('https://geoviewer.deutschebahn.com/maps/#/context/ISR/275618?center={{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }},{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1] }}&zoom=8')">
+                                        Infrastrukturregister
+                                    </button>
                                 {% endif %}
-
                                 <script>
                                     function openTab(url) {
                                         window.open(url, '_blank');
