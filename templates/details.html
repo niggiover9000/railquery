@@ -283,7 +283,7 @@
                                     Live-Abfahrtszeiten
                                 </button>
 
-                                {% if stada_data %}
+                                {% if stada_data and stada_data.ril100Identifiers[0].geographicCoordinates %}
 
                                     <button class="btn btn-primary mb-1 me-1 col-lg-3 col-sm-12" role="button"
                                             id="loadDataBtn-4"
@@ -303,6 +303,21 @@
                                             id="loadDataBtn-5"
                                             onclick="openTab('https://geoviewer.deutschebahn.com/maps/#/context/ISR/275618?center={{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }},{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1] }}&zoom=8')">
                                         Infrastrukturregister
+                                    </button>
+                                    {% elif stada_data %}
+
+                                    <button class="btn btn-primary mb-1 me-1 col-lg-5 col-sm-12" role="button"
+                                            id="loadDataBtn-4"
+                                            onclick="openTab('https://www.bahnhof.de/downloads/station-plans/{{ stada_data.number }}.pdf')"
+                                            disabled>
+                                        Bahnhofsplan
+                                    </button>
+
+                                    <button class="btn btn-primary mb-1 me-1 col-lg-6 col-sm-12" role="button"
+                                            id="loadDataBtn-5"
+                                            onclick="openTab('https://www.bahnhof.de/downloads/replacement-service-maps/{{ stada_data.number }}.pdf')"
+                                            disabled>
+                                        Umgebungsplan
                                     </button>
                                 {% endif %}
                                 <script>

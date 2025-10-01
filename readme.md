@@ -17,8 +17,7 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 
 ## To Do
 
-- [ ] https://railquery.de/RFLW führt zu einem Internal Server Error
-- [ ] https://railquery.de/RFGS zeigt wenig Infos an, ebenso wie RFG
+- [ ] https://railquery.de/RFLW übernimmt nicht das zweispaltige Design, weil die Koordinaten fehlen
 - [ ] SEO-Optimierung
 - [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
 - [ ] Erklärung der Bahnhofs- und Preiskategorien
