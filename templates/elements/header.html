@@ -50,8 +50,6 @@
 
     <meta name="theme-color" content="#198754">
     <meta name="robots" content="index, follow">
-    <meta name="description"
-          content="Suchmaschine für RIL100-Betriebsstellen (DS100) der Deutschen Bahn. Downloads von Gleis- und Umgebungsplänen, Infos zu Stellwerken, Bahnhofsausstattung und Infrastruktur.">
     <meta name="author" content="railquery.de">
     <meta name="apple-mobile-web-app-title" content="RailQuery">
     <meta name="google-adsense-account" content="{{ ADSENSE_CLIENT }}">
@@ -62,13 +60,19 @@
         {% for row in result %}
             <title>{{ row[2] }} ({{ row[1] }}) | RIL100-Betriebsstellen-Suche</title>
             <meta property="og:title" content="{{ row[2] }} ({{ row[1] }}) | RIL100-Betriebsstellen-Suche">
+            <meta name="description"
+          content="Downloads von Gleis- und Umgebungsplänen, Infos zu Stellwerken etc. für Betriebsstelle {{ row[2] }} (RIL100-Kürzel: {{ row[1] }}).">
         {% endfor %}
     {% elif title %}
         <title>{{ title }} | RIL100-Abkürzungen: Betriebsstellen-Suche</title>
         <meta property="og:title" content="{{ title }} | RIL100-Abkürzungen: Betriebsstellen-Suche">
+        <meta name="description"
+          content="{{ title }}. railquery.de ist eine Suchmaschine für RIL100-Betriebsstellen (DS100) der Deutschen Bahn.">
     {% else %}
         <title>RailQuery | RIL100-Abkürzungen: Betriebsstellen-Suche</title>
         <meta property="og:title" content="RailQuery | RIL100-Abkürzungen: Betriebsstellen-Suche">
+        <meta name="description"
+          content="Suchmaschine für RIL100-Betriebsstellen (DS100) der Deutschen Bahn. Downloads von Gleis- und Umgebungsplänen, Infos zu Stellwerken, Bahnhofsausstattung etc...">
     {% endif %}
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="railquery.de">
