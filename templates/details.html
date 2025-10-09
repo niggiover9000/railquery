@@ -646,7 +646,7 @@
                                     <div class="row">
                                         <div class="col-10">
                                             <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/cloud-fog2.svg') }}"
-                                                 class="align-center me-3" alt="Smoke" title="Zulassung Dampfloks">
+                                                 class="align-center me-3" alt="Rauchwolke" title="Zulassung Dampfloks">
                                             Zulassung Dampfloks:
                                         </div>
 
@@ -657,17 +657,17 @@
                                                         <img src="/static/img/bootstrap-icons-1.11.3/check-square.svg"
                                                              class="align-center ms-3"
                                                              style="filter: invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);"
-                                                             alt="Unrestricted" title="Unrestricted">
+                                                             alt="Uneingeschränkt" title="Uneingeschränkt">
                                                     {% elif ril100.steamPermission == "restricted" %}
                                                         <img src="/static/img/bootstrap-icons-1.11.3/slash-square.svg"
                                                              class="align-center ms-3"
                                                              style="filter: invert(60%) sepia(93%) saturate(1400%) hue-rotate(1deg) brightness(90%) contrast(105%);"
-                                                             alt="Restricted" title="Restricted">
+                                                             alt="Eingeschränkt" title="Eingeschränkt">
                                                     {% elif ril100.steamPermission == "entryBan" %}
                                                         <img src="/static/img/bootstrap-icons-1.11.3/x-square.svg"
                                                              class="align-center ms-3"
                                                              style="filter: invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"
-                                                             alt="Entry Ban" title="Entry Ban">
+                                                             alt="Einfahrtsverbot" title="Einfahrtsverbot">
                                                     {% endif %}
                                                 {% endif %}
                                             {% endfor %}
