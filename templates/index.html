@@ -72,18 +72,30 @@
 </body>
 <script>
     $(document).ready(function () {
+        let debounceTimer;
+
         $('#searchInput').on('input', function () {
-            var query = $(this).val();
-            if (query.length > 0) {
-                $.get('/search', {q: query}, function (data) {
-                    $('#results').empty();
-                    data.forEach(function (item) {
-                        $('#results').append('<li class="list-group-item"><a class="text-black link-underline-opacity-0 link-underline-opacity-75-hover link-underline-dark" href=' + encodeURIComponent(item.code) + '>' + item.code + ' - ' + item.name + '</a></li>');
+            clearTimeout(debounceTimer); // alten Timer abbrechen
+            let query = $(this).val();
+
+            debounceTimer = setTimeout(function () {
+                if (query.length > 0) {
+                    $.get('/search', {q: query}, function (data) {
+                        $('#results').empty();
+                        data.forEach(function (item) {
+                            $('#results').append(
+                                '<li class="list-group-item">' +
+                                '<a class="text-black link-underline-opacity-0 link-underline-opacity-75-hover link-underline-dark" ' +
+                                'href="' + encodeURIComponent(item.code) + '">' +
+                                item.code + ' - ' + item.name +
+                                '</a></li>'
+                            );
+                        });
                     });
-                });
-            } else {
-                $('#results').empty();
-            }
+                } else {
+                    $('#results').empty();
+                }
+            }, 200); // 200 ms warten nach Tippstopp
         });
     });
 </script>
