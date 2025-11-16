@@ -5,7 +5,7 @@ from urllib.parse import unquote
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, abort, url_for, flash, redirect
-from flask_sitemap import Sitemap
+from flask_sitemap import Sitemap, sitemap_page_needed
 from flask_caching import Cache
 from flask_mail import Mail, Message
 from requests import head
@@ -27,6 +27,7 @@ CONSENTMANAGER_ID = getenv('CONSENTMANAGER_ID')
 app = Flask(__name__)
 app.config["SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS"] = True
 app.config["SITEMAP_URL_SCHEME"] = "https"
+app.config['SITEMAP_VIEW_DECORATORS'] = [cache.cached(timeout=86400)]  # Cache sitemap for 1 day
 app.config['CACHE_TYPE'] = 'SimpleCache'
 app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(getenv('MAIL_PORT'))
@@ -42,7 +43,26 @@ print(
 
 cache = Cache(app)
 mail = Mail(app)
-ext = Sitemap(app=app)
+sitemap = Sitemap(app=app)
+
+# Add dynamic sitemap entries for stations
+@sitemap_page_needed.connect
+def add_station_pages(sitemap, **kwargs):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT [RL100-Code] FROM betriebsstellen")
+    stations = cursor.fetchall()
+    conn.close()
+    
+    for station in stations:
+        sitemap.add(
+            'details',
+            'details',
+            code=station[0],
+            lastmod=datetime.now().strftime('%Y-%m-%d'),
+            changefreq='monthly',
+            priority=0.8
+        )
 
 
 def get_db_connection(database='betriebsstellen.db'):
@@ -465,6 +485,7 @@ def details(code):
 @cache.cached(timeout=300)
 def robots():
     return send_from_directory(app.static_folder, "robots.txt")
+
 
 
 @app.route("/ads.txt")
