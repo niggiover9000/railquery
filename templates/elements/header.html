@@ -49,11 +49,30 @@
 
 
     <meta name="theme-color" content="#198754">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="description"
+          content="{{ description|default('Suchmaschine für RIL100-Betriebsstellen (DS100) der Deutschen Bahn. Downloads von Gleis- und Umgebungsplänen, Infos zu Stellwerken, Bahnhofsausstattung und Infrastruktur.', true) }}">
     <meta name="robots" content="index, follow">
     <meta name="author" content="railquery.de">
     <meta name="apple-mobile-web-app-title" content="RailQuery">
     <meta name="google-adsense-account" content="{{ ADSENSE_CLIENT }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://railquery.de{{ request.path }}">
+    <meta property="og:title" content="{{ og_title|default('RailQuery | RIL100-Abkürzungen: Betriebsstellen-Suche', true) }}">
+    <meta property="og:description" content="{{ og_description|default('Umfassende Informationen zu deutschen Bahnhöfen, Gleisplänen und Betriebszuständen der Deutschen Bahn.', true) }}">
+    <meta property="og:image" content="{{ og_image|default(url_for('static', filename='img/og-image.png', _external=True), true) }}">
+    <meta property="og:site_name" content="RailQuery">
+    <meta property="og:locale" content="de_DE">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://railquery.de{{ request.path }}">
+    <meta name="twitter:title" content="{{ twitter_title|default('RailQuery | RIL100-Abkürzungen: Betriebsstellen-Suche', true) }}">
+    <meta name="twitter:description" content="{{ twitter_description|default('Umfassende Informationen zu deutschen Bahnhöfen, Gleisplänen und Betriebszuständen der Deutschen Bahn.', true) }}">
+    <meta name="twitter:image" content="{{ twitter_image|default(url_for('static', filename='img/og-image.png', _external=True), true) }}">
 
 
     {% if result %}
