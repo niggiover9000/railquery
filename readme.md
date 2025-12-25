@@ -21,11 +21,10 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 - [ ] SEO-Optimierung
 - [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
 - [ ] Erklärung der Bahnhofs- und Preiskategorien
-- [x] Tooltips durch Accordion ersetzen
+- [ ] OpenRailwayMap-Karte mit allen Bahnhöfen in Deutschland auf die Startseite
 - [ ] Accordion zu Bahnhofs- und Preiskategorie, 3-S-Zentrale und Fahrplanzentrale hinzufügen
 - [ ] Infrastrukturregister anbinden (über Koordinaten sollte das möglich sein)
 - [ ] Link zur [Abfahrtstafel](https://iris.noncd.db.de) ausblenden wenn nicht verfügbar
-- [x] Definitionen zu Betriebsstellen hinzufügen (z.B. "Abzweigstellen sind Blockstellen der freien Strecke, wo Züge von einer Strecke auf eine andere Strecke übergehen können.")
 - [ ] Link zu FAQ einfügen
 - [ ] Captcha für Abfragen einfügen
 - [ ] [FaSta](https://developers.deutschebahn.com/db-api-marketplace/apis/product/fasta) anbinden.
