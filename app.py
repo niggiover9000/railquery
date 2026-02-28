@@ -22,6 +22,7 @@ load_dotenv(dotenv_path='.env')
 
 DATE = getenv('DATE')
 ANALYTICS_TAG = getenv('ANALYTICS_TAG')
+TAG_MANAGER_TAG = getenv('TAG_MANAGER_TAG')
 ADSENSE_CLIENT = getenv('ADSENSE_CLIENT')
 CONSENTMANAGER_ID = getenv('CONSENTMANAGER_ID')
 app = Flask(__name__)
@@ -67,7 +68,7 @@ def get_db_connection(database='betriebsstellen.db'):
 @app.route('/')
 def index():
     """Start page"""
-    return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG,
+    return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
@@ -293,6 +294,7 @@ def search():
 def impressum():
     return render_template('impressum.html', name=name, street=street, address=address,
                            mail=mail_impressum, title="Impressum", ANALYTICS_TAG=ANALYTICS_TAG,
+                           TAG_MANAGER_TAG=TAG_MANAGER_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
@@ -357,7 +359,7 @@ def station_sitemap():
 @cache.cached(timeout=1440)
 def types():
     return render_template('typen.html', betriebsstellen=betriebsstellen, title="Typen von Betriebsstellen",
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
@@ -365,7 +367,7 @@ def types():
 @cache.cached(timeout=1440)
 def license():
     return render_template('licenses.html', license=licenses, title="Open-Source-Lizenzen",
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
@@ -397,6 +399,7 @@ def contact():
 
         return redirect('/contact')
     return render_template('contact.html', title="Kontakt", ANALYTICS_TAG=ANALYTICS_TAG,
+                           TAG_MANAGER_TAG=TAG_MANAGER_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
@@ -404,7 +407,7 @@ def contact():
 @cache.cached(timeout=1440)
 def regionen():
     return render_template('regionen.html', region=region, title="Eisenbahndirektionen nach RIL100",
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
@@ -413,7 +416,7 @@ def regionen():
 def betriebszustand():
     print(betriebszustände)
     return render_template('betriebszustand.html', betriebszustaende=betriebszustände, title="Betriebszustände",
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
@@ -457,7 +460,8 @@ def details(code):
     return render_template('details.html',
                            code=code, result=result, date=date, art=art, region=region, sonderart=sonderart,
                            betriebsstellen=betriebsstellen, betriebszustaende=betriebszustände, stada_data=stada,
-                           date_db=DATE, ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
+                           date_db=DATE, ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
+                           ADSENSE_CLIENT=ADSENSE_CLIENT,
                            CONSENTMANAGER_ID=CONSENTMANAGER_ID)
 
 
@@ -475,7 +479,7 @@ def ads():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template("404.html", date=DATE, error=e, ANALYTICS_TAG=ANALYTICS_TAG,
+    return render_template("404.html", date=DATE, error=e, ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID), 404
 
 
