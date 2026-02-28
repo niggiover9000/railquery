@@ -219,8 +219,9 @@
                                                 es eine Übersicht aller möglichen Betriebsstellentypen.
                                             </div>
                                         {% else %}
-                                            <div class="accordion-body">Für diesen Betriebsstellentyp ist keine offizielle Definition hinterlegt. <a
-                                                    href="/typen">Hier</a> gibt
+                                            <div class="accordion-body">Für diesen Betriebsstellentyp ist keine
+                                                offizielle Definition hinterlegt. <a
+                                                        href="/typen">Hier</a> gibt
                                                 es eine Übersicht aller möglichen Betriebsstellentypen.
                                             </div>
                                         {% endif %}
@@ -304,7 +305,7 @@
                                             onclick="openTab('https://geoviewer.deutschebahn.com/maps/#/context/ISR/275618?center={{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }},{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1] }}&zoom=8')">
                                         Infrastrukturregister
                                     </button>
-                                    {% elif stada_data %}
+                                {% elif stada_data %}
 
                                     <button class="btn btn-primary mb-1 me-1 col-lg-5 col-sm-12" role="button"
                                             id="loadDataBtn-4"
@@ -614,7 +615,7 @@
                                                 <img src="{{ url_for('static', filename='img/icons-8-custom/stairs.svg') }}"
                                                      class="align-center me-3" alt="Stufen"
                                                      title="Barrierefreier Zugang">
-                                                Barrierefreier Zugang:
+                                                Barrierefreier Zugang
                                             </div>
                                             {% if stada_data.hasSteplessAccess == "partial" %}
                                                 <div class="col">
@@ -647,7 +648,7 @@
                                         <div class="col-10">
                                             <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/cloud-fog2.svg') }}"
                                                  class="align-center me-3" alt="Rauchwolke" title="Zulassung Dampfloks">
-                                            Zulassung Dampfloks:
+                                            Zulassung Dampfloks
                                         </div>
 
                                         <div class="col">
@@ -678,17 +679,99 @@
 
                                 </li>
                                 {% for key in [
-                                    'hasTaxiRank', 'hasWiFi', 'hasDBLounge', 'hasParking',
-                                    'hasBicycleParking', 'hasLockerSystem', 'hasPublicFacilities', 'hasLostAndFound',
-                                    'hasTravelCenter', 'hasCarRental', 'hasRailwayMission',
-                                    'hasTravelNecessities', 'hasLocalPublicTransport'
+                                    'hasLocalPublicTransport', 'hasTaxiRank', 'hasCarRental', 'hasParking', 'hasBicycleParking', 'hasWiFi',
+                                    'hasLockerSystem', 'hasPublicFacilities', 'hasLostAndFound',
+                                    'hasTravelNecessities', 'hasRailwayMission', 'hasTravelCenter', 'hasDBLounge',
                                 ] %}
                                     {% set feature_value = stada_data.get(key, False) %}
                                     {{ (key, feature_value) | add_icons | safe }}
                                 {% endfor %}
-                                <div id="feature-hasLocalPublicTransport"></div>
-                                <li class="list-group-item">
-                                    <div class="accordion" id="accordionExample">
+
+                                 {% if stada_data is defined and stada_data and stada_data.DBinformation is defined %}
+                                     <li class="list-group-item">
+                                         <div class="row">
+                                             <div class="col-10">
+                                                 <div class="d-flex align-items-start">
+                                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/info-square.svg') }}"
+                                                          class="align-center me-3 mt-1" alt="DB-Information" title="DB-Information">
+                                                     <div>
+                                                         <div>DB-Information</div>
+                                                         <h6 class="mt-2">Öffnungszeiten:</h6>
+                                                         <table class="table table-sm table-borderless w-auto">
+                                                             <tbody>
+                                                     {% if stada_data.DBinformation.availability.monday and stada_data.DBinformation.availability.monday.fromTime and stada_data.DBinformation.availability.monday.toTime %}
+                                                         <tr>
+                                                             <td class="pe-1">Mo:</td>
+                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.monday.fromTime }}
+                                                                 - {{ stada_data.DBinformation.availability.monday.toTime }}</td>
+                                                         </tr>
+                                                     {% endif %}
+                                                     {% if stada_data.DBinformation.availability.tuesday and stada_data.DBinformation.availability.tuesday.fromTime and stada_data.DBinformation.availability.tuesday.toTime %}
+                                                         <tr>
+                                                             <td class="pe-1">Di:</td>
+                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.tuesday.fromTime }}
+                                                                 - {{ stada_data.DBinformation.availability.tuesday.toTime }}</td>
+                                                         </tr>
+                                                     {% endif %}
+                                                     {% if stada_data.DBinformation.availability.wednesday and stada_data.DBinformation.availability.wednesday.fromTime and stada_data.DBinformation.availability.wednesday.toTime %}
+                                                         <tr>
+                                                             <td class="pe-1">Mi:</td>
+                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.wednesday.fromTime }}
+                                                                 - {{ stada_data.DBinformation.availability.wednesday.toTime }}</td>
+                                                         </tr>
+                                                     {% endif %}
+                                                     {% if stada_data.DBinformation.availability.thursday and stada_data.DBinformation.availability.thursday.fromTime and stada_data.DBinformation.availability.thursday.toTime %}
+                                                         <tr>
+                                                             <td class="pe-1">Do:</td>
+                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.thursday.fromTime }}
+                                                                 - {{ stada_data.DBinformation.availability.thursday.toTime }}</td>
+                                                         </tr>
+                                                     {% endif %}
+                                                     {% if stada_data.DBinformation.availability.friday and stada_data.DBinformation.availability.friday.fromTime and stada_data.DBinformation.availability.friday.toTime %}
+                                                         <tr>
+                                                             <td class="pe-1">Fr:</td>
+                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.friday.fromTime }}
+                                                                 - {{ stada_data.DBinformation.availability.friday.toTime }}</td>
+                                                         </tr>
+                                                     {% endif %}
+                                                     {% if stada_data.DBinformation.availability.saturday and stada_data.DBinformation.availability.saturday.fromTime and stada_data.DBinformation.availability.saturday.toTime %}
+                                                         <tr>
+                                                             <td class="pe-1">Sa:</td>
+                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.saturday.fromTime }}
+                                                                 - {{ stada_data.DBinformation.availability.saturday.toTime }}</td>
+                                                         </tr>
+                                                     {% endif %}
+                                                     {% if stada_data.DBinformation.availability.sunday and stada_data.DBinformation.availability.sunday.fromTime and stada_data.DBinformation.availability.sunday.toTime %}
+                                                         <tr>
+                                                             <td class="pe-1">So:</td>
+                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.sunday.fromTime }}
+                                                                 - {{ stada_data.DBinformation.availability.sunday.toTime }}</td>
+                                                         </tr>
+                                                     {% endif %}
+                                                     {% if stada_data.DBinformation.availability.holiday and stada_data.DBinformation.availability.holiday.fromTime and stada_data.DBinformation.availability.holiday.toTime %}
+                                                         <tr>
+                                                             <td class="pe-1">FT:</td>
+                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.holiday.fromTime }}
+                                                                 - {{ stada_data.DBinformation.availability.holiday.toTime }}</td>
+                                                         </tr>
+                                                     {% endif %}
+                                                             </tbody>
+                                                         </table>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             <div class="col-2 d-flex align-items-start">
+                                                 <img src="/static/img/bootstrap-icons-1.11.3/check-square.svg"
+                                                      class="align-center align-self-start mt-1 ms-3"
+                                                      style="filter: invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);"
+                                                      alt="Ja" title="Ja">
+                                             </div>
+                                         </div>
+                                     </li>
+                                 {% endif %}
+                                 <div id="feature-hasLocalPublicTransport"></div>
+                                 <li class="list-group-item">
+                                     <div class="accordion" id="accordionExample">
                                         <div class="accordion-item border-0">
                                             <h2 class="accordion-header" id="headingOne">
                                                 <button class="accordion-button collapsed" type="button"

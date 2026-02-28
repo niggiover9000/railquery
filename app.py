@@ -495,17 +495,17 @@ def add_icons(feature_tuple):
     feature_map = {
         "hasTaxiRank": ("Taxistand", "taxi-front.svg", "bootstrap-icons-1.11.3"),
         "hasWiFi": ("WLAN", "wifi.svg", "bootstrap-icons-1.11.3"),
-        "hasDBLounge": ("DB Lounge", "cup-hot.svg", "bootstrap-icons-1.11.3"),
         "hasParking": ("Parkplätze", "p-square.svg", "bootstrap-icons-1.11.3"),
         "hasBicycleParking": ("Fahrradstellplätze", "bicycle.svg", "bootstrap-icons-1.11.3"),
         "hasLockerSystem": ("Schließfächer", "key.svg", "bootstrap-icons-1.11.3"),
         "hasPublicFacilities": ("Öffentliche Einrichtungen", "public.svg", "icons-8-custom"),
         "hasLostAndFound": ("Fundbüro", "lost-and-found.svg", "icons-8-custom"),
-        "hasTravelCenter": ("Reisezentrum", "info-square.svg", "bootstrap-icons-1.11.3"),
         "hasCarRental": ("Autovermietung", "car-front.svg", "bootstrap-icons-1.11.3"),
         "hasRailwayMission": ("Bahnhofsmission", "volunteering.svg", "icons-8-custom"),
         "hasTravelNecessities": ("Einkaufsmöglichkeiten", "basket.svg", "bootstrap-icons-1.11.3"),
         "hasLocalPublicTransport": ("ÖPNV-Anschluss", "bus-front.svg", "bootstrap-icons-1.11.3"),
+        "hasTravelCenter": ("Reisezentrum", "suitcase2.svg", "bootstrap-icons-1.11.3"),
+        "hasDBLounge": ("DB Lounge", "cup-hot.svg", "bootstrap-icons-1.11.3"),
     }
 
     if key not in feature_map:
@@ -522,9 +522,9 @@ def add_icons(feature_tuple):
         <div class="row">
             <div class="col-10">
                 {icon_html}
-                {label}: 
+                {label} 
             </div>
-            <div class="col">
+            <div class="col-2 d-flex align-items-center">
                 {yes_no_icon}
             </div>
         </div>

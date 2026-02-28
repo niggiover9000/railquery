@@ -19,7 +19,8 @@ Nach einem Klick auf die Betriebsstelle werden weitere Details angezeigt.
 
 - [ ] https://railquery.de/RFLW übernimmt nicht das zweispaltige Design, weil die Koordinaten fehlen
 - [ ] SEO-Optimierung
-- [ ] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
+- [x] Mehr Infos aus StaDa darstellen (z.B. Öffnungszeiten)
+- [ ] Öffnungszeiten Mobility Service anzeigen
 - [ ] Erklärung der Bahnhofs- und Preiskategorien
 - [ ] OpenRailwayMap-Karte mit allen Bahnhöfen in Deutschland auf die Startseite
 - [ ] Accordion zu Bahnhofs- und Preiskategorie, 3-S-Zentrale und Fahrplanzentrale hinzufügen
