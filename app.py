@@ -524,7 +524,7 @@ def add_icons(feature_tuple):
                 {icon_html}
                 {label} 
             </div>
-            <div class="col-2 d-flex align-items-center">
+            <div class="col">
                 {yes_no_icon}
             </div>
         </div>

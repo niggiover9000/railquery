@@ -19,13 +19,7 @@
         class="badge rounded-pill text-success bg-success-subtle d-inline align-top">Stand: {{ date }}</span>
     <hr>
 
-    <div class="input-group">
-        <input type="text" id="searchInput" class="form-control" placeholder="RIL-100-Kürzel oder Bahnhofsname eingeben...">
-        <button class="input-group-text" type="button" id="searchButton">
-            <img src="{{ url_for('static', filename='img/favicon.ico') }}" alt="RailQuery" style="width: 16px; height: 16px;">
-        </button>
-    </div>
-    <ul id="results" class="list-group mt-3"></ul>
+    {% include "elements/searchbar.html" %}
 
     <div class="fixed-bottom container">
         <div class="accordion" id="accordion">
@@ -75,43 +69,4 @@
 
 
 </body>
-<script>
-    $(document).ready(function () {
-        let debounceTimer;
-
-        function performSearch() {
-            let query = $('#searchInput').val();
-            if (query.length > 0) {
-                $.get('/search', {q: query}, function (data) {
-                    $('#results').empty();
-                    data.forEach(function (item) {
-                        $('#results').append(
-                            '<li class="list-group-item">' +
-                            '<a class="text-black link-underline-opacity-0 link-underline-opacity-75-hover link-underline-dark" ' +
-                            'href="' + encodeURIComponent(item.code) + '">' +
-                            item.code + ' - ' + item.name +
-                            '</a></li>'
-                        );
-                    });
-                });
-            } else {
-                $('#results').empty();
-            }
-        }
-
-        $('#searchInput').on('input', function () {
-            clearTimeout(debounceTimer); // end old timer
-            debounceTimer = setTimeout(performSearch, 200); // Wait 200 ms after typing stop
-        });
-
-        $('#searchButton').on('click', performSearch);
-
-        $('#searchInput').on('keypress', function (e) {
-            if (e.which === 13) { // Enter-Key
-                performSearch();
-            }
-        });
-    });
-</script>
-
 </html>
