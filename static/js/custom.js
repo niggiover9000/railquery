@@ -12,6 +12,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let debounceTimer;
 
+        function openTopResultIfAvailable() {
+            const firstLink = resultsList.querySelector('li a[href]');
+            if (!firstLink) {
+                return false;
+            }
+
+            window.location.href = firstLink.href;
+            return true;
+        }
+
         function performSearch() {
             const query = searchInput.value;
             if (query.length > 0) {
@@ -23,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         const a = document.createElement('a');
                         a.className = 'text-black link-underline-opacity-0 link-underline-opacity-75-hover link-underline-dark';
-                        a.href = encodeURIComponent(item.code);
+                        a.href = '/' + encodeURIComponent(item.code);
                         a.textContent = item.code + ' - ' + item.name;
 
                         li.appendChild(a);
@@ -40,10 +50,18 @@ document.addEventListener('DOMContentLoaded', function () {
             debounceTimer = setTimeout(performSearch, 200);
         });
 
-        searchButton.addEventListener('click', performSearch);
+        searchButton.addEventListener('click', function () {
+            if (resultsList.children.length > 0 && openTopResultIfAvailable()) {
+                return;
+            }
+            performSearch();
+        });
 
         searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
+                if (resultsList.children.length > 0 && openTopResultIfAvailable()) {
+                    return;
+                }
                 performSearch();
             }
         });
