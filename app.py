@@ -24,7 +24,6 @@ DATE = getenv('DATE')
 ANALYTICS_TAG = getenv('ANALYTICS_TAG')
 TAG_MANAGER_TAG = getenv('TAG_MANAGER_TAG')
 ADSENSE_CLIENT = getenv('ADSENSE_CLIENT')
-CONSENTMANAGER_ID = getenv('CONSENTMANAGER_ID')
 app = Flask(__name__)
 app.config["SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS"] = True
 app.config["SITEMAP_URL_SCHEME"] = "https"
@@ -69,7 +68,7 @@ def get_db_connection(database='betriebsstellen.db'):
 def index():
     """Start page"""
     return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 
 def check_database_cache(code, check_query, update_query, checked_field, api_url, mode="exists", request_function=None):
@@ -294,9 +293,7 @@ def search():
 def impressum():
     return render_template('impressum.html', name=name, street=street, address=address,
                            mail=mail_impressum, title="Impressum", ANALYTICS_TAG=ANALYTICS_TAG,
-                           TAG_MANAGER_TAG=TAG_MANAGER_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT,
-                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,)
 
 
 @app.route('/test', methods=['GET'])
@@ -359,16 +356,14 @@ def station_sitemap():
 @cache.cached(timeout=1440)
 def types():
     return render_template('typen.html', betriebsstellen=betriebsstellen, title="Typen von Betriebsstellen",
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
-                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, TAG_MANAGER_TAG=TAG_MANAGER_TAG)
 
 
 @app.route('/license')
 @cache.cached(timeout=1440)
 def license():
     return render_template('licenses.html', license=licenses, title="Open-Source-Lizenzen",
-                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
-                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           ANALYTICS_TAG=ANALYTICS_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT, TAG_MANAGER_TAG=TAG_MANAGER_TAG)
 
 
 @app.route('/contact', methods=['GET', 'POST'])
@@ -399,16 +394,14 @@ def contact():
 
         return redirect('/contact')
     return render_template('contact.html', title="Kontakt", ANALYTICS_TAG=ANALYTICS_TAG,
-                           TAG_MANAGER_TAG=TAG_MANAGER_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 
 @app.route('/regionen')
 @cache.cached(timeout=1440)
 def regionen():
     return render_template('regionen.html', region=region, title="Eisenbahndirektionen nach RIL100",
-                           ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
-                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 
 @app.route('/betriebszustand')
@@ -416,8 +409,7 @@ def regionen():
 def betriebszustand():
     print(betriebszustände)
     return render_template('betriebszustand.html', betriebszustaende=betriebszustände, title="Betriebszustände",
-                           ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,
-                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 
 @app.template_filter('boolean_icon')
@@ -461,8 +453,7 @@ def details(code):
                            code=code, result=result, date=date, art=art, region=region, sonderart=sonderart,
                            betriebsstellen=betriebsstellen, betriebszustaende=betriebszustände, stada_data=stada,
                            date_db=DATE, ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT,
-                           CONSENTMANAGER_ID=CONSENTMANAGER_ID)
+                           ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 
 @app.route("/robots.txt")
@@ -479,8 +470,8 @@ def ads():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template("404.html", date=DATE, error=e, ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT, CONSENTMANAGER_ID=CONSENTMANAGER_ID), 404
+    return render_template("404.html", date=DATE, error=e, ANALYTICS_TAG=ANALYTICS_TAG,
+                           TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT), 404
 
 
 @app.template_filter('tojson_utf8')
