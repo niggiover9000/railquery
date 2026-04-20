@@ -141,12 +141,6 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ ANALYTICS_TAG }}"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-
         gtag('js', new Date());
         gtag('config', '{{ANALYTICS_TAG}}');
     </script>
@@ -185,8 +179,8 @@
                   content="Umfassende Informationen zur Betriebsstelle {{ row[2] }} (RIL100: {{ row[1] }}). Inklusive Gleispläne, Stellwerksdaten und mehr.">
 
             <!-- Open Graph / Facebook -->
-            <meta property="og:title" content="{{ row[2] }} ({{ row[1] }})">
-            <meta property="og:description"
+            <meta name="og:title" content="{{ row[2] }} ({{ row[1] }})">
+            <meta name="og:description"
                   content="Informationen zur Betriebsstelle {{ row[2] }}. Jetzt Details anzeigen.">
 
             <!-- Twitter -->
@@ -200,20 +194,20 @@
         <meta name="description"
               content="{{ title }}. railquery.de ist eine Suchmaschine für RIL100-Betriebsstellen (DS100) der Deutschen Bahn.">
         <!-- Open Graph / Facebook -->
-        <meta property="og:title" content="{{ title }} | RIL100-Abkürzungen: Betriebsstellen-Suche">
+        <meta name="og:title" content="{{ title }} | RIL100-Abkürzungen: Betriebsstellen-Suche">
         <meta name="og:description"
               content="{{ title }}. railquery.de ist eine Suchmaschine für RIL100-Betriebsstellen (DS100) der Deutschen Bahn.">
 
         <!-- Twitter -->
-        <meta name="twitter:title" content="{{ row[2] }} ({{ row[1] }}) | RIL100-Betriebsstellen">
+        <meta name="twitter:title" content="{{ title }} | RIL100-Abkürzungen: Betriebsstellen-Suche">
         <meta name="twitter:description"
               content="{{ title }}. railquery.de ist eine Suchmaschine für RIL100-Betriebsstellen (DS100) der Deutschen Bahn.">
 
     {% else %}
         <title>RailQuery | RIL100-Abkürzungen: Betriebsstellen-Suche</title>
-        <meta property="title" content="RailQuery | RIL100-Abkürzungen: Betriebsstellen-Suche">
+        <meta name="description" content="Suchmaschine für RIL100-Betriebsstellen (DS100) der Deutschen Bahn. Downloads von Gleis- und Umgebungsplänen, Infos zu Stellwerken, Bahnhofsausstattung etc...">
         <!-- Open Graph / Facebook -->
-        <meta property="og:title" content="RailQuery | RIL100-Abkürzungen: Betriebsstellen-Suche">
+        <meta name="og:title" content="{{ title }} | RIL100-Abkürzungen: Betriebsstellen-Suche">
         <meta name="og:description"
               content="Suchmaschine für RIL100-Betriebsstellen (DS100) der Deutschen Bahn. Downloads von Gleis- und Umgebungsplänen, Infos zu Stellwerken, Bahnhofsausstattung etc...">
         <!-- Twitter -->
@@ -223,12 +217,12 @@
     {% endif %}
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:locale" content="de_DE">
-    <meta property="og:image" content="{{ url_for('static', filename='img/og-default.jpg', _external=True) }}">
-    <meta property="og:image:alt" content="Logo RailQuery - Bahnbetriebsstellen Informationen">
-    <meta property="og:site_name" content="RailQuery">
+    <meta name="og:type" content="website">
+    <meta name="og:url" content="{{ request.url }}">
+    <meta name="og:locale" content="de_DE">
+    <meta name="og:image" content="{{ url_for('static', filename='img/og-default.jpg', _external=True) }}">
+    <meta name="og:image:alt" content="Logo RailQuery - Bahnbetriebsstellen Informationen">
+    <meta name="og:site_name" content="RailQuery">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">

@@ -440,14 +440,14 @@ def details(code):
         """ Das ist ein Workaround, wenn mehrere Einträge mit dem gleichen Code in der Datenbank sind. 
         Das kommt vor allem vor, wenn ein Bahnhof in Planung ist, aber bereits ein Inbetriebnahmedatum festgelegt wurde.
         ToDo: Eigentlich sollten beide Ergebnisse angezeigt werden."""
+    if not result:
+        abort(404)
     data, status = check_stada(code)
     json_str = data.data.decode('utf-8')
     if status == 200:
         stada = loads(json_str)["result"][0]
     else:
         stada = None
-    if not result:
-        abort(404)
     date = get_date(result[0][6]) if result else None
     return render_template('details.html',
                            code=code, result=result, date=date, art=art, region=region, sonderart=sonderart,
@@ -466,6 +466,12 @@ def robots():
 @cache.cached(timeout=300)
 def ads():
     return send_from_directory(app.static_folder, "ads.txt")
+
+
+@app.route("/favicon.ico")
+@cache.cached(timeout=86400)
+def favicon():
+    return send_from_directory(app.static_folder, "img/favicon.ico")
 
 
 @app.errorhandler(404)
