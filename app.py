@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 
 load_dotenv(dotenv_path='.env')
 
-DATE = getenv('DATE')
+DATE = getenv('DATE', None)
 ANALYTICS_TAG = getenv('ANALYTICS_TAG')
 TAG_MANAGER_TAG = getenv('TAG_MANAGER_TAG')
 ADSENSE_CLIENT = getenv('ADSENSE_CLIENT')

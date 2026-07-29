@@ -8,7 +8,7 @@ from os import getenv
 load_dotenv()
 
 # Alle benötigten Umgebungsvariablen
-required_env_vars = ['DATE', 'CLIENT_ID', 'CLIENT_SECRET', 'API_URL', 'ACCEPT']
+required_env_vars = ['CLIENT_ID', 'CLIENT_SECRET', 'API_URL', 'ACCEPT']
 
 # Werte abrufen und prüfen
 env_vars = {var: getenv(var) for var in required_env_vars}
@@ -19,7 +19,6 @@ if missing_vars:
     raise EnvironmentError(f"Die folgenden Umgebungsvariablen fehlen: {', '.join(missing_vars)}")
 
 # Zugriff auf die Variablen
-DATE = env_vars['DATE']
 CLIENT_ID = env_vars['CLIENT_ID']
 CLIENT_SECRET = env_vars['CLIENT_SECRET']
 API_URL = env_vars['API_URL']
