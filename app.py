@@ -29,7 +29,7 @@ app.config["SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS"] = True
 app.config["SITEMAP_URL_SCHEME"] = "https"
 app.config['CACHE_TYPE'] = 'SimpleCache'
 app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
-app.config['MAIL_PORT'] = int(getenv('MAIL_PORT'))
+app.config['MAIL_PORT'] = int(getenv('MAIL_PORT', 587))
 app.config['MAIL_USERNAME'] = getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
@@ -71,55 +71,80 @@ def index():
                            ADSENSE_CLIENT=ADSENSE_CLIENT)
 
 
+CACHE_MAX_AGE = timedelta(days=int(getenv("CACHE_MAX_AGE", 30)))
+
+
+def cached_flag(value):
+    """
+    Make sure, the stored value is converted to a boolean if it is not true.
+    """
+    if value is None:
+        return False
+    if isinstance(value, str):
+        return value.strip() not in ("", "0", "false", "None")
+    return bool(value)
+
+
 def check_database_cache(code, check_query, update_query, checked_field, api_url, mode="exists", request_function=None):
+    """
+    Returns value from database if value is younger than CACHE_MAX_AGE. If it is older, it is queried from the API.
+    """
     code = unquote(code).strip().lower()
     conn = get_db_connection()
-    cursor = conn.cursor()
-    today = datetime.now()
+    try:
+        cursor = conn.cursor()
+        today = datetime.now()
 
-    cursor.execute(check_query, (code,))
-    row = cursor.fetchone()
+        cursor.execute(check_query, (code,))
+        row = cursor.fetchone()
 
-    if row and row[checked_field]:
-        try:
-            last_checked = datetime.strptime(row[checked_field], "%Y-%m-%d")
-            if today - last_checked < timedelta(days=30):
+        if row and row[checked_field]:
+            cache_valid = False
+            try:
+                last_checked = datetime.strptime(row[checked_field], "%Y-%m-%d")
+                cache_valid = today - last_checked < CACHE_MAX_AGE
+            except (ValueError, TypeError) as e:
+                print("Fehler beim Lesen des Cache-Datums:", e)
+
+            if cache_valid:
                 if mode == 'exists':
-                    return jsonify({"exists": bool(row[0])})
-                elif mode == 'json' and row["api_response_json"]:
-                    return jsonify(loads(row["api_response_json"]))
-        except Exception as e:
-            print("Fehler beim Lesen des Cache-Datums:", e)
+                    return jsonify({"exists": cached_flag(row[0])}), 200
+                elif mode == 'json' and row[0]:
+                    return jsonify(loads(row[0])), 200
 
         # Wenn kein gültiger Cache → externer Request
-    if mode == 'exists':
-        try:
-            response = head(api_url, timeout=5)
-            exists = response.status_code == 200
-        except Exception as e:
-            print("Fehler bei HEAD-Request:", e)
-            exists = False
-
-        cursor.execute(update_query, (int(exists), today.strftime("%Y-%m-%d"), code))
-        conn.commit()
-        print(f"HEAD-Status für '{code.upper()}' aktualisiert: {exists}")
-        return jsonify({"exists": exists})
-
-    elif mode == 'json' and request_function:
-        data, status = request_function(code)
-        if status == 200:
+        if mode == 'exists':
             try:
-                json_data = dumps(data)
-                cursor.execute(update_query, (json_data, today.strftime("%Y-%m-%d"), code))
-                conn.commit()
-                print(f"API-Daten für '{code.upper()}' gespeichert.")
+                response = head(api_url, timeout=5)
+                exists = response.status_code == 200
             except Exception as e:
-                print("Fehler beim Speichern der API-Daten:", e)
-        conn.close()
-        return jsonify(data), status
+                print("Fehler bei HEAD-Request:", e)
+                exists = False
 
-    else:
-        return jsonify({"error": "Ungültiger Aufruf der Funktion."}), 500
+            cursor.execute(update_query, (int(exists), today.strftime("%Y-%m-%d"), code))
+            conn.commit()
+            if cursor.rowcount:
+                print(f"HEAD-Status für '{code.upper()}' aktualisiert: {exists}")
+            else:
+                print(f"HEAD-Status für '{code.upper()}': kein Datenbank-Eintrag, kein Caching möglich.")
+            return jsonify({"exists": exists}), 200
+
+        elif mode == 'json' and request_function:
+            data, status = request_function(code)
+            if status == 200:
+                try:
+                    json_data = dumps(data)
+                    cursor.execute(update_query, (json_data, today.strftime("%Y-%m-%d"), code))
+                    conn.commit()
+                    print(f"API-Daten für '{code.upper()}' gespeichert.")
+                except Exception as e:
+                    print("Fehler beim Speichern der API-Daten:", e)
+            return jsonify(data), status
+
+        else:
+            return jsonify({"error": "Ungültiger Aufruf der Funktion."}), 500
+    finally:
+        conn.close()
 
 
 @app.route('/api/gleisplan/<code>')
@@ -134,7 +159,7 @@ def check_gleisplan(code):
                                                gleisplan_checked_at = ?
                                            WHERE LOWER(TRIM([RL100-Code])) = ?
                                            """, "gleisplan_checked_at", f"https://trassenfinder.de/apn/{code}",
-                                "exists", "gleisplan_checked_at")
+                                "exists")
 
 
 @app.route('/api/stellwerk/<code>')
@@ -149,7 +174,7 @@ def check_stellwerk(code):
                                                stellwerk_checked_at = ?
                                            WHERE LOWER(TRIM([RL100-Code])) = ?
                                            """, "stellwerk_checked_at", f"https://stellwerke.info/stw/?ds100={code}",
-                                "exists", "stellwerk_checked_at")
+                                "exists")
 
 
 @app.route('/api/stada/<code>', methods=['GET'])
@@ -165,8 +190,9 @@ def check_stada(code):
                                            """, "stada_checked_at", "", "json", request_function=get_api_data)
 
 
-@app.route('/api/bahnhofsplan/<code>', methods=['GET'])
-def check_bahnhofsplan(code):
+@app.route('/api/bahnhofsplan/<code>/<number>', methods=['GET'])
+def check_bahnhofsplan(code, number):
+    """`code` ist der RL100-Code (Cache-Schlüssel), `number` die Stationsnummer für die PDF-URL."""
     return check_database_cache(code, """
                                       SELECT bahnhofsplan_response, bahnhofsplan_checked_at
                                       FROM betriebsstellen
@@ -176,12 +202,12 @@ def check_bahnhofsplan(code):
                                                   bahnhofsplan_checked_at = ?
                                               WHERE LOWER(TRIM([RL100-Code])) = ?
                                            """, "bahnhofsplan_checked_at",
-                                f"https://www.bahnhof.de/downloads/station-plans/{code}.pdf", "exists",
-                                "bahnhofsplan_checked_at")
+                                f"https://www.bahnhof.de/downloads/station-plans/{number}.pdf", "exists")
 
 
-@app.route('/api/umgebungsplan/<code>', methods=['GET'])
-def check_umgebungsplan(code):
+@app.route('/api/umgebungsplan/<code>/<number>', methods=['GET'])
+def check_umgebungsplan(code, number):
+    """`code` ist der RL100-Code (Cache-Schlüssel), `number` die Stationsnummer für die PDF-URL."""
     return check_database_cache(code, """
                                       SELECT umgebungsplan_response, umgebungsplan_checked_at
                                       FROM betriebsstellen
@@ -191,8 +217,7 @@ def check_umgebungsplan(code):
                                                   umgebungsplan_checked_at = ?
                                               WHERE LOWER(TRIM([RL100-Code])) = ?
                                            """, "umgebungsplan_checked_at",
-                                f"https://www.bahnhof.de/downloads/replacement-service-maps/{code}.pdf", "exists",
-                                "umgebungsplan_checked_at")
+                                f"https://www.bahnhof.de/downloads/replacement-service-maps/{number}.pdf", "exists")
 
 
 @app.route('/api/iris/<code>')
