@@ -153,8 +153,12 @@
                                                     data-bs-toggle="collapse" data-bs-target="#flush-collapse2"
                                                     aria-expanded="false" aria-controls="flush-collapse2">
                                                 <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/upc-scan.svg') }}"
-                                                     class="align-center me-3" alt="Barcode" title="Code">
-                                                Primary Location Code (PLC): {{ row[0] }}
+                                                     class="me-3" alt="Barcode" title="Code">
+                                                <span class="flex-grow-1">Primary Location Code (PLC): {{ row[0] }}</span>
+                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard.svg') }}"
+                                                     class="me-3 copy-btn" alt="Copy" title="Kopieren" data-bs-toggle="tooltip"
+                                                     aria-label="Kopieren" role="button" data-copy-value="{{ row[0] }}"
+                                                     data-copied-src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard-check.svg') }}">
                                             </button>
                                         </h2>
                                         <div id="flush-collapse2" class="accordion-collapse collapse"
@@ -183,7 +187,11 @@
                                                     aria-expanded="false" aria-controls="flush-collapse3">
                                                 <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/crosshair.svg') }}"
                                                      class="align-center me-3" alt="Barcode" title="Code">
-                                                IFOPT: {{ stada_data.ifopt }}
+                                                <span class="flex-grow-1">IFOPT: {{ stada_data.ifopt }}</span>
+                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard.svg') }}"
+                                                     class="me-3 copy-btn" alt="Copy" title="Kopieren" data-bs-toggle="tooltip"
+                                                     aria-label="Kopieren" role="button" data-copy-value="{{ stada_data.ifopt }}"
+                                                     data-copied-src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard-check.svg') }}">
                                             </button>
                                         </h2>
                                         <div id="flush-collapse3" class="accordion-collapse collapse"
@@ -372,8 +380,8 @@
                                         }
                                     }
 
-                                    async function checkBahnhofsplan(bhf) {
-                                        const backendUrl = `${window.location.origin}/api/bahnhofsplan/${bhf}`;
+                                    async function checkBahnhofsplan(code, number) {
+                                        const backendUrl = `${window.location.origin}/api/bahnhofsplan/${code}/${number}`;
                                         try {
                                             const response = await fetch(backendUrl);
                                             const data = await response.json();
@@ -384,8 +392,8 @@
                                         }
                                     }
 
-                                    async function checkUmgebungsplan(bhf) {
-                                        const backendUrl = `${window.location.origin}/api/umgebungsplan/${bhf}`;
+                                    async function checkUmgebungsplan(code, number) {
+                                        const backendUrl = `${window.location.origin}/api/umgebungsplan/${code}/${number}`;
                                         try {
                                             const response = await fetch(backendUrl);
                                             const data = await response.json();
@@ -427,18 +435,24 @@
                                             btnStellwerk.title = "Keine Stellwerks-Infos verfügbar";
                                         }
 
-                                        if (await checkBahnhofsplan(station_number)) {
-                                            btnBahnhofsplan.disabled = false;
-                                        } else {
-                                            btnBahnhofsplan.disabled = true;
-                                            btnBahnhofsplan.title = "Kein Bahnhofsplan verfügbar";
+                                        // Ohne STADA-Daten gibt es weder die Buttons noch eine Stationsnummer
+                                        // fuer die PDF-URL -- dann auch keine Abfrage.
+                                        if (btnBahnhofsplan && station_number) {
+                                            if (await checkBahnhofsplan(code, station_number)) {
+                                                btnBahnhofsplan.disabled = false;
+                                            } else {
+                                                btnBahnhofsplan.disabled = true;
+                                                btnBahnhofsplan.title = "Kein Bahnhofsplan verfügbar";
+                                            }
                                         }
 
-                                        if (await checkUmgebungsplan(station_number)) {
-                                            btnUmgebungsplan.disabled = false;
-                                        } else {
-                                            btnUmgebungsplan.disabled = true;
-                                            btnUmgebungsplan.title = "Kein Umgebungsplan verfügbar";
+                                        if (btnUmgebungsplan && station_number) {
+                                            if (await checkUmgebungsplan(code, station_number)) {
+                                                btnUmgebungsplan.disabled = false;
+                                            } else {
+                                                btnUmgebungsplan.disabled = true;
+                                                btnUmgebungsplan.title = "Kein Umgebungsplan verfügbar";
+                                            }
                                         }
                                     }
 
