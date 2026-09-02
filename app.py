@@ -149,6 +149,12 @@ def check_database_cache(code, check_query, update_query, checked_field, api_url
 
 @app.route('/api/gleisplan/<code>')
 def check_gleisplan(code):
+    """
+    Since the API uses "_" instead of " ", we need to replace these before doing the request.
+    :param code:
+    :return:
+    """
+    apn_code = unquote(code).replace(' ', '_')
     return check_database_cache(code, """
                                       SELECT gleisplan_exists, gleisplan_checked_at
                                       FROM betriebsstellen
@@ -158,7 +164,7 @@ def check_gleisplan(code):
                                            SET gleisplan_exists     = ?,
                                                gleisplan_checked_at = ?
                                            WHERE LOWER(TRIM([RL100-Code])) = ?
-                                           """, "gleisplan_checked_at", f"https://trassenfinder.de/apn/{code}",
+                                           """, "gleisplan_checked_at", f"https://trassenfinder.de/apn/{apn_code}",
                                 "exists")
 
 

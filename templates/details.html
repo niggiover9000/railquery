@@ -285,7 +285,7 @@
 
                                 <button class="btn btn-primary mb-1 me-1 col-lg-4 col-sm-12" role="button"
                                         id="loadDataBtn-1"
-                                        onclick="openTab('https://trassenfinder.de/apn/{{ row[1] }}')" disabled>
+                                        onclick="openTab('https://trassenfinder.de/apn/{{ row[1] | replace(' ', '_') }}')" disabled>
                                     Gleisplan herunterladen
                                 </button>
 
