@@ -27,12 +27,26 @@
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne"
-                            aria-expanded="true" aria-controls="collapseOne">
+                            data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                        Changelog
+                    </button>
+                </h2>
+                <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                    <div class="accordion-body">
+                        {{ changelog | safe if changelog else 'Keine Updates vorhanden.' }}
+                        <h4>Fragen / Anregungen / Bugs</h4>
+                        Gerne eine <a href="mailto:{{ mail }}">Mail</a> an mich senden.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse2" aria-expanded="true" aria-controls="collapse2">
                         Was ist eine Betriebsstelle?
                     </button>
                 </h2>
-                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#accordion">
                     <div class="accordion-body">
                         Eine Betriebsstelle ist ein essenzieller Punkt im Eisenbahnnetz, der für den Betriebsablauf von
                         Bedeutung ist.
@@ -49,11 +63,11 @@
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
                         Was kann diese Suchmaschine?
                     </button>
                 </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#accordion">
                     <div class="accordion-body">
                         Mit dieser Suchmaschine können alle Betriebsstellen und RIL100-Kürzel in Deutschland und im
                         Ausland gefunden werden. Auf der Ergebnisseite werden alle relevanten Infrastrukturdetails, wie
