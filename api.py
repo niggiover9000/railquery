@@ -44,7 +44,7 @@ def get_api_data(ril):
         return response.json(), response.status_code
     except HTTPError as e:
         print(f"HTTP error: {e}")
-        return {"error": str(e)}, e.response.status_code if e.response else 500
+        return {"error": str(e)}, e.response.status_code if e.response is not None else 500
     except RequestException as e:
         print(f"General request error: {e}")
         return {"error": str(e)}, 500

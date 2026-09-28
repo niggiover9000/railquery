@@ -75,6 +75,8 @@ def load_data_to_db(file_path, sheet_name, database_name='betriebsstellen.db'):
                           "ALTER TABLE betriebsstellen ADD COLUMN stellwerk_checked_at TEXT;",
                           "ALTER TABLE betriebsstellen ADD COLUMN stada_response TEXT;",
                           "ALTER TABLE betriebsstellen ADD COLUMN stada_checked_at TEXT;",
+                          "ALTER TABLE betriebsstellen ADD COLUMN abfahrt_response TEXT;",
+                          "ALTER TABLE betriebsstellen ADD COLUMN abfahrt_checked_at TEXT;",
                           "ALTER TABLE betriebsstellen ADD COLUMN bahnhofsplan_response TEXT;",
                           "ALTER TABLE betriebsstellen ADD COLUMN bahnhofsplan_checked_at TEXT;",
                           "ALTER TABLE betriebsstellen ADD COLUMN umgebungsplan_response TEXT;",

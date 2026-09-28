@@ -1,5 +1,5 @@
 import sqlite3
-from os import getenv
+from os import getenv, path
 from secrets import token_urlsafe
 from urllib.parse import unquote
 
@@ -17,6 +17,8 @@ from personal_data import name, street, address, mail_impressum
 from variables import art, sonderart, region, betriebszustände, betriebsstellen, licenses
 
 from datetime import datetime, timedelta
+
+from markdown import markdown
 
 load_dotenv(dotenv_path='.env')
 
@@ -64,11 +66,19 @@ def get_db_connection(database='betriebsstellen.db'):
     return connection
 
 
+def get_changelog(filename):
+    file_path = path.join(app.root_path, filename)
+    try:
+        with open(file_path, encoding='utf-8') as f:
+            return markdown(f.read())
+    except FileNotFoundError:
+        return None
+
 @app.route('/')
 def index():
     """Start page"""
     return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
-                           ADSENSE_CLIENT=ADSENSE_CLIENT)
+                           ADSENSE_CLIENT=ADSENSE_CLIENT, mail=mail_impressum, changelog=get_changelog("changelog.md"))
 
 
 CACHE_MAX_AGE = timedelta(days=int(getenv("CACHE_MAX_AGE", 30)))
@@ -110,12 +120,15 @@ def check_database_cache(code, check_query, update_query, checked_field, api_url
                 if mode == 'exists':
                     return jsonify({"exists": cached_flag(row[0])}), 200
                 elif mode == 'json' and row[0]:
-                    return jsonify(loads(row[0])), 200
+                    data = loads(row[0])
+                    # Gecachtes "nicht gefunden" (siehe unten) wieder als 404 ausliefern
+                    return jsonify(data), 404 if "error" in data else 200
 
-        # Wenn kein gültiger Cache → externer Request
+        # Wenn kein gültiger Cache: externer Request
         if mode == 'exists':
             try:
-                response = head(api_url, timeout=5)
+                # bahnhof.de leitet z. B. per 307 auf die sprechende URL weiter
+                response = head(api_url, timeout=5, allow_redirects=True)
                 exists = response.status_code == 200
             except Exception as e:
                 print("Fehler bei HEAD-Request:", e)
@@ -131,7 +144,9 @@ def check_database_cache(code, check_query, update_query, checked_field, api_url
 
         elif mode == 'json' and request_function:
             data, status = request_function(code)
-            if status == 200:
+            # 404 wird ebenfalls gecacht, damit Betriebsstellen ohne STADA-Eintrag
+            # nicht bei jedem Aufruf erneut abgefragt werden. Andere Fehler sind evtl. temporär.
+            if status in (200, 404):
                 try:
                     json_data = dumps(data)
                     cursor.execute(update_query, (json_data, today.strftime("%Y-%m-%d"), code))
@@ -179,9 +194,22 @@ def check_stellwerk(code):
                                            SET stellwerk_exists     = ?,
                                                stellwerk_checked_at = ?
                                            WHERE LOWER(TRIM([RL100-Code])) = ?
-                                           """, "stellwerk_checked_at", f"https://stellwerke.info/stw/?ds100={code}",
-                                "exists")
+                                           """, "stellwerk_checked_at",
+                                f"https://stellwerke.info/stw/?ds100={code}", "exists")
 
+@app.route('/api/abfahrt/<code>/<number>', methods=['GET'])
+def check_abfahrt(code, number):
+    """`code` ist der RL100-Code (Cache-Schlüssel), `number` die Stationsnummer für die URL."""
+    return check_database_cache(code, """
+                                      SELECT abfahrt_response, abfahrt_checked_at
+                                      FROM betriebsstellen
+                                      WHERE LOWER(TRIM([RL100-Code])) = ?
+                                      """, """UPDATE betriebsstellen
+                                              SET abfahrt_response   = ?,
+                                                  abfahrt_checked_at = ?
+                                              WHERE LOWER(TRIM([RL100-Code])) = ?
+                                           """, "abfahrt_checked_at",
+                                f"https://www.bahnhof.de/de/id/{number}/abfahrt", "exists")
 
 @app.route('/api/stada/<code>', methods=['GET'])
 def check_stada(code):
@@ -224,16 +252,6 @@ def check_umgebungsplan(code, number):
                                               WHERE LOWER(TRIM([RL100-Code])) = ?
                                            """, "umgebungsplan_checked_at",
                                 f"https://www.bahnhof.de/downloads/replacement-service-maps/{number}.pdf", "exists")
-
-
-@app.route('/api/iris/<code>')
-def check_iris(code):
-    """
-    This function always returns 200, because I have not yet thought of a way to determine that the site exists or not.
-    On the page, the content is loaded via Javascript, so it is very difficult to perform a backend check.
-    """
-    return jsonify({"exists": 200})
-
 
 @app.route('/search', methods=['GET'])
 def search():

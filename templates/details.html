@@ -1,8 +1,8 @@
 {% include "elements/header.html" %}
 {% if result %}
-    {% for row in result %}
-        <script type="application/ld+json">
-        {
+{% for row in result %}
+<script type="application/ld+json">
+    {
         "@context": "https://schema.org",
         "@type": "TrainStation",
         "name": "{{ row[2] }}",
@@ -52,32 +52,32 @@
 {% endif %}
 
 {% if stada_data is defined
-                  and stada_data
-                  and stada_data.ril100Identifiers is defined
-                  and stada_data.ril100Identifiers
-                  and stada_data.ril100Identifiers[0].geographicCoordinates is defined %}
-    <!-- Leaflet CSS and JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
+and stada_data
+and stada_data.ril100Identifiers is defined
+and stada_data.ril100Identifiers
+and stada_data.ril100Identifiers[0].geographicCoordinates is defined %}
+<!-- Leaflet CSS and JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
 {% endif %}
 </head>
 <body>
 {% include "elements/navbar.html" %}
 
 <div class="container mt-5">
-{% if result %}
-                    {% for row in result %}
+    {% if result %}
+    {% for row in result %}
     <h1 class="mb-4 d-inline">
         {{ row[2] }}: Betriebsstellen-Details</h1>
-{% else %}
-<h1 class="mb-4 d-inline">
+    {% else %}
+    <h1 class="mb-4 d-inline">
         Betriebsstellen-Details</h1>
     {% endfor %}
-{% endif %}
+    {% endif %}
     <span
             class="badge text-bg-success d-inline align-top">Stand: {{ date_db }}</span>
     <hr>
@@ -86,742 +86,786 @@
         <div class="col-md">
             <ul id="results" class="list-group">
                 {% if result %}
-                    {% for row in result %}
-                        <li class="list-group-item">
-                            <div class="d-flex">
-                                <div class="p-1 flex-grow-1">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/check-square.svg') }}"
-                                         class="align-center me-3" alt="Abgehaktes Kästchen" title="Name">
-                                    {% if row[2] != row[3] %}
-                                        Langname: {{ row[2] }}
-                                    {% else %}
-                                        Name: {{ row[2] }}
-                                    {% endif %}
-                                </div>
-                            </div>
+                {% for row in result %}
+                <li class="list-group-item">
+                    <div class="d-flex">
+                        <div class="p-1 flex-grow-1">
+                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/check-square.svg') }}"
+                                 class="align-center me-3" alt="Abgehaktes Kästchen" title="Name">
                             {% if row[2] != row[3] %}
-                                <div class="p-1 flex-grow-1 w-100">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/substack.svg') }}"
-                                         class="align-center me-3" alt="Symbol für Kurzname" title="Name">
-                                    Kurzname: {{ row[3] }}
-                                </div>
+                            Langname: {{ row[2] }}
+                            {% else %}
+                            Name: {{ row[2] }}
                             {% endif %}
-                            <div class="p-1 flex-grow-1 w-100">
-                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/slash-square.svg') }}"
-                                     class="align-center me-3" alt="Halb abgehaktes Kästchen" title="RIL-100">
-                                RIL100-Kürzel: {{ row[1] }}
-                            </div>
+                        </div>
+                    </div>
+                    {% if row[2] != row[3] %}
+                    <div class="p-1 flex-grow-1 w-100">
+                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/substack.svg') }}"
+                             class="align-center me-3" alt="Symbol für Kurzname" title="Name">
+                        Kurzname: {{ row[3] }}
+                    </div>
+                    {% endif %}
+                    <div class="p-1 flex-grow-1 w-100">
+                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/slash-square.svg') }}"
+                             class="align-center me-3" alt="Halb abgehaktes Kästchen" title="RIL-100">
+                        RIL100-Kürzel: {{ row[1] }}
+                    </div>
 
-                        </li>
+                </li>
 
 
-                        {% if row[1][0] in region %}
-                            <li class="list-group-item p-0">
-                                <div class="accordion accordion-flush" id="accordionFlush1">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapse1"
-                                                    aria-expanded="false" aria-controls="flush-collapse1">
-                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
-                                                     class="align-center me-3" alt="Karte" title="Regionale Lage">
-                                                Regionale Lage:
-                                                {{ region[row[1][0]] }} ({{ row[1][0] }})
-                                            </button>
-                                        </h2>
-                                        <div id="flush-collapse1" class="accordion-collapse collapse"
-                                             data-bs-parent="#accordionFlushExample">
-                                            <div class="accordion-body">Die regionale Lage ergibt sich aus dem ersten
-                                                Buchstaben des RIL100-Kürzels. Insgesamt gibt es 15 Regionen, die sich
-                                                aus den ehemaligen Eisenbahn-Direktionen in Deutschland
-                                                ergeben, sowie weitere Sonderbuchstaben. Der Buchstabe "{{ row[1][0] }}"
-                                                steht für "{{ region[row[1][0]] }}". <a href="/regionen">Hier</a> gibt
-                                                es eine Übersicht aller möglichen Kürzel.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </li>
-                        {% endif %}
-                        {% if row[0] %}
-                            <li class="list-group-item p-0">
-                                <div class="accordion accordion-flush" id="accordionFlush2">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapse2"
-                                                    aria-expanded="false" aria-controls="flush-collapse2">
-                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/upc-scan.svg') }}"
-                                                     class="me-3" alt="Barcode" title="Code">
-                                                <span class="flex-grow-1">Primary Location Code (PLC): {{ row[0] }}</span>
-                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard.svg') }}"
-                                                     class="me-3 copy-btn" alt="Copy" title="Kopieren" data-bs-toggle="tooltip"
-                                                     aria-label="Kopieren" role="button" data-copy-value="{{ row[0] }}"
-                                                     data-copied-src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard-check.svg') }}">
-                                            </button>
-                                        </h2>
-                                        <div id="flush-collapse2" class="accordion-collapse collapse"
-                                             data-bs-parent="#accordionFlush2">
-                                            <div class="accordion-body">Der PLC ist ein europaweit eindeutiger Code für
-                                                Betriebsstellen und setzt sich aus einem zweistelligen Ländercode und
-                                                einer 5-stelligen Nummer zusammen. Im Rahmen der <a
-                                                        href="https://www.dbinfrago.com/web/schienennetz/netzzugang-und-regulierung/taf-tap-tsi/allgemein-11089206#"
-                                                        target="_blank">EU-Verordnung
-                                                    TAF/TAP TSI</a> wird bis 2027 auf ein System zur Interoperabilität
-                                                der Telematik im Güter- und Personenverkehr umgestellt, das unter
-                                                anderem den PLC als eindeutigen Indikator nutzt.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endif %}
-                        {% if stada_data %}
-                            <li class="list-group-item p-0">
-                                <div class="accordion accordion-flush" id="accordionFlush3">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapse3"
-                                                    aria-expanded="false" aria-controls="flush-collapse3">
-                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/crosshair.svg') }}"
-                                                     class="align-center me-3" alt="Barcode" title="Code">
-                                                <span class="flex-grow-1">IFOPT: {{ stada_data.ifopt }}</span>
-                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard.svg') }}"
-                                                     class="me-3 copy-btn" alt="Copy" title="Kopieren" data-bs-toggle="tooltip"
-                                                     aria-label="Kopieren" role="button" data-copy-value="{{ stada_data.ifopt }}"
-                                                     data-copied-src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard-check.svg') }}">
-                                            </button>
-                                        </h2>
-                                        <div id="flush-collapse3" class="accordion-collapse collapse"
-                                             data-bs-parent="#accordionFlush3">
-                                            <div class="accordion-body">IFOPT steht für <a
-                                                    href="https://en.wikipedia.org/wiki/Identification_of_Fixed_Objects_in_Public_Transport"
-                                                    target="_blank">'Identification
-                                                of Fixed Objects in Public Transport'.</a> Die IFOPT-Nummer ist eine
-                                                international eindeutige Nummer zur Referenzierung von
-                                                ÖPNV-Haltestellen.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endif %}
-                        <li class="list-group-item p-0">
-                            <div class="accordion accordion-flush" id="accordionFlush4">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#flush-collapse4"
-                                                aria-expanded="false" aria-controls="flush-collapse4">
-                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg') }}"
-                                                 class="align-center me-3" alt="Sprechblase mit Zitat" title="Typ">
-                                            {% if row[4].startswith("NE") == True %}
-                                                Typ: {{ sonderart["NE-"] }}{{ art[row[4]] }} ({{ row[4] }})
-                                            {% elif row[4].startswith("vp-") == True %}
-                                                Typ: {{ sonderart["vp-"] }} {{ art[row[4] | replace("vp-", "")] }} (
-                                                {{ row[4] }})
-                                            {% elif row[4] in art %}
-                                                Typ: {{ art[row[4]] }} ({{ row[4] }})
-                                            {% else %}
-                                                Typ: {{ row[4] }}
-                                            {% endif %}
-                                        </button>
-                                    </h2>
-                                    <div id="flush-collapse4" class="accordion-collapse collapse"
-                                         data-bs-parent="#accordionFlush4">
-                                        {% if betriebsstellen[row[4]] is defined and betriebsstellen[row[4]][1] %}
-                                            <div class="accordion-body">{{ betriebsstellen[row[4]][1] }} <a
-                                                    href="/typen">Hier</a> gibt
-                                                es eine Übersicht aller möglichen Betriebsstellentypen.
-                                            </div>
-                                        {% else %}
-                                            <div class="accordion-body">Für diesen Betriebsstellentyp ist keine
-                                                offizielle Definition hinterlegt. <a
-                                                        href="/typen">Hier</a> gibt
-                                                es eine Übersicht aller möglichen Betriebsstellentypen.
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        {% if row[5] is not none %}
-                            <li class="list-group-item p-0">
-                                <div class="accordion accordion-flush" id="accordionFlush5">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapse5"
-                                                    aria-expanded="false" aria-controls="flush-collapse5">
-                                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/activity.svg') }}"
-                                                     class="align-center me-3" alt="Herzschlag" title="Betriebszustand">
-                                                Betriebszustand: {{ row[5] }}
-                                                {% if betriebszustaende[row[5]] %}
-                                                    ({{ betriebszustaende[row[5]] }})
-                                                {% endif %}
-                                            </button>
-                                        </h2>
-                                        <div id="flush-collapse5" class="accordion-collapse collapse"
-                                             data-bs-parent="#accordionFlush5">
-                                            <div class="accordion-body">Diese Betriebsstelle
-                                                ist
-                                                seit {{ date[0] }}.{{ date[1] }}.{{ date[2] }} im Betriebszustand
-                                                "{{ row[5] }}". <a href="/betriebszustand">Hier</a> gibt
-                                                es eine Übersicht aller möglichen Betriebszustände.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endif %}
-                        </ul>
-
-                        <div class="card list-group mt-3" id="infoContainer-1">
-                            <h5 class="card-header"> Externe Links </h5>
-                            <div class="card-body row ms-lg-3">
-                                <!-- Gleisplan-Button -->
-
-                                <button class="btn btn-primary mb-1 me-1 col-lg-4 col-sm-12" role="button"
-                                        id="loadDataBtn-1"
-                                        onclick="openTab('https://trassenfinder.de/apn/{{ row[1] | replace(' ', '_') }}')" disabled>
-                                    Gleisplan herunterladen
+                {% if row[1][0] in region %}
+                <li class="list-group-item p-0">
+                    <div class="accordion accordion-flush" id="accordionFlush1">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#flush-collapse1"
+                                        aria-expanded="false" aria-controls="flush-collapse1">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
+                                         class="align-center me-3" alt="Karte" title="Regionale Lage">
+                                    Regionale Lage:
+                                    {{ region[row[1][0]] }} ({{ row[1][0] }})
                                 </button>
-
-                                <button class="btn btn-primary mb-1 me-1 col-lg-3 col-sm-12" role="button"
-                                        id="loadDataBtn-3"
-                                        onclick="openTab('https://stellwerke.info/stw/?ds100={{ row[1] }}')" disabled>
-                                    Stellwerks-Infos
-                                </button>
-
-                                <button class="btn btn-primary mb-1 col-lg-4 col-sm-12" role="button"
-                                        id="loadDataBtn-2"
-                                        onclick="openTab('https://iris.noncd.db.de/wbt/js/index.html?bhf={{ row[1] }}')"
-                                        disabled>
-                                    Live-Abfahrtszeiten
-                                </button>
-
-                                {% if stada_data and stada_data.ril100Identifiers[0].geographicCoordinates %}
-
-                                    <button class="btn btn-primary mb-1 me-1 col-lg-3 col-sm-12" role="button"
-                                            id="loadDataBtn-4"
-                                            onclick="openTab('https://www.bahnhof.de/downloads/station-plans/{{ stada_data.number }}.pdf')"
-                                            disabled>
-                                        Bahnhofsplan
-                                    </button>
-
-                                    <button class="btn btn-primary mb-1 me-1 col-lg-4 col-sm-12" role="button"
-                                            id="loadDataBtn-5"
-                                            onclick="openTab('https://www.bahnhof.de/downloads/replacement-service-maps/{{ stada_data.number }}.pdf')"
-                                            disabled>
-                                        Umgebungsplan
-                                    </button>
-
-                                    <button class="btn btn-primary mb-1 col-lg-4 col-sm-12" role="button"
-                                            id="loadDataBtn-5"
-                                            onclick="openTab('https://geoviewer.deutschebahn.com/maps/#/context/ISR/275618?center={{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0] }},{{ stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1] }}&zoom=8')">
-                                        Infrastrukturregister
-                                    </button>
-                                {% elif stada_data %}
-
-                                    <button class="btn btn-primary mb-1 me-1 col-lg-5 col-sm-12" role="button"
-                                            id="loadDataBtn-4"
-                                            onclick="openTab('https://www.bahnhof.de/downloads/station-plans/{{ stada_data.number }}.pdf')"
-                                            disabled>
-                                        Bahnhofsplan
-                                    </button>
-
-                                    <button class="btn btn-primary mb-1 me-1 col-lg-6 col-sm-12" role="button"
-                                            id="loadDataBtn-5"
-                                            onclick="openTab('https://www.bahnhof.de/downloads/replacement-service-maps/{{ stada_data.number }}.pdf')"
-                                            disabled>
-                                        Umgebungsplan
-                                    </button>
-                                {% endif %}
-                                <script>
-                                    function openTab(url) {
-                                        window.open(url, '_blank');
-                                    }
-
-                                    async function checkGleisplan(apn) {
-                                        const backendUrl = `${window.location.origin}/api/gleisplan/${apn}`;
-                                        try {
-                                            const response = await fetch(backendUrl);
-                                            const data = await response.json();
-                                            return data.exists;
-                                        } catch (error) {
-                                            console.error("Fehler beim API-Call (Gleisplan):", error);
-                                            return false;
-                                        }
-                                    }
-
-                                    async function checkStellwerk(ds100) {
-                                        const backendUrl = `${window.location.origin}/api/stellwerk/${ds100}`;
-                                        try {
-                                            const response = await fetch(backendUrl);
-                                            const data = await response.json();
-                                            return data.exists;
-                                        } catch (error) {
-                                            console.error("Fehler beim API-Call (Stellwerk):", error);
-                                            return false;
-                                        }
-                                    }
-
-                                    async function checkIris(bhf) {
-                                        const backendUrl = `${window.location.origin}/api/iris/${bhf}`;
-                                        try {
-                                            const response = await fetch(backendUrl);
-                                            const data = await response.json();
-                                            return data.exists;
-                                        } catch (error) {
-                                            console.error("Fehler beim API-Call (IRIS):", error);
-                                            return false;
-                                        }
-                                    }
-
-                                    async function checkBahnhofsplan(code, number) {
-                                        const backendUrl = `${window.location.origin}/api/bahnhofsplan/${code}/${number}`;
-                                        try {
-                                            const response = await fetch(backendUrl);
-                                            const data = await response.json();
-                                            return data.exists;
-                                        } catch (error) {
-                                            console.error("Fehler beim API-Call (Bahnhofsplan):", error);
-                                            return false;
-                                        }
-                                    }
-
-                                    async function checkUmgebungsplan(code, number) {
-                                        const backendUrl = `${window.location.origin}/api/umgebungsplan/${code}/${number}`;
-                                        try {
-                                            const response = await fetch(backendUrl);
-                                            const data = await response.json();
-                                            return data.exists;
-                                        } catch (error) {
-                                            console.error("Fehler beim API-Call (Umgebungsplan):", error);
-                                            return false;
-                                        }
-                                    }
-
-                                    async function initButtons() {
-                                        const code = '{{ row[1] }}';
-                                        const station_number = '{{stada_data.number}}'
-
-                                        const btnGleisplan = document.getElementById('loadDataBtn-1');
-                                        const btnIris = document.getElementById('loadDataBtn-2');
-                                        const btnStellwerk = document.getElementById('loadDataBtn-3');
-                                        const btnBahnhofsplan = document.getElementById('loadDataBtn-4');
-                                        const btnUmgebungsplan = document.getElementById('loadDataBtn-5');
-
-                                        if (await checkGleisplan(code)) {
-                                            btnGleisplan.disabled = false;
-                                        } else {
-                                            btnGleisplan.disabled = true;
-                                            btnGleisplan.title = "Kein Gleisplan verfügbar";
-                                        }
-
-                                        if (await checkIris(code)) {
-                                            btnIris.disabled = false;
-                                        } else {
-                                            btnIris.disabled = true;
-                                            btnIris.title = "Keine Live-Daten verfügbar";
-                                        }
-
-                                        if (await checkStellwerk(code)) {
-                                            btnStellwerk.disabled = false;
-                                        } else {
-                                            btnStellwerk.disabled = true;
-                                            btnStellwerk.title = "Keine Stellwerks-Infos verfügbar";
-                                        }
-
-                                        // Ohne STADA-Daten gibt es weder die Buttons noch eine Stationsnummer
-                                        // fuer die PDF-URL -- dann auch keine Abfrage.
-                                        if (btnBahnhofsplan && station_number) {
-                                            if (await checkBahnhofsplan(code, station_number)) {
-                                                btnBahnhofsplan.disabled = false;
-                                            } else {
-                                                btnBahnhofsplan.disabled = true;
-                                                btnBahnhofsplan.title = "Kein Bahnhofsplan verfügbar";
-                                            }
-                                        }
-
-                                        if (btnUmgebungsplan && station_number) {
-                                            if (await checkUmgebungsplan(code, station_number)) {
-                                                btnUmgebungsplan.disabled = false;
-                                            } else {
-                                                btnUmgebungsplan.disabled = true;
-                                                btnUmgebungsplan.title = "Kein Umgebungsplan verfügbar";
-                                            }
-                                        }
-                                    }
-
-                                    document.addEventListener('DOMContentLoaded', initButtons);
-                                </script>
+                            </h2>
+                            <div id="flush-collapse1" class="accordion-collapse collapse"
+                                 data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">Die regionale Lage ergibt sich aus dem ersten
+                                    Buchstaben des RIL100-Kürzels. Insgesamt gibt es 15 Regionen, die sich
+                                    aus den ehemaligen Eisenbahn-Direktionen in Deutschland
+                                    ergeben, sowie weitere Sonderbuchstaben. Der Buchstabe "{{ row[1][0] }}"
+                                    steht für "{{ region[row[1][0]] }}". <a href="/regionen">Hier</a> gibt
+                                    es eine Übersicht aller möglichen Kürzel.
+                                </div>
                             </div>
                         </div>
-                    {% endfor %}
+                    </div>
+
+                </li>
                 {% endif %}
+                {% if row[0] %}
+                <li class="list-group-item p-0">
+                    <div class="accordion accordion-flush" id="accordionFlush2">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#flush-collapse2"
+                                        aria-expanded="false" aria-controls="flush-collapse2">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/upc-scan.svg') }}"
+                                         class="me-3" alt="Barcode" title="Code">
+                                    <span class="flex-grow-1">Primary Location Code (PLC): {{ row[0] }}</span>
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard.svg') }}"
+                                         class="me-3 copy-btn" alt="Copy" title="Kopieren" data-bs-toggle="tooltip"
+                                         aria-label="Kopieren" role="button" data-copy-value="{{ row[0] }}"
+                                         data-copied-src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard-check.svg') }}">
+                                </button>
+                            </h2>
+                            <div id="flush-collapse2" class="accordion-collapse collapse"
+                                 data-bs-parent="#accordionFlush2">
+                                <div class="accordion-body">Der PLC ist ein europaweit eindeutiger Code für
+                                    Betriebsstellen und setzt sich aus einem zweistelligen Ländercode und
+                                    einer 5-stelligen Nummer zusammen. Im Rahmen der <a
+                                            href="https://www.dbinfrago.com/web/schienennetz/netzzugang-und-regulierung/taf-tap-tsi/allgemein-11089206#"
+                                            target="_blank">EU-Verordnung
+                                        TAF/TAP TSI</a> wird bis 2027 auf ein System zur Interoperabilität
+                                    der Telematik im Güter- und Personenverkehr umgestellt, das unter
+                                    anderem den PLC als eindeutigen Indikator nutzt.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endif %}
+                {% if stada_data %}
+                <li class="list-group-item p-0">
+                    <div class="accordion accordion-flush" id="accordionFlush3">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#flush-collapse3"
+                                        aria-expanded="false" aria-controls="flush-collapse3">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/crosshair.svg') }}"
+                                         class="align-center me-3" alt="Barcode" title="Code">
+                                    <span class="flex-grow-1">IFOPT: {{ stada_data.ifopt }}</span>
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard.svg') }}"
+                                         class="me-3 copy-btn" alt="Copy" title="Kopieren" data-bs-toggle="tooltip"
+                                         aria-label="Kopieren" role="button" data-copy-value="{{ stada_data.ifopt }}"
+                                         data-copied-src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/clipboard-check.svg') }}">
+                                </button>
+                            </h2>
+                            <div id="flush-collapse3" class="accordion-collapse collapse"
+                                 data-bs-parent="#accordionFlush3">
+                                <div class="accordion-body">IFOPT steht für <a
+                                        href="https://en.wikipedia.org/wiki/Identification_of_Fixed_Objects_in_Public_Transport"
+                                        target="_blank">'Identification
+                                    of Fixed Objects in Public Transport'.</a> Die IFOPT-Nummer ist eine
+                                    international eindeutige Nummer zur Referenzierung von
+                                    ÖPNV-Haltestellen.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endif %}
+                <li class="list-group-item p-0">
+                    <div class="accordion accordion-flush" id="accordionFlush4">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#flush-collapse4"
+                                        aria-expanded="false" aria-controls="flush-collapse4">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/chat-left-quote.svg') }}"
+                                         class="align-center me-3" alt="Sprechblase mit Zitat" title="Typ">
+                                    {% if row[4].startswith("NE") == True %}
+                                    Typ: {{ sonderart["NE-"] }}{{ art[row[4]] }} ({{ row[4] }})
+                                    {% elif row[4].startswith("vp-") == True %}
+                                    Typ: {{ sonderart["vp-"] }} {{ art[row[4] | replace("vp-", "")] }} (
+                                    {{ row[4] }})
+                                    {% elif row[4] in art %}
+                                    Typ: {{ art[row[4]] }} ({{ row[4] }})
+                                    {% else %}
+                                    Typ: {{ row[4] }}
+                                    {% endif %}
+                                </button>
+                            </h2>
+                            <div id="flush-collapse4" class="accordion-collapse collapse"
+                                 data-bs-parent="#accordionFlush4">
+                                {% if betriebsstellen[row[4]] is defined and betriebsstellen[row[4]][1] %}
+                                <div class="accordion-body">{{ betriebsstellen[row[4]][1] }} <a
+                                        href="/typen">Hier</a> gibt
+                                    es eine Übersicht aller möglichen Betriebsstellentypen.
+                                </div>
+                                {% else %}
+                                <div class="accordion-body">Für diesen Betriebsstellentyp ist keine
+                                    offizielle Definition hinterlegt. <a
+                                            href="/typen">Hier</a> gibt
+                                    es eine Übersicht aller möglichen Betriebsstellentypen.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% if row[5] is not none %}
+                <li class="list-group-item p-0">
+                    <div class="accordion accordion-flush" id="accordionFlush5">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#flush-collapse5"
+                                        aria-expanded="false" aria-controls="flush-collapse5">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/activity.svg') }}"
+                                         class="align-center me-3" alt="Herzschlag" title="Betriebszustand">
+                                    Betriebszustand: {{ row[5] }}
+                                    {% if betriebszustaende[row[5]] %}
+                                    ({{ betriebszustaende[row[5]] }})
+                                    {% endif %}
+                                </button>
+                            </h2>
+                            <div id="flush-collapse5" class="accordion-collapse collapse"
+                                 data-bs-parent="#accordionFlush5">
+                                <div class="accordion-body">Diese Betriebsstelle
+                                    ist
+                                    seit {{ date[0] }}.{{ date[1] }}.{{ date[2] }} im Betriebszustand
+                                    "{{ row[5] }}". <a href="/betriebszustand">Hier</a> gibt
+                                    es eine Übersicht aller möglichen Betriebszustände.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endif %}
+            </ul>
+
+            <div class="card list-group mt-3" id="infoContainer-1">
+                <h5 class="card-header"> Externe Links </h5>
+                <div class="card-body row ms-lg-3">
+                    <!-- Gleisplan-Button -->
+
+                    <button class="btn btn-primary mb-1 me-1 col-lg-4 col-sm-12" role="button"
+                            id="loadDataBtn-1"
+                            onclick="openTab('https://trassenfinder.de/apn/{{ row[1] | replace(' ', '_') }}')" disabled>
+                        Gleisplan herunterladen
+                    </button>
+
+                    <button class="btn btn-primary mb-1 me-1 col-lg-3 col-sm-12" role="button"
+                            id="loadDataBtn-3"
+                            onclick="openTab('https://stellwerke.info/stw/?ds100={{ row[1] }}')" disabled>
+                        Stellwerks-Infos
+                    </button>
+
+                    {# Ohne STADA-Daten werden die Buttons direkt ausgegraut angezeigt, initButtons() fragt dann nichts ab #}
+                    {% set station_number = stada_data.number if stada_data else None %}
+                    {% set coords = stada_data.ril100Identifiers[0].geographicCoordinates
+                                    if stada_data and stada_data.ril100Identifiers else None %}
+                    {% set no_stada_title = 'Keine Stationsdaten verfügbar' %}
+
+                    <button class="btn btn-primary mb-1 col-lg-4 col-sm-12" role="button"
+                            id="loadDataBtn-2"
+                            {% if station_number %}
+                            onclick="openTab('https://www.bahnhof.de/de/id/{{ station_number }}/abfahrt')"
+                            {% else %}
+                            title="{{ no_stada_title }}"
+                            {% endif %}
+                            disabled>
+                        Live-Abfahrtszeiten
+                    </button>
+
+                    <button class="btn btn-primary mb-1 me-1 col-lg-3 col-sm-12" role="button"
+                            id="loadDataBtn-4"
+                            {% if station_number %}
+                            onclick="openTab('https://www.bahnhof.de/downloads/station-plans/{{ station_number }}.pdf')"
+                            {% else %}
+                            title="{{ no_stada_title }}"
+                            {% endif %}
+                            disabled>
+                        Bahnhofsplan
+                    </button>
+
+                    <button class="btn btn-primary mb-1 me-1 col-lg-4 col-sm-12" role="button"
+                            id="loadDataBtn-5"
+                            {% if station_number %}
+                            onclick="openTab('https://www.bahnhof.de/downloads/replacement-service-maps/{{ station_number }}.pdf')"
+                            {% else %}
+                            title="{{ no_stada_title }}"
+                            {% endif %}
+                            disabled>
+                        Umgebungsplan
+                    </button>
+
+                    <button class="btn btn-primary mb-1 col-lg-4 col-sm-12" role="button"
+                            id="loadDataBtn-6"
+                            {% if coords %}
+                            onclick="openTab('https://geoviewer.deutschebahn.com/maps/#/context/ISR/275618?center={{ coords.coordinates[0] }},{{ coords.coordinates[1] }}&zoom=8')"
+                            {% else %}
+                            title="{{ 'Keine Koordinaten verfügbar' if stada_data else no_stada_title }}" disabled
+                            {% endif %}>
+                        Infrastrukturregister
+                    </button>
+                    <script>
+                        function openTab(url) {
+                            window.open(url, '_blank');
+                        }
+
+                        async function checkGleisplan(apn) {
+                            const backendUrl = `${window.location.origin}/api/gleisplan/${apn}`;
+                            try {
+                                const response = await fetch(backendUrl);
+                                const data = await response.json();
+                                return data.exists;
+                            } catch (error) {
+                                console.error("Fehler beim API-Call (Gleisplan):", error);
+                                return false;
+                            }
+                        }
+
+                        async function checkStellwerk(ds100) {
+                            const backendUrl = `${window.location.origin}/api/stellwerk/${ds100}`;
+                            try {
+                                const response = await fetch(backendUrl);
+                                const data = await response.json();
+                                return data.exists;
+                            } catch (error) {
+                                console.error("Fehler beim API-Call (Stellwerk):", error);
+                                return false;
+                            }
+                        }
+
+                        async function checkAbfahrt(code, number) {
+                            const backendUrl = `${window.location.origin}/api/abfahrt/${code}/${number}`;
+                            try {
+                                const response = await fetch(backendUrl);
+                                const data = await response.json();
+                                return data.exists;
+                            } catch (error) {
+                                console.error("Fehler beim API-Call (bahnhof.de):", error);
+                                return false;
+                            }
+                        }
+
+                        async function checkBahnhofsplan(code, number) {
+                            const backendUrl = `${window.location.origin}/api/bahnhofsplan/${code}/${number}`;
+                            try {
+                                const response = await fetch(backendUrl);
+                                const data = await response.json();
+                                return data.exists;
+                            } catch (error) {
+                                console.error("Fehler beim API-Call (Bahnhofsplan):", error);
+                                return false;
+                            }
+                        }
+
+                        async function checkUmgebungsplan(code, number) {
+                            const backendUrl = `${window.location.origin}/api/umgebungsplan/${code}/${number}`;
+                            try {
+                                const response = await fetch(backendUrl);
+                                const data = await response.json();
+                                return data.exists;
+                            } catch (error) {
+                                console.error("Fehler beim API-Call (Umgebungsplan):", error);
+                                return false;
+                            }
+                        }
+
+                        async function initButtons() {
+                            const code = '{{ row[1] }}';
+                            const station_number = '{{ station_number or '' }}';
+
+                            const btnGleisplan = document.getElementById('loadDataBtn-1');
+                            const btnAbfahrt = document.getElementById('loadDataBtn-2');
+                            const btnStellwerk = document.getElementById('loadDataBtn-3');
+                            const btnBahnhofsplan = document.getElementById('loadDataBtn-4');
+                            const btnUmgebungsplan = document.getElementById('loadDataBtn-5');
+
+                            if (await checkGleisplan(code)) {
+                                btnGleisplan.disabled = false;
+                            } else {
+                                btnGleisplan.disabled = true;
+                                btnGleisplan.title = "Kein Gleisplan verfügbar";
+                            }
+
+                            // Ohne Stationsnummer (keine STADA-Daten) bleibt der Button ausgegraut
+                            if (station_number) {
+                                if (await checkAbfahrt(code, station_number)) {
+                                    btnAbfahrt.disabled = false;
+                                } else {
+                                    btnAbfahrt.disabled = true;
+                                    btnAbfahrt.title = "Keine Live-Daten verfügbar";
+                                }
+                            }
+
+                            if (await checkStellwerk(code)) {
+                                btnStellwerk.disabled = false;
+                            } else {
+                                btnStellwerk.disabled = true;
+                                btnStellwerk.title = "Keine Stellwerks-Infos verfügbar";
+                            }
+                            
+                            if (station_number) {
+                                if (await checkBahnhofsplan(code, station_number)) {
+                                    btnBahnhofsplan.disabled = false;
+                                } else {
+                                    btnBahnhofsplan.disabled = true;
+                                    btnBahnhofsplan.title = "Kein Bahnhofsplan verfügbar";
+                                }
+                            }
+
+                            if (station_number) {
+                                if (await checkUmgebungsplan(code, station_number)) {
+                                    btnUmgebungsplan.disabled = false;
+                                } else {
+                                    btnUmgebungsplan.disabled = true;
+                                    btnUmgebungsplan.title = "Kein Umgebungsplan verfügbar";
+                                }
+                            }
+                        }
+
+                        document.addEventListener('DOMContentLoaded', initButtons);
+                    </script>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
             {% if stada_data %}
-                <div class="card list-group mt-3 mb-3" id="infoContainer-2">
-                    <h5 class="card-header"> Geografische Lage </h5>
-                    {% if stada_data.ril100Identifiers is defined
-                          and stada_data.ril100Identifiers
-                          and stada_data.ril100Identifiers[0].geographicCoordinates is defined %}
-                        <div class="col-md">
-                            <li class="list-group-item d-flex">
-                                <div id="map" style="width: 100%; height: 500px;"></div>
-                            </li>
-                            <li class="list-group-item d-flex">
-                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg') }}"
-                                     class="align-center me-3"
-                                     alt=">Pin-Nadel"
-                                     title="Adresse">
-                                {{ stada_data.name }} ({{ stada_data.number }})<br>
-                                {{ stada_data.mailingAddress.street }}<br>
-                                {{ stada_data.mailingAddress.zipcode }} {{ stada_data.mailingAddress.city }}
-                            </li>
-                        </div>
-                        </div>
-                        <script>
-                            var map = L.map('map').setView([{{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1]}}, {{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0]}}], 15);
+            <div class="card list-group mt-3 mb-3" id="infoContainer-2">
+                <h5 class="card-header"> Geografische Lage </h5>
+                {% if stada_data.ril100Identifiers is defined
+                and stada_data.ril100Identifiers
+                and stada_data.ril100Identifiers[0].geographicCoordinates is defined %}
+                <div class="col-md">
+                    <li class="list-group-item d-flex">
+                        <div id="map" style="width: 100%; height: 500px;"></div>
+                    </li>
+                    <li class="list-group-item d-flex">
+                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg') }}"
+                             class="align-center me-3"
+                             alt=">Pin-Nadel"
+                             title="Adresse">
+                        {{ stada_data.name }} ({{ stada_data.number }})<br>
+                        {{ stada_data.mailingAddress.street }}<br>
+                        {{ stada_data.mailingAddress.zipcode }} {{ stada_data.mailingAddress.city }}
+                    </li>
+                </div>
+            </div>
+            <script>
+                var map = L.map('map').setView([{{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1]}},
+                {{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0]}}], 15);
 
-                            var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                attribution: '&copy; OpenStreetMap contributors'
-                            }).addTo(map);
+                var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
 
-                            var railwayLayer = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
-                                attribution: '&copy; OpenRailwayMap contributors',
-                                opacity: 0.7
-                            }).addTo(map);
+                var railwayLayer = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenRailwayMap contributors',
+                    opacity: 0.7
+                }).addTo(map);
 
-                            L.Icon.Default.imagePath = "";
+                L.Icon.Default.imagePath = "";
 
-                            L.Icon.Default.mergeOptions({
-                                iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-                                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
-                            });
+                L.Icon.Default.mergeOptions({
+                    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+                    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+                });
 
                             var marker = L.marker([{{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[1]}}, {{stada_data.ril100Identifiers[0].geographicCoordinates.coordinates[0]}}]).addTo(map);
 
-                            // Center the map properly after loading
-                            setTimeout(() => {
-                                map.invalidateSize();
-                            }, 100);
-                        </script>
-                    {% else %}
-                        <li class="list-group-item d-flex">
-                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg') }}"
-                                 class="align-center me-3"
-                                 alt=">Pin-Nadel"
-                                 title="Adresse">
-                            {{ stada_data.name }} ({{ stada_data.number }})<br>
-                            {{ stada_data.mailingAddress.street }}<br>
-                            {{ stada_data.mailingAddress.zipcode }} {{ stada_data.mailingAddress.city }}
-                        </li>
-                    {% endif %}
+                // Center the map properly after loading
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
+            </script>
+            {% else %}
+            <li class="list-group-item d-flex">
+                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/geo.svg') }}"
+                     class="align-center me-3"
+                     alt=">Pin-Nadel"
+                     title="Adresse">
+                {{ stada_data.name }} ({{ stada_data.number }})<br>
+                {{ stada_data.mailingAddress.street }}<br>
+                {{ stada_data.mailingAddress.zipcode }} {{ stada_data.mailingAddress.city }}
+            </li>
+            {% endif %}
             {% endif %}
         </div>
 
 
         {% if stada_data %}
-            <div class="col-md">
-                <ul id="results" class="list-group">
+        <div class="col-md">
+            <ul id="results" class="list-group">
 
-                    <div class="col-md">
-                        <ul id="resultContainer" class="card list-group">
-                            <div class="d-flex card-header">
-                                <div class="p-1 flex-grow-1">
-                                    <h5>
-                                        Weitere Details
-                                    </h5>
-                                </div>
-                                <div class="p-1">
-                                    <a href="https://developers.deutschebahn.com/db-api-marketplace/apis/product/stada"
-                                       target="_blank">
-                                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
-                                             class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
-                                             data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
-                                             data-bs-title="Diese Daten werden von der StaDa-API der Deutschen Bahn unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt.">
-                                    </a>
-                                </div>
+                <div class="col-md">
+                    <ul id="resultContainer" class="card list-group">
+                        <div class="d-flex card-header">
+                            <div class="p-1 flex-grow-1">
+                                <h5>
+                                    Weitere Details
+                                </h5>
                             </div>
+                            <div class="p-1">
+                                <a href="https://developers.deutschebahn.com/db-api-marketplace/apis/product/stada"
+                                   target="_blank">
+                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/patch-question.svg') }}"
+                                         class="align-center" data-bs-toggle="tooltip" data-bs-placement="right"
+                                         data-bs-custom-class="custom-tooltip" alt="Fragezeichen"
+                                         data-bs-title="Diese Daten werden von der StaDa-API der Deutschen Bahn unter der Lizenz Creative Commons Attribution 4.0 International (CC BY 4.0) bereitgestellt.">
+                                </a>
+                            </div>
+                        </div>
 
-                            <div class="col-md">
+                        <div class="col-md">
 
-                                <li class="list-group-item d-flex">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
-                                         class="align-center me-3"
-                                         alt="Kartensymbol"
-                                         title="Regionalbereich">
-                                    Regionalbereich:
-                                    {{ stada_data.regionalbereich.name }}
-                                    ({{ stada_data.regionalbereich.number }})
-                                    <br>
-                                    Aufgabenträger: {{ stada_data.aufgabentraeger.name }}
-                                    ({{ stada_data.aufgabentraeger.shortName }})
-                                </li>
-                                <li class="list-group-item d-flex">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/bookmark-check.svg') }}"
-                                         class="align-center me-3" alt="Lesezeichen" title="Bahnhofsart">
-                                    Bahnhofsart: {{ stada_data.productLine.productLine }}
-                                    ({{ stada_data.productLine.segment }})
-                                </li>
-                                <li class="list-group-item d-flex">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/tag.svg') }}"
-                                         class="align-center me-3"
-                                         alt="Preisschild"
-                                         title="Bahnhofskategorie">
-                                    Bahnhofskategorie: {{ stada_data.category }}
-                                </li>
-                                <li class="list-group-item d-flex">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/cash-coin.svg') }}"
-                                         class="align-center me-3"
-                                         alt="Geld" title="Preiskategorie">
-                                    Preiskategorie: {{ stada_data.priceCategory }}
-                                </li>
-                                <li class="list-group-item d-flex">
-                                    <img src="{{ url_for('static', filename='img/icons-8-custom/management.svg') }}"
-                                         class="align-center me-3"
-                                         alt="Köpfe"
-                                         title="Bahnhofsmanagement">
-                                    Bahnhofsmanagement: {{ stada_data.stationManagement.name }}
-                                    ({{ stada_data.stationManagement.number }})
-                                </li>
-                                <li class="list-group-item d-flex">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/exclamation-triangle.svg') }}"
-                                         class="align-center me-3" alt="Ausrufezeichen"
-                                         title="3-S-Zentrale">
-                                    3-S-Zentrale: {{ stada_data.szentrale.name }}
-                                    ({{ stada_data.szentrale.number }})<br>
-                                    Telefonnummer: {{ stada_data.szentrale.publicPhoneNumber }}
-                                </li>
-                                <li class="list-group-item d-flex">
-                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/envelope-at.svg') }}"
-                                         class="align-center me-3" alt="E-Mail-Symbol"
-                                         title="Fahrplanzentrale">
-                                    <div class="flex-grow-1 min-w-0 overflow-hidden">
-                                        Fahrplanzentrale: <span class="text-break">{{ stada_data.timeTableOffice.email }}</span><br>
-                                        Sitz: {{ stada_data.timeTableOffice.name }}
+                            <li class="list-group-item d-flex">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/map.svg') }}"
+                                     class="align-center me-3"
+                                     alt="Kartensymbol"
+                                     title="Regionalbereich">
+                                Regionalbereich:
+                                {{ stada_data.regionalbereich.name }}
+                                ({{ stada_data.regionalbereich.number }})
+                                <br>
+                                Aufgabenträger: {{ stada_data.aufgabentraeger.name }}
+                                ({{ stada_data.aufgabentraeger.shortName }})
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/bookmark-check.svg') }}"
+                                     class="align-center me-3" alt="Lesezeichen" title="Bahnhofsart">
+                                Bahnhofsart: {{ stada_data.productLine.productLine }}
+                                ({{ stada_data.productLine.segment }})
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/tag.svg') }}"
+                                     class="align-center me-3"
+                                     alt="Preisschild"
+                                     title="Bahnhofskategorie">
+                                Bahnhofskategorie: {{ stada_data.category }}
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/cash-coin.svg') }}"
+                                     class="align-center me-3"
+                                     alt="Geld" title="Preiskategorie">
+                                Preiskategorie: {{ stada_data.priceCategory }}
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <img src="{{ url_for('static', filename='img/icons-8-custom/management.svg') }}"
+                                     class="align-center me-3"
+                                     alt="Köpfe"
+                                     title="Bahnhofsmanagement">
+                                Bahnhofsmanagement: {{ stada_data.stationManagement.name }}
+                                ({{ stada_data.stationManagement.number }})
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/exclamation-triangle.svg') }}"
+                                     class="align-center me-3" alt="Ausrufezeichen"
+                                     title="3-S-Zentrale">
+                                3-S-Zentrale: {{ stada_data.szentrale.name }}
+                                ({{ stada_data.szentrale.number }})<br>
+                                Telefonnummer: {{ stada_data.szentrale.publicPhoneNumber }}
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/envelope-at.svg') }}"
+                                     class="align-center me-3" alt="E-Mail-Symbol"
+                                     title="Fahrplanzentrale">
+                                <div class="flex-grow-1 min-w-0 overflow-hidden">
+                                    Fahrplanzentrale: <span
+                                        class="text-break">{{ stada_data.timeTableOffice.email }}</span><br>
+                                    Sitz: {{ stada_data.timeTableOffice.name }}
+                                </div>
+                            </li>
+                            {% if stada_data.hasMobilityService %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    {% if stada_data.hasMobilityService == "no" %}
+                                    <div class="col-10">
+                                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/person-wheelchair.svg') }}"
+                                             class="align-center me-3" alt="Rollstuhl"
+                                             title="Mobilitätszentrale">
+                                        Mobilitätszentrale:
                                     </div>
-                                </li>
-                                {% if stada_data.hasMobilityService %}
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            {% if stada_data.hasMobilityService == "no" %}
-                                                <div class="col-10">
-                                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/person-wheelchair.svg') }}"
-                                                         class="align-center me-3" alt="Rollstuhl"
-                                                         title="Mobilitätszentrale">
-                                                    Mobilitätszentrale:
-                                                </div>
-                                                <div class="col">
-                                                    <img src="/static/img/bootstrap-icons-1.11.3/x-square.svg"
-                                                         class="align-center ms-3"
-                                                         style="filter: invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"
-                                                         alt="Unrestricted" title="Unrestricted">
-                                                </div>
-                                            {% else %}
-                                                <div class="col">
-                                                    <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/person-wheelchair.svg') }}"
-                                                         class="align-center me-3" alt="Rollstuhl"
-                                                         title="Mobilitätszentrale">
-                                                    Mobilitätszentrale: {{ stada_data.hasMobilityService }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </li>
-                                {% endif %}
-                                {% if stada_data.hasSteplessAccess %}
-                                    <li class="list-group-item">
-                                        <div class="row">
+                                    <div class="col">
+                                        <img src="/static/img/bootstrap-icons-1.11.3/x-square.svg"
+                                             class="align-center ms-3"
+                                             style="filter: invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"
+                                             alt="Unrestricted" title="Unrestricted">
+                                    </div>
+                                    {% else %}
+                                    <div class="col">
+                                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/person-wheelchair.svg') }}"
+                                             class="align-center me-3" alt="Rollstuhl"
+                                             title="Mobilitätszentrale">
+                                        Mobilitätszentrale: {{ stada_data.hasMobilityService }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            {% endif %}
+                            {% if stada_data.hasSteplessAccess %}
+                            <li class="list-group-item">
+                                <div class="row">
 
-                                            <div class="col-10">
-                                                <img src="{{ url_for('static', filename='img/icons-8-custom/stairs.svg') }}"
-                                                     class="align-center me-3" alt="Stufen"
-                                                     title="Barrierefreier Zugang">
-                                                Barrierefreier Zugang
-                                            </div>
-                                            {% if stada_data.hasSteplessAccess == "partial" %}
-                                                <div class="col">
-                                                    <img src="/static/img/bootstrap-icons-1.11.3/slash-square.svg"
-                                                         class="align-center ms-3"
-                                                         style="filter: invert(60%) sepia(93%) saturate(1400%) hue-rotate(1deg) brightness(90%) contrast(105%);"
-                                                         alt="Teilweise" title="Teilweise">
-                                                </div>
-                                            {% elif stada_data.hasSteplessAccess == "no" %}
-                                                <div class="col">
-                                                    <img src="/static/img/bootstrap-icons-1.11.3/x-square.svg"
-                                                         class="align-center ms-3"
-                                                         style="filter: invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"
-                                                         alt="Nein" title="Nein">
-                                                </div>
+                                    <div class="col-10">
+                                        <img src="{{ url_for('static', filename='img/icons-8-custom/stairs.svg') }}"
+                                             class="align-center me-3" alt="Stufen"
+                                             title="Barrierefreier Zugang">
+                                        Barrierefreier Zugang
+                                    </div>
+                                    {% if stada_data.hasSteplessAccess == "partial" %}
+                                    <div class="col">
+                                        <img src="/static/img/bootstrap-icons-1.11.3/slash-square.svg"
+                                             class="align-center ms-3"
+                                             style="filter: invert(60%) sepia(93%) saturate(1400%) hue-rotate(1deg) brightness(90%) contrast(105%);"
+                                             alt="Teilweise" title="Teilweise">
+                                    </div>
+                                    {% elif stada_data.hasSteplessAccess == "no" %}
+                                    <div class="col">
+                                        <img src="/static/img/bootstrap-icons-1.11.3/x-square.svg"
+                                             class="align-center ms-3"
+                                             style="filter: invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"
+                                             alt="Nein" title="Nein">
+                                    </div>
 
-                                            {% elif stada_data.hasSteplessAccess == "yes" %}
-                                                <div class="col">
-                                                    <img src="/static/img/bootstrap-icons-1.11.3/check-square.svg"
-                                                         class="align-center ms-3"
-                                                         style="filter: invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);"
-                                                         alt="Teilweise" title="Teilweise">
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </li>
-                                {% endif %}
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-10">
-                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/cloud-fog2.svg') }}"
-                                                 class="align-center me-3" alt="Rauchwolke" title="Zulassung Dampfloks">
-                                            Zulassung Dampfloks
-                                        </div>
+                                    {% elif stada_data.hasSteplessAccess == "yes" %}
+                                    <div class="col">
+                                        <img src="/static/img/bootstrap-icons-1.11.3/check-square.svg"
+                                             class="align-center ms-3"
+                                             style="filter: invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);"
+                                             alt="Teilweise" title="Teilweise">
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            {% endif %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/cloud-fog2.svg') }}"
+                                             class="align-center me-3" alt="Rauchwolke" title="Zulassung Dampfloks">
+                                        Zulassung Dampfloks
+                                    </div>
 
-                                        <div class="col">
-                                            {% for ril100 in stada_data.ril100Identifiers %}
-                                                {% if ril100.rilIdentifier == result[0][1] %}
-                                                    {% if ril100.steamPermission == "unrestricted" %}
-                                                        <img src="/static/img/bootstrap-icons-1.11.3/check-square.svg"
-                                                             class="align-center ms-3"
-                                                             style="filter: invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);"
-                                                             alt="Uneingeschränkt" title="Uneingeschränkt">
-                                                    {% elif ril100.steamPermission == "restricted" %}
-                                                        <img src="/static/img/bootstrap-icons-1.11.3/slash-square.svg"
-                                                             class="align-center ms-3"
-                                                             style="filter: invert(60%) sepia(93%) saturate(1400%) hue-rotate(1deg) brightness(90%) contrast(105%);"
-                                                             alt="Eingeschränkt" title="Eingeschränkt">
-                                                    {% elif ril100.steamPermission == "entryBan" %}
-                                                        <img src="/static/img/bootstrap-icons-1.11.3/x-square.svg"
-                                                             class="align-center ms-3"
-                                                             style="filter: invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"
-                                                             alt="Einfahrtsverbot" title="Einfahrtsverbot">
+                                    <div class="col">
+                                        {% for ril100 in stada_data.ril100Identifiers %}
+                                        {% if ril100.rilIdentifier == result[0][1] %}
+                                        {% if ril100.steamPermission == "unrestricted" %}
+                                        <img src="/static/img/bootstrap-icons-1.11.3/check-square.svg"
+                                             class="align-center ms-3"
+                                             style="filter: invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);"
+                                             alt="Uneingeschränkt" title="Uneingeschränkt">
+                                        {% elif ril100.steamPermission == "restricted" %}
+                                        <img src="/static/img/bootstrap-icons-1.11.3/slash-square.svg"
+                                             class="align-center ms-3"
+                                             style="filter: invert(60%) sepia(93%) saturate(1400%) hue-rotate(1deg) brightness(90%) contrast(105%);"
+                                             alt="Eingeschränkt" title="Eingeschränkt">
+                                        {% elif ril100.steamPermission == "entryBan" %}
+                                        <img src="/static/img/bootstrap-icons-1.11.3/x-square.svg"
+                                             class="align-center ms-3"
+                                             style="filter: invert(23%) sepia(97%) saturate(7482%) hue-rotate(357deg) brightness(95%) contrast(105%);"
+                                             alt="Einfahrtsverbot" title="Einfahrtsverbot">
+                                        {% endif %}
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </li>
+
+
+                            </li>
+                            {% for key in [
+                            'hasLocalPublicTransport', 'hasTaxiRank', 'hasCarRental', 'hasParking', 'hasBicycleParking',
+                            'hasWiFi',
+                            'hasLockerSystem', 'hasPublicFacilities', 'hasLostAndFound',
+                            'hasTravelNecessities', 'hasRailwayMission', 'hasTravelCenter', 'hasDBLounge',
+                            ] %}
+                            {% set feature_value = stada_data.get(key, False) %}
+                            {{ (key, feature_value) | add_icons | safe }}
+                            {% endfor %}
+
+                            {% if stada_data is defined and stada_data and stada_data.DBinformation is defined %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/info-square.svg') }}"
+                                                 class="align-center me-3 mt-1" alt="DB-Information"
+                                                 title="DB-Information">
+                                            <div>
+                                                <div>DB-Information</div>
+                                                <h6 class="mt-2">Öffnungszeiten:</h6>
+                                                <table class="table table-sm table-borderless w-auto">
+                                                    <tbody>
+                                                    {% if stada_data.DBinformation.availability.monday and
+                                                    stada_data.DBinformation.availability.monday.fromTime and
+                                                    stada_data.DBinformation.availability.monday.toTime %}
+                                                    <tr>
+                                                        <td class="pe-1">Mo:</td>
+                                                        <td class="ps-1">{{
+                                                            stada_data.DBinformation.availability.monday.fromTime }}
+                                                            - {{ stada_data.DBinformation.availability.monday.toTime }}
+                                                        </td>
+                                                    </tr>
                                                     {% endif %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </li>
-
-
-                                </li>
-                                {% for key in [
-                                    'hasLocalPublicTransport', 'hasTaxiRank', 'hasCarRental', 'hasParking', 'hasBicycleParking', 'hasWiFi',
-                                    'hasLockerSystem', 'hasPublicFacilities', 'hasLostAndFound',
-                                    'hasTravelNecessities', 'hasRailwayMission', 'hasTravelCenter', 'hasDBLounge',
-                                ] %}
-                                    {% set feature_value = stada_data.get(key, False) %}
-                                    {{ (key, feature_value) | add_icons | safe }}
-                                {% endfor %}
-
-                                 {% if stada_data is defined and stada_data and stada_data.DBinformation is defined %}
-                                     <li class="list-group-item">
-                                         <div class="row">
-                                             <div class="col-10">
-                                                 <div class="d-flex align-items-start">
-                                                     <img src="{{ url_for('static', filename='img/bootstrap-icons-1.11.3/info-square.svg') }}"
-                                                          class="align-center me-3 mt-1" alt="DB-Information" title="DB-Information">
-                                                     <div>
-                                                         <div>DB-Information</div>
-                                                         <h6 class="mt-2">Öffnungszeiten:</h6>
-                                                         <table class="table table-sm table-borderless w-auto">
-                                                             <tbody>
-                                                     {% if stada_data.DBinformation.availability.monday and stada_data.DBinformation.availability.monday.fromTime and stada_data.DBinformation.availability.monday.toTime %}
-                                                         <tr>
-                                                             <td class="pe-1">Mo:</td>
-                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.monday.fromTime }}
-                                                                 - {{ stada_data.DBinformation.availability.monday.toTime }}</td>
-                                                         </tr>
-                                                     {% endif %}
-                                                     {% if stada_data.DBinformation.availability.tuesday and stada_data.DBinformation.availability.tuesday.fromTime and stada_data.DBinformation.availability.tuesday.toTime %}
-                                                         <tr>
-                                                             <td class="pe-1">Di:</td>
-                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.tuesday.fromTime }}
-                                                                 - {{ stada_data.DBinformation.availability.tuesday.toTime }}</td>
-                                                         </tr>
-                                                     {% endif %}
-                                                     {% if stada_data.DBinformation.availability.wednesday and stada_data.DBinformation.availability.wednesday.fromTime and stada_data.DBinformation.availability.wednesday.toTime %}
-                                                         <tr>
-                                                             <td class="pe-1">Mi:</td>
-                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.wednesday.fromTime }}
-                                                                 - {{ stada_data.DBinformation.availability.wednesday.toTime }}</td>
-                                                         </tr>
-                                                     {% endif %}
-                                                     {% if stada_data.DBinformation.availability.thursday and stada_data.DBinformation.availability.thursday.fromTime and stada_data.DBinformation.availability.thursday.toTime %}
-                                                         <tr>
-                                                             <td class="pe-1">Do:</td>
-                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.thursday.fromTime }}
-                                                                 - {{ stada_data.DBinformation.availability.thursday.toTime }}</td>
-                                                         </tr>
-                                                     {% endif %}
-                                                     {% if stada_data.DBinformation.availability.friday and stada_data.DBinformation.availability.friday.fromTime and stada_data.DBinformation.availability.friday.toTime %}
-                                                         <tr>
-                                                             <td class="pe-1">Fr:</td>
-                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.friday.fromTime }}
-                                                                 - {{ stada_data.DBinformation.availability.friday.toTime }}</td>
-                                                         </tr>
-                                                     {% endif %}
-                                                     {% if stada_data.DBinformation.availability.saturday and stada_data.DBinformation.availability.saturday.fromTime and stada_data.DBinformation.availability.saturday.toTime %}
-                                                         <tr>
-                                                             <td class="pe-1">Sa:</td>
-                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.saturday.fromTime }}
-                                                                 - {{ stada_data.DBinformation.availability.saturday.toTime }}</td>
-                                                         </tr>
-                                                     {% endif %}
-                                                     {% if stada_data.DBinformation.availability.sunday and stada_data.DBinformation.availability.sunday.fromTime and stada_data.DBinformation.availability.sunday.toTime %}
-                                                         <tr>
-                                                             <td class="pe-1">So:</td>
-                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.sunday.fromTime }}
-                                                                 - {{ stada_data.DBinformation.availability.sunday.toTime }}</td>
-                                                         </tr>
-                                                     {% endif %}
-                                                     {% if stada_data.DBinformation.availability.holiday and stada_data.DBinformation.availability.holiday.fromTime and stada_data.DBinformation.availability.holiday.toTime %}
-                                                         <tr>
-                                                             <td class="pe-1">FT:</td>
-                                                             <td class="ps-1">{{ stada_data.DBinformation.availability.holiday.fromTime }}
-                                                                 - {{ stada_data.DBinformation.availability.holiday.toTime }}</td>
-                                                         </tr>
-                                                     {% endif %}
-                                                             </tbody>
-                                                         </table>
-                                                     </div>
-                                                 </div>
-                                             </div>
-                                             <div class="col-2 d-flex align-items-start">
-                                                 <img src="/static/img/bootstrap-icons-1.11.3/check-square.svg"
-                                                      class="align-center align-self-start mt-1 ms-3"
-                                                      style="filter: invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);"
-                                                      alt="Ja" title="Ja">
-                                             </div>
-                                         </div>
-                                     </li>
-                                 {% endif %}
-                                 <div id="feature-hasLocalPublicTransport"></div>
-                                 <li class="list-group-item">
-                                     <div class="accordion" id="accordionExample">
-                                        <div class="accordion-item border-0">
-                                            <h2 class="accordion-header" id="headingOne">
-                                                <button class="accordion-button collapsed" type="button"
-                                                        data-bs-toggle="collapse"
-                                                        data-bs-target="#collapseOne" aria-expanded="false"
-                                                        aria-controls="collapseOne">
-                                                    Komplette API-Antwort ansehen
-                                                </button>
-                                            </h2>
-                                            <div id="collapseOne" class="accordion-collapse collapse"
-                                                 aria-labelledby="headingOne"
-                                                 data-bs-parent="#accordionExample">
-                                                <div class="accordion-body">
-                                                    <pre>{{ stada_data | tojson_utf8 }}</pre>
-                                                </div>
+                                                    {% if stada_data.DBinformation.availability.tuesday and
+                                                    stada_data.DBinformation.availability.tuesday.fromTime and
+                                                    stada_data.DBinformation.availability.tuesday.toTime %}
+                                                    <tr>
+                                                        <td class="pe-1">Di:</td>
+                                                        <td class="ps-1">{{
+                                                            stada_data.DBinformation.availability.tuesday.fromTime }}
+                                                            - {{ stada_data.DBinformation.availability.tuesday.toTime }}
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% if stada_data.DBinformation.availability.wednesday and
+                                                    stada_data.DBinformation.availability.wednesday.fromTime and
+                                                    stada_data.DBinformation.availability.wednesday.toTime %}
+                                                    <tr>
+                                                        <td class="pe-1">Mi:</td>
+                                                        <td class="ps-1">{{
+                                                            stada_data.DBinformation.availability.wednesday.fromTime }}
+                                                            - {{ stada_data.DBinformation.availability.wednesday.toTime
+                                                            }}
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% if stada_data.DBinformation.availability.thursday and
+                                                    stada_data.DBinformation.availability.thursday.fromTime and
+                                                    stada_data.DBinformation.availability.thursday.toTime %}
+                                                    <tr>
+                                                        <td class="pe-1">Do:</td>
+                                                        <td class="ps-1">{{
+                                                            stada_data.DBinformation.availability.thursday.fromTime }}
+                                                            - {{ stada_data.DBinformation.availability.thursday.toTime
+                                                            }}
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% if stada_data.DBinformation.availability.friday and
+                                                    stada_data.DBinformation.availability.friday.fromTime and
+                                                    stada_data.DBinformation.availability.friday.toTime %}
+                                                    <tr>
+                                                        <td class="pe-1">Fr:</td>
+                                                        <td class="ps-1">{{
+                                                            stada_data.DBinformation.availability.friday.fromTime }}
+                                                            - {{ stada_data.DBinformation.availability.friday.toTime }}
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% if stada_data.DBinformation.availability.saturday and
+                                                    stada_data.DBinformation.availability.saturday.fromTime and
+                                                    stada_data.DBinformation.availability.saturday.toTime %}
+                                                    <tr>
+                                                        <td class="pe-1">Sa:</td>
+                                                        <td class="ps-1">{{
+                                                            stada_data.DBinformation.availability.saturday.fromTime }}
+                                                            - {{ stada_data.DBinformation.availability.saturday.toTime
+                                                            }}
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% if stada_data.DBinformation.availability.sunday and
+                                                    stada_data.DBinformation.availability.sunday.fromTime and
+                                                    stada_data.DBinformation.availability.sunday.toTime %}
+                                                    <tr>
+                                                        <td class="pe-1">So:</td>
+                                                        <td class="ps-1">{{
+                                                            stada_data.DBinformation.availability.sunday.fromTime }}
+                                                            - {{ stada_data.DBinformation.availability.sunday.toTime }}
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% if stada_data.DBinformation.availability.holiday and
+                                                    stada_data.DBinformation.availability.holiday.fromTime and
+                                                    stada_data.DBinformation.availability.holiday.toTime %}
+                                                    <tr>
+                                                        <td class="pe-1">FT:</td>
+                                                        <td class="ps-1">{{
+                                                            stada_data.DBinformation.availability.holiday.fromTime }}
+                                                            - {{ stada_data.DBinformation.availability.holiday.toTime }}
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
-                                </li>
-                            </div>
-                        </ul>
-                    </div>
-                </ul>
-            </div>
+                                    <div class="col-2 d-flex align-items-start">
+                                        <img src="/static/img/bootstrap-icons-1.11.3/check-square.svg"
+                                             class="align-center align-self-start mt-1 ms-3"
+                                             style="filter: invert(41%) sepia(97%) saturate(747%) hue-rotate(85deg) brightness(94%) contrast(89%);"
+                                             alt="Ja" title="Ja">
+                                    </div>
+                                </div>
+                            </li>
+                            {% endif %}
+                            <div id="feature-hasLocalPublicTransport"></div>
+                            <li class="list-group-item">
+                                <div class="accordion" id="accordionExample">
+                                    <div class="accordion-item border-0">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#collapseOne" aria-expanded="false"
+                                                    aria-controls="collapseOne">
+                                                Komplette API-Antwort ansehen
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse"
+                                             aria-labelledby="headingOne"
+                                             data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <pre>{{ stada_data | tojson_utf8 }}</pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+            </ul>
+        </div>
         {% endif %}
     </div>
     {% include "elements/footer.html" %}
