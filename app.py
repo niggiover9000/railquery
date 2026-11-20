@@ -8,6 +8,7 @@ from flask import Flask, render_template, request, jsonify, send_from_directory,
 from flask_sitemap import Sitemap
 from flask_caching import Cache
 from flask_mail import Mail, Message
+from jinja2 import ChainableUndefined
 from requests import head
 from waitress import serve
 from json import loads, dumps
@@ -27,6 +28,7 @@ ANALYTICS_TAG = getenv('ANALYTICS_TAG')
 TAG_MANAGER_TAG = getenv('TAG_MANAGER_TAG')
 ADSENSE_CLIENT = getenv('ADSENSE_CLIENT')
 app = Flask(__name__)
+app.jinja_env.undefined = ChainableUndefined
 app.config["SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS"] = True
 app.config["SITEMAP_URL_SCHEME"] = "https"
 app.config['CACHE_TYPE'] = 'SimpleCache'
@@ -210,6 +212,45 @@ def check_abfahrt(code, number):
                                               WHERE LOWER(TRIM([RL100-Code])) = ?
                                            """, "abfahrt_checked_at",
                                 f"https://www.bahnhof.de/de/id/{number}/abfahrt", "exists")
+
+def get_stada_points(stada, code, name=None):
+    """If multiple coordinates are present, these are collected so that all of them can be displayed on the map.
+    Entrys that share the same coordinates are bundled.
+    :return: all the points and the primary point."""
+    if not stada:
+        return [], None
+
+    def norm(value):
+        return ''.join(str(value or '').split()).lower()
+
+    def extract(entry):
+        coords = ((entry or {}).get('geographicCoordinates') or {}).get('coordinates')
+        if coords and len(coords) >= 2:
+            return coords[1], coords[0]
+        return None
+
+    grouped = {}
+    for entry in stada.get('ril100Identifiers') or []:
+        latlon = extract(entry)
+        if latlon:
+            ril = entry.get('rilIdentifier')
+            group = grouped.setdefault(latlon, {'rils': [], 'current': False})
+            group['rils'].append(str(ril))
+            group['current'] = group['current'] or norm(ril) == norm(code)
+    points = [{'lat': lat, 'lon': lon, 'current': g['current'],
+               'label': [{'text': ' '.join(ril.split()), 'url': url_for('details', code=ril)} for ril in g['rils']]}
+              for (lat, lon), g in grouped.items()]
+    if not points:
+        eva_numbers = stada.get('evaNumbers') or []
+        main_eva = next((e for e in eva_numbers if e.get('isMain')), eva_numbers[0] if eva_numbers else None)
+        latlon = extract(main_eva)
+        if latlon:
+            points.append({'lat': latlon[0], 'lon': latlon[1], 'current': True,
+                           'label': [{'text': name or code.upper(), 'url': url_for('details', code=code)}]})
+
+    primary = next((p for p in points if p['current']), points[0] if points else None)
+    return points, primary
+
 
 @app.route('/api/stada/<code>', methods=['GET'])
 def check_stada(code):
@@ -498,9 +539,11 @@ def details(code):
     else:
         stada = None
     date = get_date(result[0][6]) if result else None
+    stada_points, stada_coords = get_stada_points(stada, code, name=result[0][2])
     return render_template('details.html',
                            code=code, result=result, date=date, art=art, region=region, sonderart=sonderart,
                            betriebsstellen=betriebsstellen, betriebszustaende=betriebszustände, stada_data=stada,
+                           stada_points=stada_points, stada_coords=stada_coords,
                            date_db=DATE, ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT)
 
