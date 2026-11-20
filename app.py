@@ -56,6 +56,7 @@ def get_db_connection(database='betriebsstellen.db'):
     def normalize_string_for_search(s):
         """
         Normalize a string for search by removing special characters and converting to lowercase.
+        :returns: String with ä/ö/ü/ß replaced with a/o/u/ss
         """
         if not s:
             return ""
@@ -69,6 +70,8 @@ def get_db_connection(database='betriebsstellen.db'):
 
 
 def get_changelog(filename):
+    """Read the changelog in a defined location to display if on the landing page
+    :returns: Changelog as markdown"""
     file_path = path.join(app.root_path, filename)
     try:
         with open(file_path, encoding='utf-8') as f:
@@ -78,7 +81,6 @@ def get_changelog(filename):
 
 @app.route('/')
 def index():
-    """Start page"""
     return render_template('index.html', date=DATE, ANALYTICS_TAG=ANALYTICS_TAG, TAG_MANAGER_TAG=TAG_MANAGER_TAG,
                            ADSENSE_CLIENT=ADSENSE_CLIENT, mail=mail_impressum, changelog=get_changelog("changelog.md"))
 
@@ -89,6 +91,7 @@ CACHE_MAX_AGE = timedelta(days=int(getenv("CACHE_MAX_AGE", 30)))
 def cached_flag(value):
     """
     Make sure, the stored value is converted to a boolean if it is not true.
+    :returns: true or false
     """
     if value is None:
         return False
@@ -123,13 +126,10 @@ def check_database_cache(code, check_query, update_query, checked_field, api_url
                     return jsonify({"exists": cached_flag(row[0])}), 200
                 elif mode == 'json' and row[0]:
                     data = loads(row[0])
-                    # Gecachtes "nicht gefunden" (siehe unten) wieder als 404 ausliefern
                     return jsonify(data), 404 if "error" in data else 200
 
-        # Wenn kein gültiger Cache: externer Request
         if mode == 'exists':
             try:
-                # bahnhof.de leitet z. B. per 307 auf die sprechende URL weiter
                 response = head(api_url, timeout=5, allow_redirects=True)
                 exists = response.status_code == 200
             except Exception as e:
@@ -146,8 +146,6 @@ def check_database_cache(code, check_query, update_query, checked_field, api_url
 
         elif mode == 'json' and request_function:
             data, status = request_function(code)
-            # 404 wird ebenfalls gecacht, damit Betriebsstellen ohne STADA-Eintrag
-            # nicht bei jedem Aufruf erneut abgefragt werden. Andere Fehler sind evtl. temporär.
             if status in (200, 404):
                 try:
                     json_data = dumps(data)
@@ -168,8 +166,8 @@ def check_database_cache(code, check_query, update_query, checked_field, api_url
 def check_gleisplan(code):
     """
     Since the API uses "_" instead of " ", we need to replace these before doing the request.
-    :param code:
-    :return:
+    :param code: RIL-100-Code
+    :returns: Update Database
     """
     apn_code = unquote(code).replace(' ', '_')
     return check_database_cache(code, """
@@ -187,6 +185,11 @@ def check_gleisplan(code):
 
 @app.route('/api/stellwerk/<code>')
 def check_stellwerk(code):
+    """
+    Check if an entry at stellwerke.info exists.
+    :param code: RIL-100-Code
+    :return:
+    """
     return check_database_cache(code, """
                                       SELECT stellwerk_exists, stellwerk_checked_at
                                       FROM betriebsstellen
@@ -201,7 +204,10 @@ def check_stellwerk(code):
 
 @app.route('/api/abfahrt/<code>/<number>', methods=['GET'])
 def check_abfahrt(code, number):
-    """`code` ist der RL100-Code (Cache-Schlüssel), `number` die Stationsnummer für die URL."""
+    """
+    Check if this station exists at bahnhof.de
+    :param code: RL100-Code
+    :param number: station number for the URL"""
     return check_database_cache(code, """
                                       SELECT abfahrt_response, abfahrt_checked_at
                                       FROM betriebsstellen
@@ -254,6 +260,11 @@ def get_stada_points(stada, code, name=None):
 
 @app.route('/api/stada/<code>', methods=['GET'])
 def check_stada(code):
+    """
+    Check if this station exists in the Stada API.
+    :param code: RIL100-Code
+    :return: Station Data from Stada API
+    """
     return check_database_cache(code, """
                                       SELECT stada_response, stada_checked_at
                                       FROM betriebsstellen
@@ -267,7 +278,12 @@ def check_stada(code):
 
 @app.route('/api/bahnhofsplan/<code>/<number>', methods=['GET'])
 def check_bahnhofsplan(code, number):
-    """`code` ist der RL100-Code (Cache-Schlüssel), `number` die Stationsnummer für die PDF-URL."""
+    """
+    Check if the Bahnhofsplan exists.
+    :param code: RIL100-Code
+    :param number: Station Number
+    :return: PDF URL
+    """
     return check_database_cache(code, """
                                       SELECT bahnhofsplan_response, bahnhofsplan_checked_at
                                       FROM betriebsstellen
@@ -282,7 +298,12 @@ def check_bahnhofsplan(code, number):
 
 @app.route('/api/umgebungsplan/<code>/<number>', methods=['GET'])
 def check_umgebungsplan(code, number):
-    """`code` ist der RL100-Code (Cache-Schlüssel), `number` die Stationsnummer für die PDF-URL."""
+    """
+    Check if the Umgebungsplan exists
+    :param code: RIL100-Code
+    :param number: Station Number
+    :return: PDF URL
+    """
     return check_database_cache(code, """
                                       SELECT umgebungsplan_response, umgebungsplan_checked_at
                                       FROM betriebsstellen
@@ -297,10 +318,11 @@ def check_umgebungsplan(code, number):
 @app.route('/search', methods=['GET'])
 def search():
     """
-    Handles the search functionality for real - time search queries. Retrieves the search query from the request,
+    Handles the search functionality for real time search queries. Retrieves the search query from the request,
     performs a database search for matching RL100 codes or long names, and returns the results as a JSON response.
-    Special characters are normalized for better matching. Returns: flask.Response: A JSON response containing the
-    search results. """
+    Special characters are normalized for better matching. Returns: flask.
+    :return: JSON response containing the search results.
+    """
 
     query = request.args.get('q', '').lower()
     conn = get_db_connection()
@@ -326,7 +348,6 @@ def search():
             ELSE 3 END AS relevance FROM betriebsstellen WHERE
     """
 
-    # WHERE-Klauseln
     conditions = []
     for term in search_terms:
         conditions.append(
@@ -343,27 +364,23 @@ def search():
         LIMIT 20
     """
 
-    # Parameter zusammenbauen: zuerst für CASE-Bewertung
     params = []
     for term in search_terms:
         params.extend([
             term,  # exact
-            f'{term}%',  # Code beginnt mit
-            f'%{term}%'  # Langname enthält
+            f'{term}%',  # Code starts with
+            f'%{term}%'  # Long name contains
         ])
 
-    # Dann für WHERE-Klauseln
     for term in search_terms:
         params.extend([
             f'%{term}%',  # LIKE Code
-            f'%{term}%'  # LIKE Langname
+            f'%{term}%'  # LIKE long name
         ])
 
-    # Abfrage ausführen
     cursor.execute(sql_query, params)
     results = cursor.fetchall()
 
-    # Ergebnisse zurückgeben
     return jsonify([
         {
             'plc': row['PLC-Gesamt'],
@@ -386,13 +403,12 @@ def impressum():
                            TAG_MANAGER_TAG=TAG_MANAGER_TAG, ADSENSE_CLIENT=ADSENSE_CLIENT,)
 
 
-@app.route('/test', methods=['GET'])
-def test():
-    return render_template('test.html')
-
-
 @app.route('/api/data', methods=['GET'])
 def api_data():
+    """
+    API call
+    :return: JSON response
+    """
     ril_code = request.args.get('ril', '').strip()
     if not ril_code:
         return jsonify({"error": "RIL code is required"}), 400
@@ -408,6 +424,12 @@ def api_data():
 
 
 def get_db_data(request_input, database='betriebsstellen.db'):
+    """
+    Query the database
+    :param request_input: Query for the database
+    :param database: Database name
+    :return: Database query result
+    """
     conn = sqlite3.connect(database)
     cursor = conn.cursor()
     query = "SELECT * FROM betriebsstellen WHERE LOWER([RL100-Code]) = ?"
@@ -417,6 +439,11 @@ def get_db_data(request_input, database='betriebsstellen.db'):
 
 
 def generate_sitemap(database='betriebsstellen.db'):
+    """
+    Automatic sitemap generator containing all RIL100-Codes
+    :param database: Database name
+    :return: All RIL100-Codes in the database
+    """
     conn = sqlite3.connect(database)
     cursor = conn.cursor()
     cursor.execute("SELECT [RL100-Code] FROM betriebsstellen")
@@ -426,6 +453,11 @@ def generate_sitemap(database='betriebsstellen.db'):
 
 
 def get_date(date):
+    """
+    Needed to convert the date in the name of the table to integers.
+    :param date: date (text)
+    :return: date (day, month, year) as integer
+    """
     try:
         date = str(date)
         day = date[-2:]
