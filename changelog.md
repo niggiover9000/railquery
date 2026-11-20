@@ -1,6 +1,6 @@
 #### 20.11.2026
 - Wenn mehrere Geokoordinaten vorhanden sind, werden diese jetzt gemeinsam auf der Karte dargestellt.
-- Verschiedene Bugfixes, insbesondere korrekte Darstellung der API response.
+- Verschiedene Bugfixes, insbesondere korrekte Darstellung der API response und Behebung eines Fehlers, der dafür sorgte, dass das zweispaltige Layout manchmal nicht richtig dargestellt wurde.
 
 #### 28.09.2026
 - Wechsel von IRIS auf Abfahrtstafel auf bahnhof.de. Dadurch kann der Button ausgegraut werden, wenn keine Abfahrtstafel vorhanden ist.
