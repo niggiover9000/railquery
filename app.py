@@ -325,14 +325,21 @@ def search():
     """
 
     query = request.args.get('q', '').lower()
+    search_terms = query.split()
+
+    # Without search terms there is nothing to search for: AJAX calls from the search bar get an empty list,
+    # direct visits in the browser are redirected to the start page.
+    if not search_terms:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify([])
+        return redirect(url_for('index'))
+
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    search_terms = query.split()
-
     # SQL query with parameter weighting
     sql_query = """
-        SELECT *,
+        SELECT [RL100-Code], [RL100-Langname],
         CASE
         """
 
@@ -381,15 +388,11 @@ def search():
     cursor.execute(sql_query, params)
     results = cursor.fetchall()
 
+    # Only return the fields the search bar actually uses
     return jsonify([
         {
-            'plc': row['PLC-Gesamt'],
             'code': row['RL100-Code'],
-            'name': row['RL100-Langname'],
-            'kurzname': row['RL100-Kurzname'],
-            'typ': row['Typ-Kurz'],
-            'betriebszustand': row['Betriebszustand'],
-            'Datum': row['Datum-Ab']
+            'name': row['RL100-Langname']
         }
         for row in results
     ])
