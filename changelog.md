@@ -1,3 +1,7 @@
+#### 26.11.2026
+- API-Calls für die Suche optimiert
+- Kleinere Bug-Fixes
+
 #### 20.11.2026
 - Wenn mehrere Geokoordinaten vorhanden sind, werden diese jetzt gemeinsam auf der Karte dargestellt.
 - Verschiedene Bugfixes, insbesondere korrekte Darstellung der API response und Behebung eines Fehlers, der dafür sorgte, dass das zweispaltige Layout manchmal nicht richtig dargestellt wurde.
